@@ -19,7 +19,7 @@ class TestColumn {
     @Test
     fun `Index to Column with symbol property`() {
         val column = 3.indexToColumn()
-        assertEquals('d' ,column.symbol)
+        assertEquals('d', column.symbol)
     }
     @Test
     fun `Invalid index to Column throws IndexOutOfBounds`() {

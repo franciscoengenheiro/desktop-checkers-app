@@ -1,14 +1,17 @@
+/*
 package isel.leic.tds.checkers
 
 import isel.leic.tds.checkers.model.*
 import kotlin.test.*
 
+*/
 /**
  * The Row type identifies one of the rows on the board.
  * Rows are identified by a number, from 8 to 1 (if BOARD_DIM==8)
  * The bottom row is '0'
  * Assume BOARD_DIM > 0
- */
+ *//*
+
 class TestRow {
     @Test
     fun `Number to Row with index property`() {
@@ -51,3 +54,4 @@ class TestRow {
         assertEquals(0 , invalidRows.size)
     }
 }
+*/
