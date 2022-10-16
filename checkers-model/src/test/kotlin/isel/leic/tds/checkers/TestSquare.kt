@@ -1,16 +1,13 @@
-/*
 package isel.leic.tds.checkers
 
 import kotlin.test.*
 import isel.leic.tds.checkers.model.*
 
-*/
 /**
  * The Square type identifies a position on the board (Column and Row)
  * Squares are identified by one (or more) digits and one letter.
  * The top left is "8a" (if BOARD_DIM==8)
- *//*
-
+ */
 class TestSquare {
     @Test
     fun `Dimensions limits`() {
@@ -62,4 +59,3 @@ class TestSquare {
     }
 }
 
-*/

@@ -23,7 +23,7 @@ class Column private constructor(val letter: Char) {
         // create more columns besides the already existing unique ones, it was considered useful
         // to have a public way to call the class as if the constructor wasn't private, although
         // invoke function can be used for other applications besides that
-        operator fun invoke(char: Char) = values.first { col -> char == col.symbol }
+        operator fun invoke(letter: Char) = values.first { col -> letter == col.symbol }
     }
 }
 
