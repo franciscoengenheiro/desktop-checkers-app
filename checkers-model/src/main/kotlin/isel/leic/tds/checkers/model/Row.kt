@@ -12,6 +12,7 @@ value class Row private constructor(val num: Int) {
     companion object {
         val values = List(BOARD_DIM) { idx -> Row(BOARD_DIM - idx) } // [... , 3, 2, 1]
     }
+    override fun toString() = "$num"
 }
 
 // Extension functions
@@ -20,7 +21,7 @@ fun Int.indexToRow() = Row.values[this]
 // As mentioned in previous lectures, the function below is a good practice to have
 // as it avoids calling an exception and instead returns null, useful when the objective
 // isn't to stop the programm abruptly
-// fun Int.indexToRowOrNull() = if(this in Row.values.indices) indexToRow() else null
+fun Int.indexToRowOrNull() = if(this in Row.values.indices) indexToRow() else null
 
 
 

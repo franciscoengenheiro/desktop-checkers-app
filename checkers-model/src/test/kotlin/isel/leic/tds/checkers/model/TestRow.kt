@@ -1,6 +1,5 @@
-package isel.leic.tds.checkers
+package isel.leic.tds.checkers.model
 
-import isel.leic.tds.checkers.model.*
 import kotlin.test.*
 
 /**
@@ -10,42 +9,35 @@ import kotlin.test.*
  * Assume BOARD_DIM > 0
  */
 class TestRow {
-    @Test
-    fun `Number to Row with index property`() {
+    @Test fun `Number to Row with index property`() {
         val row = 3.toRowOrNull()
         assertNotNull(row)
         assertEquals(BOARD_DIM-3, row.index)
     }
-    @Test
-    fun `Index to Row with number property`() {
+    @Test fun `Index to Row with number property`() {
         val row = 3.indexToRow()
         assertEquals(BOARD_DIM-3 ,row.number)
     }
-    @Test
-    fun `Invalid index to Row throws IndexOutOfBounds`() {
+    @Test fun `Invalid index to Row throws IndexOutOfBounds`() {
         assertFailsWith<IndexOutOfBoundsException> {
             val row = BOARD_DIM.indexToRow()
         }
     }
-    @Test
-    fun `Invalid number to Row results null`() {
+    @Test fun `Invalid number to Row results null`() {
         val row = 0.toRowOrNull()
         assertNull(row)
     }
-    @Test
-    fun `All valid numbers to rows`() {
+    @Test fun `All valid numbers to rows`() {
         assertEquals(
             (BOARD_DIM-1 downTo 0).toList(),
             (1..BOARD_DIM).mapNotNull{ it.toRowOrNull()?.index }
         )
     }
-    @Test
-    fun `Get all valid values of Rows`() {
+    @Test fun `Get all valid values of Rows`() {
         assertEquals(BOARD_DIM, Row.values.size)
         assertEquals((BOARD_DIM downTo 1).toList(), Row.values.map{ it.number })
     }
-    @Test
-    fun `All invalid rows`() {
+    @Test fun `All invalid rows`() {
         val invalidNumbers = (-10..100) - (1..BOARD_DIM)
         val invalidRows = invalidNumbers.mapNotNull{ it.toRowOrNull() }
         assertEquals(0 , invalidRows.size)

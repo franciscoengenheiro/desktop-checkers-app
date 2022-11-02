@@ -1,11 +1,7 @@
 package isel.leic.tds.checkers.model
 
-// Reminder: const val usage might cause problems when it's corresponding value is changed
-// but all the files referencing it are not, resulting in unexpected errors
-const val BOARD_DIM = 8
-
 // @JvmInline associated with the below class (as a value class) cannot be used in this case,
-// since there is a test in TestColumn.kt line 61, when comparing object instances, that fails
+// since there is a test in TestColumn.kt line 61, when comparing object instances, that fails.
 // The reason, according to Kotlinlang.org is: "Because inline classes may be represented both
 // as the underlying value and as a wrapper, referential equality is pointless for them and is
 // therefore prohibited".
@@ -25,6 +21,7 @@ class Column private constructor(val letter: Char) {
         // invoke function can be used for other applications besides that
         operator fun invoke(letter: Char) = values.first { col -> letter == col.symbol }
     }
+    override fun toString() = "$letter"
 }
 
 // Extension functions
@@ -33,5 +30,5 @@ fun Int.indexToColumn() = Column.values[this]
 // As mentioned in previous lectures, the function below is a good practice to have
 // as it avoids calling an exception and instead returns null, useful when the objective
 // isn't to stop the programm abruptly
-// fun Int.indexToColumnOrNull() = if(this in Column.values.indices) indexToColumn() else null
+fun Int.indexToColumnOrNull() = if(this in Column.values.indices) indexToColumn() else null
 

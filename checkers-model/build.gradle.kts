@@ -27,5 +27,17 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("pt.isel.AppKt")
+    mainClass.set("mainKt")
 }
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "isel.leic.tds.checkers.mainKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+
