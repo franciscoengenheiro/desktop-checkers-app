@@ -23,15 +23,19 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    // MongoDB integration
+    implementation("org.litote.kmongo:kmongo:4.7.2")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
 }
 
 application {
     // Define the main class for the application.
-    mainClass.set("mainKt")
+    mainClass.set("MainKt")
 }
 
 tasks.jar {
-    manifest.attributes["Main-Class"] = "isel.leic.tds.checkers.mainKt"
+    manifest.attributes["Main-Class"] = "isel.leic.tds.checkers.MainKt"
     val dependencies = configurations
         .runtimeClasspath
         .get()

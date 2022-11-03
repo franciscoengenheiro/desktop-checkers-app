@@ -56,5 +56,4 @@ class FileStorage<K, T>(val folder: String, val serializer: Serializer<T, String
         require(file.exists()) { "There is no file with that id $id" }
         file.delete()
     }
-    // TODO(complete delete and update tests")
 }

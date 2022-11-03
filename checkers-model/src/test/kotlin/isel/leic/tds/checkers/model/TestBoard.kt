@@ -1,34 +1,11 @@
 package isel.leic.tds.checkers.model
+
+import isel.leic.tds.checkers.getPlayerPieces
+import isel.leic.tds.checkers.validateSqr
+import isel.leic.tds.checkers.plays
 import kotlin.test.*
 
 class TestBoard {
-    // Function to retrieve the amount of pieces a player can have
-    // at the start of the game given the board dimension (BOARD_DIM)
-    private fun getPlayerPieces(dim: Int): Int = dim/2 * (dim/2 - 1)
-    private fun validateSqr(s: String): Square {
-        require (BOARD_DIM < 10) { "Board dim is greater or equal to 10" }
-        // Last validation is required in order to ensure given string has length 2.
-        // For a BOARD_DIM = 10, one move could be "10e" which will be bigger than
-        // the expected length
-        require(s.length == 2) { "Invalid string format" }
-        val sqr = s.toSquareOrNull()
-        requireNotNull(sqr) { "Square $sqr does not exist on the board" }
-        return sqr
-    }
-    // This makes several plays but assumes their all valid plays
-    private fun Board.plays(vararg s: String): Board {
-        var b = this
-        s.forEach {
-            require(it.length == 7) { "Invalid string format" }
-            val list = it.split(" ")
-            require(list.size == 3) { "Incorrect expected arguments" }
-            val toSqr = validateSqr(list[0])
-            val fromSqr = validateSqr(list[1])
-            val player = Player.valueOf(list[2])
-            b = b.play(toSqr, fromSqr, player)
-        }
-        return b
-    }
     @Test fun `Sample values for getPlayerPieces`() {
         assertTrue(BOARD_DIM >= 8)
         val dimList = (8..16).step(2).toList()
@@ -64,7 +41,7 @@ class TestBoard {
     @Test fun `One move only`() {
         var sut: Board = initialBoard()
         val movesBefore = sut.moves
-        sut = sut.play(validateSqr("3c"), validateSqr("4d"), Player.w)
+        sut = sut.play(validateSqr("3c"), validateSqr("4d"))
         val movesAfter = sut.moves
         assertNotEquals(movesBefore, movesAfter)
         assertNull(sut[validateSqr("3c")])
@@ -233,7 +210,7 @@ class TestBoard {
             "8h 7g b",
             "8f 6h w", // Capture(7g)
         )
-        assertTrue(sut is BoardWin)
+        assertIs<BoardWin>(sut)
         val numberOfCaptures = 14
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - numberOfCaptures, sut.moves.size)
         assertEquals(Player.w, sut.winner)
@@ -286,7 +263,7 @@ class TestBoard {
             "6h 7g w",
             "5c 4b b")
         sut = sut.plays("5a 3c w") // Capture(4b)
-        assertTrue(sut is BoardWin)
+        assertIs<BoardWin>(sut)
         val numberOfCaptures = 13
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - numberOfCaptures, sut.moves.size)
         // Game was won but the player controlling the white checkes, but a black checker
@@ -362,7 +339,7 @@ class TestBoard {
             "6f 5g w",
             "2b 1a b",
         )
-        assertTrue(sut is BoardDraw)
+        assertIs<BoardDraw>(sut)
         val numberOfCaptures = 16
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - numberOfCaptures, sut.moves.size)
     }

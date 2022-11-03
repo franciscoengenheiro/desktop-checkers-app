@@ -2,6 +2,7 @@ package isel.leic.tds.checkers.ui
 
 import isel.leic.tds.checkers.model.*
 import isel.leic.tds.checkers.storage.Storage
+import kotlin.system.exitProcess
 
 class Command(
     val execute: (args: List<String>, g: Game?) -> Game?,
@@ -9,9 +10,14 @@ class Command(
     val argsSyntax: String = "",
 )
 
+class SyntaxError(msg: String): IllegalArgumentException(msg)
+
 fun getCommands(storage: Storage<String, Board>) = mapOf(
     "START" to Command(
-        execute = { args, _ -> createGame(args[0], storage) },
+        execute = { args, g ->
+            if (g != null) throw IllegalArgumentException("Game already started")
+            if (args.size != 1) throw SyntaxError("Missing game name")
+            createGame(args.first(), storage) },
         argsSyntax = "<gameName>"
     ),
     "GRID" to Command( execute = { _, g ->
@@ -21,33 +27,36 @@ fun getCommands(storage: Storage<String, Board>) = mapOf(
     } ),
     "PLAY" to Command(
         execute = { args, g ->
-            require(args.size == 2) { "Missing positions" }
             // A game is required to have been created to use this command
             checkNotNull(g) { "Game not created" }
+            // A play requires two squares
+            if (args.size != 2) throw SyntaxError("Missing squares")
             // Assert if received squares are valid squares on the board
-            val fromSqr = args[0].toSquareOrNull()
-            requireNotNull(fromSqr) { "Illegal square $fromSqr" }
-            val toSqr = args[1].toSquareOrNull()
-            requireNotNull(toSqr) { "Illegal square $toSqr" }
+            val fromSqr = args.first().toSquareOrNull()
+                ?: throw SyntaxError("Invalid square ${args.first()}")
+            val toSqr = args.last().toSquareOrNull()
+                ?: throw SyntaxError("Invalid square ${args.last()}")
             g.play(fromSqr, toSqr, storage) },
         argsSyntax = "<fromSquare> <toSquare>",
     ),
     "REFRESH" to Command( execute = { _, g ->
         // A game is required to have been created to use this command
         checkNotNull(g) { "Game not created" }
-        // Read the current board registered in the file
+        // Reads the current board stored in the file
         val b = storage.read(g.id)
-        check(b != null)
+        checkNotNull(b)
         // Copy the updated board to the game
         g.copy(board = b)
     } ),
-    /*"CONTINUE" to Command( TODO("continue, pun intended")
-        execute = TODO(),
+    "CONTINUE" to Command(
+        execute = { _, g ->
+            if (g != null) throw IllegalArgumentException("Game already started")
+            // TODO("reminder: use syntax error somewhere here")
+            null },
         argsSyntax = "<gameName> w|b",
-    ),*/
+    ),
     "EXIT" to Command(
-        execute = { _,_ -> null },
-        show = { println("Closing the game") }
+        execute = { _,_ -> exitProcess(0) },
     )
 ).also { map ->
     // Create help command
@@ -60,5 +69,3 @@ fun getCommands(storage: Storage<String, Board>) = mapOf(
     // Add new command
     return map + Pair("HELP", helpCommand)
 }
-
-class SyntaxError(msg: String): IllegalArgumentException(msg)

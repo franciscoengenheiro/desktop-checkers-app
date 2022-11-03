@@ -5,7 +5,7 @@ package isel.leic.tds.checkers.model
 // Constants:
 const val BOARD_DIM = 8
 const val MAX_SQUARES = BOARD_DIM * BOARD_DIM
-const val MAX_MOVES_WITHOUT_CAPTURE = 20
+const val MAX_MOVES_WITHOUT_CAPTURE = 10
 
 /**
  * Represents the players of the game: [w] to identify the player with white checkers
@@ -30,7 +30,7 @@ sealed class Board(val moves: Moves)
 /**
  * Represents an instance of the board where it is possible to make plays
  * @param mvs Represents all avalaible moves currently in the board
- * @param movesWithoutCapture Represents the total moves made by both players without a capture
+ * @param movesWithoutCapture Represents the total amount of valid moves made without a capture
  * @param turn Current player which has permission to play in the board
  */
 class BoardRun(mvs: Moves, val movesWithoutCapture: Int, val turn: Player): Board(mvs)
@@ -50,9 +50,8 @@ class BoardWin(mvs: Moves, val winner: Player): Board(mvs)
 class BoardDraw(mvs: Moves): Board(mvs)
 
 /**
- * Constructs initial board when a new game is started
- * @return A board with all starting pieces in place: white checkers at the
- * bottom and black checkers at the top
+ * Constructs initialboard with all starting pieces in place: white checkers
+ * at the bottom and black checkers at the top
  */
 fun initialBoard(): BoardRun {
     require(BOARD_DIM % 2 == 0) { "BOARD_DIM is not an even number" }
@@ -91,15 +90,12 @@ operator fun Board.get(sqr: Square): Checker? = moves[sqr]
  * If this function is called on other board type besides BoardRun throws [IllegalStateException]
  * or [IllegalArgumentException] if the move requested isn't valid
  */
-fun Board.play(fromSqr: Square, toSqr: Square, player: Player): Board = when(this) {
+fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
     is BoardWin, is BoardDraw -> error("Game is over")
-    is BoardRun -> {
-        // Assert if it's the turn of the player who called this function
-        require(turn == player) { "Not your turn" }
-        // Assert if the fromSqr has checker belonging to the current player turn
+    is BoardRun -> {        // Assert if the fromSqr has checker belonging to the current player turn
         val checkerA: Checker? = moves[fromSqr]
         requireNotNull(checkerA) { "Square $fromSqr doesn't have a checker" }
-        require(checkerA.player == player) { "Square $fromSqr doesn't have your checker" }
+        require(checkerA.player == turn) { "Square $fromSqr doesn't have your checker" }
         // Assert if the toSqr doesn't have a checker
         val checkerB: Checker? = moves[toSqr]
         require(checkerB == null) { "Position $toSqr is occupied" }
@@ -131,18 +127,18 @@ fun Board.play(fromSqr: Square, toSqr: Square, player: Player): Board = when(thi
         // Evaluate if the move was made to the last row of the board, according
         // to the current player turn. If it was and the checker isn't already a King,
         // upgrade it
-        val last_move = if (checkIfOnlastRow(toSqr) && checkerA !is King) toSqr to King(player)
+        val last_move = if (checkIfOnlastRow(toSqr) && checkerA !is King) toSqr to King(turn)
                         else toSqr to checkerA
         // Add the previously made move to the board
         mvs += last_move
         when {
-            BoardRun(mvs, movesWithoutCapture, player).checkWin() -> BoardWin(mvs, player)
-            BoardRun(mvs, movesWithoutCapture, player).checkDraw() -> BoardDraw(mvs)
+            BoardRun(mvs, movesWithoutCapture, turn).checkWin() -> BoardWin(mvs, turn)
+            BoardRun(mvs, movesWithoutCapture, turn).checkDraw() -> BoardDraw(mvs)
             else -> {
                 // If a capture was made, evaluate if there's more mandatory captures to be made,
                 // and if so keep the same player turn otherwise return turn to the other player
-                val p = if (BoardRun(mvs, movesWithoutCapture, player).getAvalaibleCaptures().isNotEmpty()
-                    && foundCapture != null) player else player.other()
+                val p = if (BoardRun(mvs, movesWithoutCapture, turn).getAvalaibleCaptures().isNotEmpty()
+                    && foundCapture != null) turn else turn.other()
                 BoardRun(mvs, movesWithoutCapture, p)
             }
         }
@@ -249,7 +245,7 @@ private fun BoardRun.hasAValidMove(): Boolean {
  * Evaluates if the current player turn has won the game by either capturing all the
  * opponent checkers or by blocking the opponent remaining checker(s)
  */
-private fun BoardRun.checkWin() = !hasCheckers() || !hasAValidMove()
+private fun BoardRun.checkWin() = !hasAValidMove() || !hasCheckers()
 
 /**
  * Evaluates if the other player still has checkers avalaible to play

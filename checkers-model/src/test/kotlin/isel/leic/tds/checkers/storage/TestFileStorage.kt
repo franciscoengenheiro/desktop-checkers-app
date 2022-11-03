@@ -5,13 +5,14 @@ import java.io.File
 
 data class Student(val nr: Int, val name: String)
 
+// Object example
 object StudentSerializer: Serializer<Student, String> {
-    override fun write(obj: Student) = "${obj.nr},${obj.name}"
+    override fun write(obj: Student) = "${obj.nr} ${obj.name}"
     override fun parse(stream: String): Student {
-        val words = stream.split(",")
-        require(words.size == 2) { "Source stream in illegal format, it should contain <nr>,<name>!"}
+        val words = stream.split(" ")
+        require(words.size == 2) { "Source stream in illegal format, it should contain <nr> <name>"}
         val nr = words.first().toIntOrNull()
-        requireNotNull(nr) {  }
+        requireNotNull(nr) { "Number received is not a valid number" }
         return Student(nr, words[1])
     }
 }
@@ -41,4 +42,5 @@ class TestFileStorage {
         assertEquals(student, actual)
         assertNotSame(student, actual)
     }
+    // TODO(complete delete and update tests")
 }

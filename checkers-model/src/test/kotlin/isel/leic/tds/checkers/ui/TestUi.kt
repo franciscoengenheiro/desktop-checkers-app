@@ -49,8 +49,8 @@ private fun redirectInOut(vararg lines:String, test: ()->Unit): List<String> {
     System.setIn(oldInput)
     // Return old output method
     System.setOut(oldOutput)
-    // Convert output into several strings separated by \r\n (carriage return and line feed respectively)
+    // Convert output into several strings separated by the current OS line separator
     val out = result.toString().split(System.lineSeparator())
     // TODO(Why this code?)
-    return if (out.size>1 && out.last().isEmpty()) out.dropLast(1) else out
+    return if (out.size > 1 && out.last().isEmpty()) out.dropLast(1) else out
 }

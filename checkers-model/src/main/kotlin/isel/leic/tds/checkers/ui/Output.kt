@@ -18,13 +18,13 @@ import isel.leic.tds.checkers.model.*
 */
 
 // if BOARD_DIM = 8: divLine = +---------------+
-val divLine = "   +" + "-".repeat(BOARD_DIM * 2 - 1) + "+"
+private val divLine = "   +" + "-".repeat(BOARD_DIM * 2 - 1) + "+"
 
 // Function to the print the current board to stdout
 fun Board.print() = when(this) {
-    is BoardDraw -> { println("Game ended with a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
-            " moves without a single capture") }
-    is BoardWin -> { println("Player $winner has won the game") }
+    is BoardDraw -> { println("Game ended in a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
+            " valid moves without a single capture") }
+    is BoardWin -> { println("Congratulations! Player $winner has won the game") }
     is BoardRun -> {
         require(BOARD_DIM < 100) { "Board dimensions bigger than 100 affect board printing "}
         print(divLine).also { println ("  Turn = $turn") }
@@ -46,5 +46,6 @@ fun Board.print() = when(this) {
         println(divLine)
             .also { print("   ") }
             .also { Column.values.forEach { print(" ${it.symbol}") } }
+            .also { println() }
     }
 }
