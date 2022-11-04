@@ -2,29 +2,63 @@ package isel.leic.tds.checkers.model
 
 import isel.leic.tds.checkers.storage.Storage
 
+/**
+ * Represents a game instance
+ * @param id Game unique identifier
+ * @param player Player assigned to this game
+ * @param board Board where the game is being played
+ */
 data class Game(val id: String, val player: Player, val board: Board)
 
-// TODO("if the first player starts the game and leaves, and start again and the other player also leaves, every time he returns will be player.w?")
+/**
+ * Assigns a player to the white checkers if they are the first to enter the game,
+ * or the black checkers if they are the second, and begins the game with a given [id].
+ * If the file didn't include a board or if more than one white checker has been changed
+ * from its initial starting position in an existing game, a new game is constructed
+ * from scratch.
+ */
 fun createGame(id: String, storage: Storage<String, Board>): Game {
-    // Check if a board is in the file
+    // Check if a board is in the specified file
     val existingBoard = storage.read(id)
-    // If tThe file has a board:
+    // If the file has a board:
     if (existingBoard != null) {
-        // Check if the already created board has at least one white checker moved:
-        if (existingBoard.moves != initialBoard().moves) {
-            // If it does, the game will resume
+        val board = existingBoard as BoardRun
+        // Check if the already created board has a maximum of one move done by the
+        // first player to enter
+        if (board.mvsWithoutCapture in 0..1) {
+            // If it does, the game will assign the second player
             return Game(id, Player.b, existingBoard)
+        } else {
+            // Delete the file with the previous board
+            storage.delete(id)
         }
-        // Delete the file with the previous game
-        storage.delete(id)
     }
     // Create a new game
     return Game(id, Player.w, initialBoard()).also {
-        // Create a new file with the new board
+        // Also create a new file to store the new board
         storage.create(id, initialBoard())
     }
 }
 
+/**
+ * Resumes a game identified by an [id] with a specified player
+ * If the specified file does not exit throws [IllegalArgumentException]
+ */
+fun resumeGame(id: String, player: Player, storage: Storage<String, Board>): Game {
+    // Check if a board is in the specified file
+    val existingBoard = storage.read(id)
+    // If the file has a previously created board:
+    requireNotNull(existingBoard) { "Game with id $id does not exist"}
+    // The game will resume with the specified player
+    return Game(id, player, existingBoard)
+}
+
+/**
+ * Ensures the correct requirements are in order before calling the function to make
+ * a play on the board.
+ * @return A new board on the respective game file and a copy of the game with the
+ * updated board
+ */
 fun Game.play(fromSqr: Square, toSqr: Square, storage: Storage<String, Board>): Game {
     check(board is BoardRun) { "Game is over" }
     check(player == board.turn) { "Not your turn" }

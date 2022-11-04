@@ -21,31 +21,38 @@ import isel.leic.tds.checkers.model.*
 private val divLine = "   +" + "-".repeat(BOARD_DIM * 2 - 1) + "+"
 
 // Function to the print the current board to stdout
-fun Board.print() = when(this) {
-    is BoardDraw -> { println("Game ended in a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
-            " valid moves without a single capture") }
-    is BoardWin -> { println("Congratulations! Player $winner has won the game") }
+fun Board.print(g: Game) = when(this) {
+    is BoardDraw -> {
+        println("\nGame ended in a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
+            " moves without a single capture") }
+    is BoardWin -> {
+        printAll(g.player, winner)
+        println("\nCongratulations! Player $winner has won the game") }
     is BoardRun -> {
-        require(BOARD_DIM < 100) { "Board dimensions bigger than 100 affect board printing "}
-        print(divLine).also { println ("  Turn = $turn") }
-        Square.values.forEach { sqr ->
-            if (sqr.column.index == 0)
-                if (sqr.row.number <= 9) print(" ${sqr.row} |")
-                else print("${sqr.row} |")
-            if (sqr.black && moves[sqr] != null) print("${moves[sqr]}")
-            else if (sqr.black) print ("-")
-            else
-                when (sqr.column.index) {
-                    !in 1..BOARD_DIM - 2 -> print("  ")
-                    else -> print("   ")
-                }
-            if (sqr.column.index == BOARD_DIM - 1)
-                if (sqr.row.index == 0) println("|  Player = w") // TODO("change w to local player")
-                else println("|")
-        }
-        println(divLine)
-            .also { print("   ") }
-            .also { Column.values.forEach { print(" ${it.symbol}") } }
-            .also { println() }
+        printAll(g.player, turn)
     }
+}
+
+fun Board.printAll(player: Player, turn: Player) {
+    require(BOARD_DIM < 100) { "Board dimensions bigger than 100 affect board printing "}
+    print(divLine).also { println ("  Turn = $turn") }
+    Square.values.forEach { sqr ->
+        if (sqr.column.index == 0)
+            if (sqr.row.number <= 9) print(" ${sqr.row} |")
+            else print("${sqr.row} |")
+        if (sqr.black && moves[sqr] != null) print("${moves[sqr]}")
+        else if (sqr.black) print ("-")
+        else
+            when (sqr.column.index) {
+                !in 1..BOARD_DIM - 2 -> print("  ")
+                else -> print("   ")
+            }
+        if (sqr.column.index == BOARD_DIM - 1)
+            if (sqr.row.index == 0) println("|  Player = ${player}")
+            else println("|")
+    }
+    println(divLine)
+        .also { print("   ") }
+        .also { Column.values.forEach { print(" ${it.symbol}") } }
+        .also { println() }
 }

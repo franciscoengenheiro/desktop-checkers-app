@@ -3,7 +3,7 @@ package isel.leic.tds.checkers.storage
 import java.io.File
 
 /**
- * Implements file interaction for storage purposes
+ * Implements file storage interaction
  * @param [K] Folder where the target file is
  * @param [T] A [Serializer] that is able to write in string format and read from string format
  */
@@ -23,7 +23,7 @@ class FileStorage<K, T>(val folder: String, val serializer: Serializer<T, String
         file.writeText(stream)
     }
     /**
-     * Retrieved data from a file
+     * Retrieves data from a file
      * @param id File unique identifier
      * @return The data retrieved from the specified file or null if the file
      * does not exist

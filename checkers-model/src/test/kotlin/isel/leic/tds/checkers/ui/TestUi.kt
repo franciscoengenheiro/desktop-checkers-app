@@ -7,12 +7,13 @@ class TestUi {
     @Test fun `print Board`() {
         require(BOARD_DIM == 8) { "Board dimension has to be 8" }
         val sut = initialBoard()
+        val game = Game("game1", Player.b, initialBoard())
         val out = redirectInOut {
-            sut.print()
+            sut.print(game)
         }
         assertEquals(listOf(
             "   +---------------+  Turn = w",
-            " 8 |  b   b   b   b|  Player = w",
+            " 8 |  b   b   b   b|  Player = b",
             " 7 |b   b   b   b  |",
             " 6 |  b   b   b   b|",
             " 5 |-   -   -   -  |",

@@ -34,13 +34,35 @@ class TestFileStorage {
             fs.create(studentNr, Student(studentNr, "TDS"))
         }
     }
-    @Test fun `Serialize add deserialize `() {
+    @Test fun `Serialize add deserialize`() {
         val fs = FileStorage<Int, Student>(folder, StudentSerializer)
+        assertNull(fs.read(studentNr))
         val student = Student(studentNr, "ISEL")
         fs.create(studentNr, student)
         val actual = fs.read(studentNr)
         assertEquals(student, actual)
         assertNotSame(student, actual)
     }
-    // TODO(complete delete and update tests")
+    @Test fun `Update a file`() {
+        val fs = FileStorage<Int, Student>(folder, StudentSerializer)
+        val student1 = Student(studentNr, "LEIC")
+        assertFailsWith<IllegalArgumentException> {
+            fs.update(studentNr, student1)
+        }
+        fs.create(studentNr, student1)
+        val before = fs.read(studentNr)
+        val student2 = Student(studentNr, "TDS")
+        fs.update(studentNr, student2)
+        val after = fs.read(studentNr)
+        assertNotEquals(before, after)
+    }
+    @Test fun `Delete a file`() {
+        val fs = FileStorage<Int, Student>(folder, StudentSerializer)
+        val student = Student(studentNr, "CHECKERS")
+        assertFailsWith<IllegalArgumentException> {
+            fs.delete(studentNr)
+        }
+        fs.create(studentNr, student)
+        fs.delete(studentNr)
+    }
 }

@@ -1,14 +1,25 @@
 package isel.leic.tds.checkers
 
+import com.mongodb.ConnectionString
+import com.mongodb.client.MongoDatabase
 import isel.leic.tds.checkers.model.Game
 import isel.leic.tds.checkers.model.MAX_MOVES_WITHOUT_CAPTURE
 import isel.leic.tds.checkers.ui.*
 import isel.leic.tds.checkers.storage.FileStorage
+import isel.leic.tds.checkers.storage.MongoStorage
+import org.litote.kmongo.KMongo
+
+private val connStr = "mongodb+srv://FranciscoLEICTDS32D:agwEI2MWzbYXnCJE@cluster0.b4vcgdl.mongodb.net/?retryWrites=true&w=majority"
+private val db: MongoDatabase = KMongo
+    .createClient(ConnectionString(connStr))
+    .getDatabase("Checkers")
+private val collection = "games"
 
 fun main() {
     printWelcomeMsg()
     var game: Game? = null
-    val cmds = getCommands(FileStorage("checkers-model/output", BoardSerializer))
+    // val cmds = getCommands(FileStorage("checkers-model/output", BoardSerializer))
+    val cmds = getCommands(MongoStorage(collection, db, BoardSerializer))
     while( true ) {
         val (name, args) = readCommand()
         val cmd: Command? = cmds[name]

@@ -6,7 +6,7 @@ import kotlin.system.exitProcess
 
 class Command(
     val execute: (args: List<String>, g: Game?) -> Game?,
-    val show: (g: Game?) -> Unit = { g -> g?.board?.print() },
+    val show: (g: Game?) -> Unit = { g -> g?.board?.print(g) },
     val argsSyntax: String = "",
 )
 
@@ -49,14 +49,21 @@ fun getCommands(storage: Storage<String, Board>) = mapOf(
         g.copy(board = b)
     } ),
     "CONTINUE" to Command(
-        execute = { _, g ->
-            if (g != null) throw IllegalArgumentException("Game already started")
-            // TODO("reminder: use syntax error somewhere here")
-            null },
+        execute = { args, g ->
+            require(g == null) { "Game already started" }
+            if (args.size != 2) throw SyntaxError("Missing game name and player")
+            val player = when(args.last()) {
+                "w" -> Player.valueOf(args.last())
+                "b" -> Player.valueOf(args.last())
+                else -> throw SyntaxError("Invalid player name")
+            }
+            resumeGame(args.first(), player, storage) },
         argsSyntax = "<gameName> w|b",
     ),
     "EXIT" to Command(
-        execute = { _,_ -> exitProcess(0) },
+        execute = { _,_ ->
+            println("Closing the game")
+            exitProcess(0) }
     )
 ).also { map ->
     // Create help command

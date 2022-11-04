@@ -1,8 +1,6 @@
 package isel.leic.tds.checkers.model
 
-// Reminder: const val usage might cause problems when it's corresponding value is changed
-// but all the files referencing it are not, resulting in unexpected errors
-// Constants:
+// Constants
 const val BOARD_DIM = 8
 const val MAX_SQUARES = BOARD_DIM * BOARD_DIM
 const val MAX_MOVES_WITHOUT_CAPTURE = 10
@@ -12,28 +10,28 @@ const val MAX_MOVES_WITHOUT_CAPTURE = 10
  * and [b] to for the player with black checkers
  */
 enum class Player { w, b; // ; marks the end of the constants
-    // Method to easily retrieve the other player
+    /**
+     * Method to easily retrieve the other player
+     */
     fun other() = if (this == w) b else w
 }
 
 // Typealiases provides alternative names for existing types and can also be applied to functions
+// A Move will associate a square to a checker
 typealias Move = Pair<Square, Checker>
-// Moves will store all moves in a map for efficient retrival purposes
+// Moves will store all moves in a map for efficient retrieval purposes
 typealias Moves = Map<Square, Checker>
 
-// According to kotlinlang.org: "A sealed class represent restricted class hierarchies
-// that provide more control over inheritance. All direct subclasses of a sealed class
-// are known at compile time. No other subclasses may appear outside a module within
-// which the sealed class is defined".
 sealed class Board(val moves: Moves)
 
 /**
  * Represents an instance of the board where it is possible to make plays
  * @param mvs Represents all avalaible moves currently in the board
- * @param movesWithoutCapture Represents the total amount of valid moves made without a capture
- * @param turn Current player which has permission to play in the board
+ * @param mvsWithoutCapture Represents the total amount of valid moves made without
+ * a capture by both players
+ * @param turn player who has permission to play in the board
  */
-class BoardRun(mvs: Moves, val movesWithoutCapture: Int, val turn: Player): Board(mvs)
+class BoardRun(mvs: Moves, val mvsWithoutCapture: Int, val turn: Player): Board(mvs)
 
 /**
  * Represents an instance of the board where the game is finished since
@@ -50,8 +48,8 @@ class BoardWin(mvs: Moves, val winner: Player): Board(mvs)
 class BoardDraw(mvs: Moves): Board(mvs)
 
 /**
- * Constructs initialboard with all starting pieces in place: white checkers
- * at the bottom and black checkers at the top
+ * Constructs initial board with all board pieces in there starting place:
+ * white checkers at the bottom and black checkers at the top
  */
 fun initialBoard(): BoardRun {
     require(BOARD_DIM % 2 == 0) { "BOARD_DIM is not an even number" }
@@ -85,14 +83,14 @@ operator fun Board.get(sqr: Square): Checker? = moves[sqr]
  * Whoever calls this function must ensure both squares exist on the Board
  * @param fromSqr Square to move a checker from
  * @param toSqr Square to move a checker to
- * @param player Player calling this function
  * @return Updated board with the valid move or capture performed by the player.
  * If this function is called on other board type besides BoardRun throws [IllegalStateException]
  * or [IllegalArgumentException] if the move requested isn't valid
  */
 fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
     is BoardWin, is BoardDraw -> error("Game is over")
-    is BoardRun -> {        // Assert if the fromSqr has checker belonging to the current player turn
+    is BoardRun -> {
+        // Assert if the fromSqr has checker belonging to the current player turn
         val checkerA: Checker? = moves[fromSqr]
         requireNotNull(checkerA) { "Square $fromSqr doesn't have a checker" }
         require(checkerA.player == turn) { "Square $fromSqr doesn't have your checker" }
@@ -101,7 +99,7 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         require(checkerB == null) { "Position $toSqr is occupied" }
         // Retrieve avalaible captures at the moment for the current player turn
         val listCaptures = this.getAvalaibleCaptures()
-        var validMove: Boolean = false
+        var validMove = false
         var foundCapture: Capture? = null
         if (listCaptures.isNotEmpty()) {
             // Find a capture that matches the player move
@@ -117,7 +115,7 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         // Remove current player turn checker from the previous position
         var mvs = moves - fromSqr
         // Remove captured opponent checker from the board if a capture was found
-        var movesWithoutCapture = this.movesWithoutCapture
+        var movesWithoutCapture = this.mvsWithoutCapture
         if (foundCapture != null) {
             mvs -= foundCapture.rmvSqr
             movesWithoutCapture = 0
@@ -180,13 +178,13 @@ private fun BoardRun.checkIfOnlastRow(sqr: Square) =
  * @param toSqr square where the capture ended
  * @param rmvSqr square between them diagonally (jumped above)
  */
-private data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
+data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
 
 /**
  * Evaluates all current player turn checkers for avalaible captures on the board
  * @return A list<[Capture]> with the ones found
  */
-private fun BoardRun.getAvalaibleCaptures(): List<Capture> {
+fun BoardRun.getAvalaibleCaptures(): List<Capture> {
     // Search every current player checker for a valid capture
     var listCaptures = emptyList<Capture>()
     moves.keys
@@ -200,8 +198,8 @@ private fun BoardRun.getAvalaibleCaptures(): List<Capture> {
                 }
                 .mapNotNull { dSqr ->
                     val foundSqr = dSqr.diagonaList.find {
-                        // If both squares (current square and it's diagonal are on the
-                        // same slash) exisgt, then the square to complete the capture
+                        // If both squares exist (current square and it's diagonal are
+                        // on the same slash) exist, then the square to complete the capture
                         // is also on this slash
                         // Condition (it != sqr) ensures the found square doesn't go back
                         // to the square where the jump was made from
@@ -224,6 +222,12 @@ private fun BoardRun.getAvalaibleCaptures(): List<Capture> {
 }
 
 /**
+ * Evaluates if the current player turn has won the game by either capturing all the
+ * opponent checkers or by blocking the opponent remaining checker(s)
+ */
+private fun BoardRun.checkWin() = !hasAValidMove() || !hasCheckers()
+
+/**
  * Ensure the other player has at least one valid move to perform
  */
 private fun BoardRun.hasAValidMove(): Boolean {
@@ -242,17 +246,11 @@ private fun BoardRun.hasAValidMove(): Boolean {
 }
 
 /**
- * Evaluates if the current player turn has won the game by either capturing all the
- * opponent checkers or by blocking the opponent remaining checker(s)
- */
-private fun BoardRun.checkWin() = !hasAValidMove() || !hasCheckers()
-
-/**
  * Evaluates if the other player still has checkers avalaible to play
  */
 private fun BoardRun.hasCheckers() = moves.any { it.value.player == turn.other() }
 
 /**
- * Evaluates if a maximum limit of valid moves without a capture was reached
+ * Evaluates if a maximum limit of moves without a capture was reached
  */
-private fun BoardRun.checkDraw() = this.movesWithoutCapture == MAX_MOVES_WITHOUT_CAPTURE
+private fun BoardRun.checkDraw() = this.mvsWithoutCapture >= MAX_MOVES_WITHOUT_CAPTURE
