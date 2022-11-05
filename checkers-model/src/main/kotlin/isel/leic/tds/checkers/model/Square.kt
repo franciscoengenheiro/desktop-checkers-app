@@ -7,16 +7,37 @@ class Square private constructor(val r: Row, val c: Column) {
     val column get() = c // Example: a, b, c, ...
     // if index sum (column and row) is even then square is black otherwise is white
     val black get() = (r.index + c.index) % 2 != 0
-    // Create a list of all diagonal black squares in proximity of this Square instance
-    val diagonaList get() =
+    // Retrieves a list of all adjacent diagonal black squares in proximity of this Square instance
+    val adjacentDiagonalsList get() =
         values
             .filter { (r.index == it.row.index + 1) || (r.index == it.row.index - 1) }
             .filter { (c.index == it.column.index + 1) || (c.index == it.column.index - 1) }
-    // Evaluate if this Square instance is in the first
+    // Retrieves a list of all diagonal squares in the same slash or backslash of this
+    // Square instance, excluding itself
+    val diagonalsList get() = // TODO(sum of all 4 diagonals)
+        values
+            .filter { (r.index + c.index == it.row.index + it.column.index // blackslash
+                    || r.number + c.letter.code == it.row.number + it.column.letter.code) } // slash
+            .filterNot { r.number == it.row.number && c.letter == it.column.letter } // exclude self
+    val upperBackSlash get() =
+        diagonalsList
+            .filter { it.row.index < r.index && it.column.index < c.index }
+            .reversed()
+    val upperSlash get () =
+        diagonalsList
+            .filter { it.row.index < r.index && it.column.index > c.index }
+            .reversed()
+    val lowerBackSlash get() =
+        diagonalsList
+            .filter { it.row.index > r.index && it.column.index > c.index }
+    val lowerSlash get () =
+        diagonalsList
+            .filter { it.row.index > r.index && it.column.index < c.index }
+    // Evaluate if this Square instance is in the first row
     val onFirstRow get() = r.index == BOARD_DIM - 1
     // Evaluate if this Square instance is in the last row
     val onLastRow get() = r.index == 0
-    // Declare an object to store the only avalaible instances this class can have.
+    // Declare an object to store the only instances this class can have.
     // This object is created once and every instance of this class has access to it,
     // but they cannot alter it since the constructor is private
     companion object {
@@ -34,12 +55,9 @@ class Square private constructor(val r: Row, val c: Column) {
     override fun toString() = "${row.number}${column.symbol}"
 }
 
-// Extension functions
-fun String.toSquareOrNull() = Square.values.firstOrNull { sqr -> sqr.toString() == this }
-
+// Extension functions:
 /**
- * Evaluates if the [sqr] is in the same slash (sum of index of both row and column is equal)
- * of the square referenced by this
- **/
-fun Square.onTheSameSlashOf(sqr: Square): Boolean =
-    this.row.index + this.column.index == sqr.row.index + sqr.column.index
+ * Evaluates if the given string is a match for a valid square
+ * @return null if it does not match any square
+ */
+fun String.toSquareOrNull() = Square.values.firstOrNull { sqr -> sqr.toString() == this }

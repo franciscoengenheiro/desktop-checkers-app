@@ -21,7 +21,7 @@ enum class Player { w, b; // ; marks the end of the constants
 typealias Move = Pair<Square, Checker>
 // Moves will store all moves in a map for efficient retrieval purposes
 typealias Moves = Map<Square, Checker>
-
+// TODO("revisit comments")
 sealed class Board(val moves: Moves)
 
 /**
@@ -31,7 +31,10 @@ sealed class Board(val moves: Moves)
  * a capture by both players
  * @param turn player who has permission to play in the board
  */
-class BoardRun(mvs: Moves, val mvsWithoutCapture: Int, val turn: Player): Board(mvs)
+class BoardRun(mvs: Moves,
+               val numberOfMoves: Int,
+               val mvsWithoutCapture: Int,
+               val turn: Player): Board(mvs)
 
 /**
  * Represents an instance of the board where the game is finished since
@@ -48,11 +51,11 @@ class BoardWin(mvs: Moves, val winner: Player): Board(mvs)
 class BoardDraw(mvs: Moves): Board(mvs)
 
 /**
- * Constructs initial board with all board pieces in there starting place:
+ * Constructs initial board with all board pieces in their starting place:
  * white checkers at the bottom and black checkers at the top
  */
 fun initialBoard(): BoardRun {
-    require(BOARD_DIM % 2 == 0) { "BOARD_DIM is not an even number" }
+    require(BOARD_DIM % 2 == 0) { "Board dim is not an even number" }
     var mvs: Moves = emptyMap()
     // For every square in the board:
     Square.values.forEach { sqr ->
@@ -68,7 +71,7 @@ fun initialBoard(): BoardRun {
                 sqr to Piece(Player.b)
         }
     }
-    return BoardRun(mvs,0, Player.w)
+    return BoardRun(mvs, 0, 0, Player.w)
 }
 
 /**
@@ -93,29 +96,31 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         // Assert if the fromSqr has checker belonging to the current player turn
         val checkerA: Checker? = moves[fromSqr]
         requireNotNull(checkerA) { "Square $fromSqr doesn't have a checker" }
-        require(checkerA.player == turn) { "Square $fromSqr doesn't have your checker" }
+        require(checkerA.player === turn) { "Square $fromSqr doesn't have your checker" }
         // Assert if the toSqr doesn't have a checker
         val checkerB: Checker? = moves[toSqr]
-        require(checkerB == null) { "Position $toSqr is occupied" }
+        require(checkerB == null) { "Square $toSqr is occupied" }
         // Retrieve avalaible captures at the moment for the current player turn
-        val listCaptures = this.getAvalaibleCaptures()
+        val listCaptures = getAvalaibleCaptures()
         var validMove = false
         var foundCapture: Capture? = null
         if (listCaptures.isNotEmpty()) {
+            println(listCaptures)
             // Find a capture that matches the player move
             foundCapture = listCaptures.find { it.fromSqr == fromSqr && it.toSqr == toSqr }
             requireNotNull(foundCapture) {
                 "There is a mandatory capture in ${listCaptures.first().fromSqr}" }
             validMove = true
         } else {
-            if (validateOneDiagonalMove(fromSqr, toSqr, checkerA))
+            if (validateDiagonalMove(fromSqr, toSqr, checkerA))
                 validMove = true
         }
         require(validMove) { "Invalid move" }
+        val n = numberOfMoves + 1
         // Remove current player turn checker from the previous position
         var mvs = moves - fromSqr
         // Remove captured opponent checker from the board if a capture was found
-        var movesWithoutCapture = this.mvsWithoutCapture
+        var movesWithoutCapture = mvsWithoutCapture
         if (foundCapture != null) {
             mvs -= foundCapture.rmvSqr
             movesWithoutCapture = 0
@@ -125,19 +130,33 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         // Evaluate if the move was made to the last row of the board, according
         // to the current player turn. If it was and the checker isn't already a King,
         // upgrade it
-        val last_move = if (checkIfOnlastRow(toSqr) && checkerA !is King) toSqr to King(turn)
-                        else toSqr to checkerA
+        val lost_turn: Boolean
+        val last_move: Move
+        if (checkIfOnlastRow(toSqr) && checkerA !is King) {
+            last_move = toSqr to King(turn)
+            // Even if there are more captures to be made, when a Piece is upgraded to King,
+            // current player turn is lost and can the King can only be moved in the next turn
+            lost_turn = true
+        } else {
+            last_move = toSqr to checkerA
+            lost_turn = false
+        }
         // Add the previously made move to the board
         mvs += last_move
+        // If a capture was made, evaluate if there's more mandatory captures to be made,
+        // and if so keep the same player turn otherwise return turn to the other player
+        val hasMoreCaptures = BoardRun(mvs, n, movesWithoutCapture, turn)
+            .getAvalaibleCaptures().isNotEmpty()
+                && foundCapture != null && !lost_turn
         when {
-            BoardRun(mvs, movesWithoutCapture, turn).checkWin() -> BoardWin(mvs, turn)
-            BoardRun(mvs, movesWithoutCapture, turn).checkDraw() -> BoardDraw(mvs)
+            !hasMoreCaptures && BoardRun(mvs, n, movesWithoutCapture, turn).checkWin()
+                -> BoardWin(mvs, turn)
+            BoardRun(mvs, n, movesWithoutCapture, turn).checkDraw() -> BoardDraw(mvs)
             else -> {
-                // If a capture was made, evaluate if there's more mandatory captures to be made,
-                // and if so keep the same player turn otherwise return turn to the other player
-                val p = if (BoardRun(mvs, movesWithoutCapture, turn).getAvalaibleCaptures().isNotEmpty()
-                    && foundCapture != null) turn else turn.other()
-                BoardRun(mvs, movesWithoutCapture, p)
+                if (hasMoreCaptures)
+                    BoardRun(mvs, n, movesWithoutCapture, turn)
+                else
+                    BoardRun(mvs, n, movesWithoutCapture, turn.other())
             }
         }
     }
@@ -147,22 +166,41 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
  * Retrieves a list<[Square]> of all diagonal squares of [fromSqr], according to
  * given [player]
  */
-private fun getDiagonalList(fromSqr: Square, player: Player) =
+private fun getAdjacentDiagonals(fromSqr: Square, player: Player) =
     when (player) {
         // Retrieve only the diagonal squares above current fromSqr position
-        Player.w -> fromSqr.diagonaList.filter { it.row.index < fromSqr.row.index }
+        Player.w -> fromSqr.adjacentDiagonalsList.filter { it.row.index < fromSqr.row.index }
         // Retrieve only the diagonal squares below current fromSqr position
-        Player.b -> fromSqr.diagonaList.filter { it.row.index > fromSqr.row.index }
+        Player.b -> fromSqr.adjacentDiagonalsList.filter { it.row.index > fromSqr.row.index }
     }
+
+private fun BoardRun.retrieveEmptyDiagonalSquares(list: List<Square>): List<Square> {
+    var finalList = emptyList<Square>()
+    for (sqr in list) {
+        if (moves[sqr] == null)
+            finalList += sqr
+        else
+            break
+    }
+    return finalList
+}
 
 /**
  * Validates if [toSqr] is a diagonal square of [fromSqr], according to
  * the received [checker] type
+ * This function assumes [toSqr] is null and there are no captures in the current board for this player
  */
-private fun BoardRun.validateOneDiagonalMove(fromSqr: Square, toSqr: Square, checker: Checker) =
+private fun BoardRun.validateDiagonalMove(fromSqr: Square, toSqr: Square, checker: Checker) =
     when (checker) {
-        is Piece -> toSqr in getDiagonalList(fromSqr, turn)
-        is King -> toSqr in fromSqr.diagonaList
+        is Piece -> toSqr in getAdjacentDiagonals(fromSqr, turn)
+        is King -> {
+            // Limit King range of diagonal motion clock-wise
+            var finalList = retrieveEmptyDiagonalSquares(fromSqr.upperBackSlash)
+            finalList += retrieveEmptyDiagonalSquares(fromSqr.upperSlash)
+            finalList += retrieveEmptyDiagonalSquares(fromSqr.lowerBackSlash)
+            finalList += retrieveEmptyDiagonalSquares(fromSqr.lowerSlash)
+            toSqr in finalList
+        }
     }
 
 /**
@@ -170,7 +208,7 @@ private fun BoardRun.validateOneDiagonalMove(fromSqr: Square, toSqr: Square, che
  * the current player turn
  */
 private fun BoardRun.checkIfOnlastRow(sqr: Square) =
-    if (Player.w == turn) sqr.onLastRow else sqr.onFirstRow
+    if (Player.w === turn) sqr.onLastRow else sqr.onFirstRow
 
 /**
  * Represents a capture move
@@ -180,75 +218,94 @@ private fun BoardRun.checkIfOnlastRow(sqr: Square) =
  */
 data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
 
+private fun Square.getDiagonals(checker: Checker) =
+    when (checker) {
+        is Piece -> this.adjacentDiagonalsList
+        is King -> this.diagonalsList
+    }
+
 /**
  * Evaluates all current player turn checkers for avalaible captures on the board
  * @return A list<[Capture]> with the ones found
  */
 fun BoardRun.getAvalaibleCaptures(): List<Capture> {
-    // Search every current player checker for a valid capture
     var listCaptures = emptyList<Capture>()
-    moves.keys
-        .filter { moves[it]?.player == turn } // Retrieve current player turn squares with a checker
-        .forEach { sqr ->
-            // Find proximity checkers (in square diagonal) from the other player
-            sqr.diagonaList
-                .filter {
-                    // Evaluate if the checker belongs to the other player
-                    moves[it]?.player == turn.other()
-                }
-                .mapNotNull { dSqr ->
-                    val foundSqr = dSqr.diagonaList.find {
-                        // If both squares exist (current square and it's diagonal are
-                        // on the same slash) exist, then the square to complete the capture
-                        // is also on this slash
-                        // Condition (it != sqr) ensures the found square doesn't go back
-                        // to the square where the jump was made from
-                        if (sqr.onTheSameSlashOf(dSqr)) {
-                            it.onTheSameSlashOf(dSqr) && it != sqr
-                        } else {
-                            !it.onTheSameSlashOf(dSqr) && it != sqr
-                        }
+    // Retrieve current player turn squares with a checker
+    val turnMoves = moves.filter { it.value.player === turn }
+    // Search every current player checker for a valid capture
+    turnMoves.forEach { (sqr, checker) ->
+        val list = when (checker) {
+            is Piece -> {
+                sqr.adjacentDiagonalsList
+                    // Find the other player checkers in the same diagonal
+                    .filter {
+                        // Evaluate if the checker belongs to the other player
+                        moves[it]?.player === turn.other()
                     }
-                    // If the square exists and has a piece:
-                    if (moves[foundSqr] == null && foundSqr != null)
-                        // A valid capture was found
-                        Capture(sqr, foundSqr, dSqr)
-                    else
-                        null
-                }
-                .forEach { listCaptures += it } // Add found captures
             }
+            is King -> {
+                listOf(
+                    sqr.upperBackSlash.find { moves[it] != null },
+                    sqr.upperSlash.find { moves[it] != null },
+                    sqr.lowerBackSlash.find { moves[it] != null },
+                    sqr.lowerSlash.find { moves[it] != null }
+                ).filter {
+                    moves[it]?.player === turn.other()
+                }.filterNotNull()
+            }
+        }
+        list.map { dSqr -> // For every diagonal square in the list:
+            val path = findDiagonalPathToLandTo(centerSqr = sqr, other = dSqr)
+            when (checker) {
+                is Piece -> {
+                    if (path.isNotEmpty() && moves[path.first()] == null)
+                        listCaptures += Capture(sqr, path.first(), dSqr)
+                }
+                is King -> {
+                    path.forEach {
+                        // A valid capture was found
+                        listCaptures += Capture(sqr, it, dSqr)
+                    }
+                }
+            }
+        }
+    }
     return listCaptures
 }
 
-/**
- * Evaluates if the current player turn has won the game by either capturing all the
- * opponent checkers or by blocking the opponent remaining checker(s)
- */
-private fun BoardRun.checkWin() = !hasAValidMove() || !hasCheckers()
+private fun BoardRun.findDiagonalPathToLandTo(centerSqr: Square, other: Square): List<Square> {
+    require(centerSqr != other)
+    { "Squares are equal, no diagonal direction can be calculated" }
+    require(other in centerSqr.diagonalsList)
+    { "$other square is not in one of $centerSqr diagonals" }
+    val rowDiff = centerSqr.row.index - other.row.index
+    val colDiff = centerSqr.column.index - other.column.index
+    return if (rowDiff > 0 && colDiff > 0) retrieveEmptyDiagonalSquares(other.upperBackSlash)
+    else if (rowDiff > 0 && colDiff < 0) retrieveEmptyDiagonalSquares(other.upperSlash)
+    else if (rowDiff < 0 && colDiff < 0) retrieveEmptyDiagonalSquares(other.lowerBackSlash)
+    else retrieveEmptyDiagonalSquares(other.lowerSlash)
+}
 
 /**
  * Ensure the other player has at least one valid move to perform
  */
-private fun BoardRun.hasAValidMove(): Boolean {
+private fun BoardRun.checkWin(): Boolean {
+    // TODO(" pode comer uma peça e por isso tb é valida")
     moves.filter { it.value.player == turn.other() } // Retrieve the other player moves
         .keys.forEach { // For every square in a move:
             // Get correspondent diagonal list:
-            getDiagonalList(it, turn.other()).forEach { sqr ->
+            getAdjacentDiagonals(it, turn.other()).forEach { sqr ->
                 // Evaluate if the square has a checker on it:
                 if (moves[sqr] == null) {
                     // If it doesn't, then a valid move can be made
-                    return true
+                    return false
                 }
             }
         }
-    return false
+    // If it reaches this point the opponent didn't have more checkers to play, or the ones
+    // he had can't be moved
+    return true
 }
-
-/**
- * Evaluates if the other player still has checkers avalaible to play
- */
-private fun BoardRun.hasCheckers() = moves.any { it.value.player == turn.other() }
 
 /**
  * Evaluates if a maximum limit of moves without a capture was reached

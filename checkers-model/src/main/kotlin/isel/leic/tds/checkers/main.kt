@@ -9,14 +9,13 @@ import isel.leic.tds.checkers.storage.FileStorage
 import isel.leic.tds.checkers.storage.MongoStorage
 import org.litote.kmongo.KMongo
 
-private val connStr = "mongodb+srv://FranciscoLEICTDS32D:agwEI2MWzbYXnCJE@cluster0.b4vcgdl.mongodb.net/?retryWrites=true&w=majority"
+private const val collection = "games"
+private const val connStr = "mongodb+srv://FranciscoLEICTDS32D:agwEI2MWzbYXnCJE@cluster0.b4vcgdl.mongodb.net/?retryWrites=true&w=majority"
 private val db: MongoDatabase = KMongo
     .createClient(ConnectionString(connStr))
     .getDatabase("Checkers")
-private val collection = "games"
 
 fun main() {
-    printWelcomeMsg()
     var game: Game? = null
     // val cmds = getCommands(FileStorage("checkers-model/output", BoardSerializer))
     val cmds = getCommands(MongoStorage(collection, db, BoardSerializer))
@@ -39,7 +38,7 @@ fun main() {
  * Prints a message regarding the game rules and conditions to the stdout
  */
 private fun printWelcomeMsg() {
-    val separator = "*".repeat(100)
+    val separator = "*".repeat(100) // TODO ("revisit")
     listOf(
         separator,
         "[Program]: Checkers in command line!",

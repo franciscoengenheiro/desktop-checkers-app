@@ -26,14 +26,14 @@ fun Board.print(g: Game) = when(this) {
         println("\nGame ended in a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
             " moves without a single capture") }
     is BoardWin -> {
-        printAll(g.player, winner)
+        printAll(g.localPlayer, winner)
         println("\nCongratulations! Player $winner has won the game") }
     is BoardRun -> {
-        printAll(g.player, turn)
+        printAll(g.localPlayer, turn)
     }
 }
 
-fun Board.printAll(player: Player, turn: Player) {
+fun Board.printAll(local_player: Player, turn: Player) {
     require(BOARD_DIM < 100) { "Board dimensions bigger than 100 affect board printing "}
     print(divLine).also { println ("  Turn = $turn") }
     Square.values.forEach { sqr ->
@@ -48,7 +48,7 @@ fun Board.printAll(player: Player, turn: Player) {
                 else -> print("   ")
             }
         if (sqr.column.index == BOARD_DIM - 1)
-            if (sqr.row.index == 0) println("|  Player = ${player}")
+            if (sqr.row.index == 0) println("|  Player = ${local_player}")
             else println("|")
     }
     println(divLine)

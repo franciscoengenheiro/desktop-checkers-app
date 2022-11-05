@@ -8,7 +8,7 @@ import isel.leic.tds.checkers.storage.Storage
  * @param player Player assigned to this game
  * @param board Board where the game is being played
  */
-data class Game(val id: String, val player: Player, val board: Board)
+data class Game(val id: String, val localPlayer: Player, val board: Board)
 
 /**
  * Assigns a player to the white checkers if they are the first to enter the game,
@@ -22,10 +22,9 @@ fun createGame(id: String, storage: Storage<String, Board>): Game {
     val existingBoard = storage.read(id)
     // If the file has a board:
     if (existingBoard != null) {
-        val board = existingBoard as BoardRun
         // Check if the already created board has a maximum of one move done by the
         // first player to enter
-        if (board.mvsWithoutCapture in 0..1) {
+        if (existingBoard is BoardRun && existingBoard.numberOfMoves in 0..1) {
             // If it does, the game will assign the second player
             return Game(id, Player.b, existingBoard)
         } else {
@@ -35,22 +34,22 @@ fun createGame(id: String, storage: Storage<String, Board>): Game {
     }
     // Create a new game
     return Game(id, Player.w, initialBoard()).also {
-        // Also create a new file to store the new board
+        // Also create a file to store the new board
         storage.create(id, initialBoard())
     }
 }
 
 /**
- * Resumes a game identified by an [id] with a specified player
+ * Resumes a game identified by an [id] with a specified player.
  * If the specified file does not exit throws [IllegalArgumentException]
  */
-fun resumeGame(id: String, player: Player, storage: Storage<String, Board>): Game {
+fun resumeGame(id: String, localPlayer: Player, storage: Storage<String, Board>): Game {
     // Check if a board is in the specified file
     val existingBoard = storage.read(id)
     // If the file has a previously created board:
     requireNotNull(existingBoard) { "Game with id $id does not exist"}
     // The game will resume with the specified player
-    return Game(id, player, existingBoard)
+    return Game(id, localPlayer, existingBoard)
 }
 
 /**
@@ -61,7 +60,7 @@ fun resumeGame(id: String, player: Player, storage: Storage<String, Board>): Gam
  */
 fun Game.play(fromSqr: Square, toSqr: Square, storage: Storage<String, Board>): Game {
     check(board is BoardRun) { "Game is over" }
-    check(player == board.turn) { "Not your turn" }
+    check(localPlayer == board.turn) { "Not your turn" }
     // Create a new board
     val newBoard = board.play(fromSqr, toSqr)
     // Update the board in the storage

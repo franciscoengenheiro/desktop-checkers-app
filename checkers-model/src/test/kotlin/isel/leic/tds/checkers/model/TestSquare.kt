@@ -1,5 +1,7 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.squaresToListOf
+import isel.leic.tds.checkers.validateSqr
 import kotlin.test.*
 
 /**
@@ -50,52 +52,91 @@ class TestSquare {
         assertSame(square,s1)
         assertSame(square,s2)
     }
-    private fun squaresToListOf(vararg s: String): List<Square> {
-        require (BOARD_DIM < 10) { "Board dim is greater or equal to 10" }
-        var list = emptyList<Square>() // fold?
-        s.forEach {
-            require(it.length == 2) { "Invalid square in stringformat" }
-            val sqr = it.toSquareOrNull()
-            requireNotNull(sqr) { "Invalid square" }
-            list += sqr
-        }
-        return list
-    }
-    @Test fun `Get diagonalSquares from a Square`() {
-        // require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+    @Test fun `Get adjacent diagonal squares from a Square`() {
+        require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         // Middle of the board Square
         val sqr1 = "4d".toSquareOrNull()
         assertNotNull(sqr1)
-        val digonalList1 = sqr1.diagonaList
-        assertEquals(4, digonalList1.size)
+        val adjacentDiagonalList1 = sqr1.adjacentDiagonalsList
+        assertEquals(4, adjacentDiagonalList1.size)
         val list1 = squaresToListOf("5c", "5e", "3c", "3e")
-        assertEquals(list1, digonalList1)
+        assertEquals(list1, adjacentDiagonalList1)
 
         // Left Border Square
         val sqr2 = "5a".toSquareOrNull()
         assertNotNull(sqr2)
-        val digonalList2 = sqr2.diagonaList
-        assertEquals(2, digonalList2.size)
+        val adjacentDiagonalList2 = sqr2.adjacentDiagonalsList
+        assertEquals(2, adjacentDiagonalList2.size)
         val list2 = squaresToListOf("6b", "4b")
-        assertEquals(list2, digonalList2)
+        assertEquals(list2, adjacentDiagonalList2)
 
         // Upper Border Square
         val sqr3 = "8d".toSquareOrNull()
         assertNotNull(sqr3)
-        val digonalList3 = sqr3.diagonaList
-        assertEquals(2, digonalList3.size)
+        val adjacentDiagonalList3 = sqr3.adjacentDiagonalsList
+        assertEquals(2, adjacentDiagonalList3.size)
         val list3 = squaresToListOf("7c", "7e")
-        assertEquals(list3, digonalList3)
+        assertEquals(list3, adjacentDiagonalList3)
 
         // Corner Square
         val sqr4 = "1a".toSquareOrNull()
         assertNotNull(sqr4)
-        val digonalList4 = sqr4.diagonaList
-        assertEquals(1, digonalList4.size)
+        val adjacentDiagonalList4 = sqr4.adjacentDiagonalsList
+        assertEquals(1, adjacentDiagonalList4.size)
         val list4 = squaresToListOf("2b")
-        assertEquals(list4, digonalList4)
+        assertEquals(list4, adjacentDiagonalList4)
+    }
+    @Test fun `Get diagonal squares from a Square`() {
+        require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+        // Middle of the board Square
+        val sqr1 = "4d".toSquareOrNull()
+        assertNotNull(sqr1)
+        val digonalList1 = sqr1.diagonalsList
+        assertEquals(13, digonalList1.size)
+        val list1 = squaresToListOf("1a", "2b", "3c", "5e", "6f", "7g", "8h", "7a", "6b",
+            "5c", "3e", "2f", "1g")
+        // In order to do the following comparison without taking the elemental order into
+        // account, both lists were converted to sets.
+        assertEquals(list1.toSet(), digonalList1.toSet())
+
+        // Left Border Square
+        val sqr2 = "6a".toSquareOrNull()
+        assertNotNull(sqr2)
+        val digonalList2 = sqr2.diagonalsList
+        assertEquals(7, digonalList2.size)
+        val list2 = squaresToListOf("7b", "8c", "5b", "4c", "3d", "2e", "1f")
+        assertEquals(list2.toSet(), digonalList2.toSet())
+
+        // Upper Border Square
+        val sqr3 = "8f".toSquareOrNull()
+        assertNotNull(sqr3)
+        val digonalList3 = sqr3.diagonalsList
+        assertEquals(7, digonalList3.size)
+        val list3 = squaresToListOf("7e", "6d", "5c", "4b", "3a", "7g", "6h")
+        assertEquals(list3.toSet(), digonalList3.toSet())
+
+        // Lower Border Square
+        val sqr4 = "1g".toSquareOrNull()
+        assertNotNull(sqr4)
+        val digonalList4 = sqr4.diagonalsList
+        assertEquals(7, digonalList4.size)
+        val list4 = squaresToListOf("2f", "3e", "4d", "5c", "6b", "7a", "2h")
+        assertEquals(list4.toSet(), digonalList4.toSet())
+    }
+    @Test fun `Retrieve a diagonal by type from a Square`() {
+        require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+        val sqr = validateSqr("5d")
+        val upperBackSlash = squaresToListOf("6c", "7b", "8a")
+        assertEquals(upperBackSlash, sqr.upperBackSlash)
+        val upperSlash = squaresToListOf("6e", "7f", "8g")
+        assertEquals(upperSlash, sqr.upperSlash)
+        val lowerBackSlash = squaresToListOf("4e", "3f", "2g", "1h")
+        assertEquals(lowerBackSlash, sqr.lowerBackSlash)
+        val lowerSlash = squaresToListOf("4c", "3b", "2a")
+        assertEquals(lowerSlash, sqr.lowerSlash)
     }
     @Test fun `Assert if a Square is on lastRow or firstRow`() {
+        require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         val sqr1 = "4d".toSquareOrNull()
         assertNotNull(sqr1)
         assertFalse(sqr1.onFirstRow)

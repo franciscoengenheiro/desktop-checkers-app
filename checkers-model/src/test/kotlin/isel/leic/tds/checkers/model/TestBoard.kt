@@ -21,8 +21,7 @@ class TestBoard {
         // Get black checkers placed in the board
         val blackCheckers = sut.moves.values.filter { it.player === Player.b }
         assertEquals(getPlayerPieces(BOARD_DIM), blackCheckers.size)
-        // Assert if the initial moves weren't made to the middle rows
-        // and if it were made to a black square and to its respective rows
+        // Assert if the starting checkers are in the right position
         Square.values.forEach{ sqr ->
             if (sqr.black && sqr.row.index !in BOARD_DIM/2 - 1.. BOARD_DIM/2)
                 assertNotNull(sut.moves[sqr])
@@ -52,163 +51,196 @@ class TestBoard {
         var sut: Board = initialBoard()
         // Player w turn:
         assertFailsWith<IllegalArgumentException>( "Invalid move") {
-            sut = sut.plays("3e 5c b")
+            sut = sut.plays("3c 4c")
         }
-        assertFailsWith<IllegalArgumentException>("Position 2d is occupied") {
-            sut = sut.plays("3e 2d w")
+        assertFailsWith<IllegalArgumentException>( "Square 4c doesn't have a checker") {
+            sut = sut.plays("4c 5d")
         }
-        assertFailsWith<IllegalArgumentException>("square 6f doesn't have your checker") {
-            sut = sut.plays("6f 4f w")
+        assertFailsWith<IllegalArgumentException>("Square 2d is occupied") {
+            sut = sut.plays("3e 2d")
+        }
+        assertFailsWith<IllegalArgumentException>("Square 6f doesn't have your checker") {
+            sut = sut.plays("6f 4f")
         }
         // Play a valid move
-        sut = sut.plays("3e 4f w")
+        sut = sut.plays("3e 4f")
+
         // Player b turn:
         assertFailsWith<IllegalArgumentException>( "Invalid move") {
-            sut = sut.plays("6f 4d b")
+            sut = sut.plays("6f 4e")
         }
-        assertFailsWith<IllegalArgumentException>("Position 7e is occupied") {
-            sut = sut.plays("6f 7e b")
+        assertFailsWith<IllegalArgumentException>( "Square 5e doesn't have a checker") {
+            sut = sut.plays("5e 4f")
         }
-        assertFailsWith<IllegalArgumentException>("square 3e doesn't have your checker") {
-            sut = sut.plays("3e 4f b")
+        assertFailsWith<IllegalArgumentException>("Square 7e is occupied") {
+            sut = sut.plays("6f 7e")
+        }
+        assertFailsWith<IllegalArgumentException>("Square 3e doesn't have your checker") {
+            sut = sut.plays("3e 4f")
         }
         // Play a valid move
-        sut = sut.plays("6f 5e b")
+        sut = sut.plays("6f 5e")
     }
     @Test fun `Make a capture`() {
         var sut: Board = initialBoard()
         // Valid moves
-        sut = sut.plays(
-            "3c 4d w",
-            "6d 5c b",
-            "4d 5e w"
-        )
+        sut = sut.plays("3c 4d", "6d 5c", "4d 5e")
         assertFailsWith<IllegalArgumentException>("There is a mandatory capture in 6f") {
-            sut = sut.plays("6f 5g b")
+            sut = sut.plays("6f 5g")
         }
         assertNotNull(sut.moves[validateSqr("5e")])
-        // Valid move
-        sut = sut.plays("6f 4d b")
+        // Make a capture
+        sut = sut.plays("6f 4d")
         assertNull(sut.moves[validateSqr("5e")])
+        // Assert if a white checker was removed from the board:
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 1, sut.moves.size)
-        val whiteCheckers = sut.moves.values.filter { it.player == Player.w }
+        val whiteCheckers = sut.moves.values.filter { it.player === Player.w }
         assertEquals(getPlayerPieces(BOARD_DIM) - 1, whiteCheckers.size)
-        val blackCheckers = sut.moves.values.filter { it.player == Player.b }
+        val blackCheckers = sut.moves.values.filter { it.player === Player.b }
         assertEquals(getPlayerPieces(BOARD_DIM), blackCheckers.size)
     }
     @Test fun `More than one capture is avalaible at one time`() {
         var sut: Board = initialBoard()
-        sut = sut.plays(
-            "3e 4f w",
-            "6d 5c b",
-            "4f 5g w"
-        )
-        val boardbeforeTheCapture = sut
+        sut = sut.plays("3e 4f", "6d 5c", "4f 5g")
+        val boardbeforeACapture = sut
         // Two captures are avalaible
-        sut = sut.plays("6f 4h b")
+        sut = sut.plays("6f 4h")
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 1, sut.moves.size)
-        sut = boardbeforeTheCapture.plays("6h 4f b")
+        sut = boardbeforeACapture.plays("6h 4f")
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 1, sut.moves.size)
     }
     @Test fun `Make a black King`() {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3e 4f w",
-            "6d 5c b",
-            "4f 5g w",
-            "6f 4h b", // Capture(5g)
-            "3g 4f w",
-            "7e 6d b",
-            "2f 3e w",
-            "4h 3g b",
-            "1e 2f w",
-            "3g 1e b"  // Capture(2f), also a black piece was made King
+            "3e 4f",
+            "6d 5c",
+            "4f 5g",
+            "6f 4h", // Capture(5g)
+            "3g 4f",
+            "7e 6d",
+            "2f 3e",
+            "4h 3g",
+            "1e 2f",
+            "3g 1e"  // Capture(2f), also a black piece was made King
         )
-        assertTrue(sut.moves["1e".toSquareOrNull()] is King)
+        val blackKing = sut.moves[validateSqr("1e")]
+        assertIs<King>(blackKing)
+        assertTrue{blackKing.player === Player.b}
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 2, sut.moves.size)
     }
     @Test fun `Make a white King`() {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3g 4h w",
-            "6h 5g b",
-            "2f 3g w",
-            "5g 4f b",
-            "3e 5g w", // Capture(4f)
-            "6f 5e b",
-            "5g 6h w",
-            "7g 6f b",
-            "3a 4b w",
-            "8f 7g b",
-            "6h 8f w", // Capture(7g), also a white piece was made King
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
         )
-        assertTrue(sut.moves["8f".toSquareOrNull()] is King)
+        val whiteKing = sut.moves[validateSqr("8f")]
+        assertIs<King>(whiteKing)
+        assertTrue{whiteKing.player === Player.w}
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 2, sut.moves.size)
     }
-    @Test fun `Move a King backwards without capture`() {
+    @Test fun `Move a King in a digonal more than one square at once`() {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3g 4h w",
-            "6h 5g b",
-            "2f 3g w",
-            "5g 4f b",
-            "3e 5g w", // Capture(4f)
-            "6f 5e b",
-            "5g 6h w",
-            "7g 6f b",
-            "3a 4b w",
-            "8f 7g b",
-            "6h 8f w", // Capture(7g), also a white piece was made King
-            "6b 5a b",
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
+            "6b 5a",
         )
-        assertNull(sut[validateSqr("7g")])
-        sut = sut.plays("8f 7g w") // Move king backwards
-        assertNotNull(sut[validateSqr("7g")])
-        assertTrue(sut[validateSqr("7g")] is King)
-        assertEquals(getPlayerPieces(BOARD_DIM)*2 - 2, sut.moves.size)
+        // Try to move a King in a diagonal with two contiguous opponent's checkers
+        assertFailsWith<IllegalArgumentException> {
+            sut = sut.plays("8f 5c")
+        }
+        assertNull(sut[validateSqr("6h")])
+        sut = sut.plays("8f 6h") // Move king backwards in a diagonal
+        assertNotNull(sut[validateSqr("6h")])
+    }
+    @Test fun `Make a capture with a King`() {
+        require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+        var sut: Board = initialBoard()
+        sut = sut.plays(
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
+            "5e 4d",
+            "3c 5e", // Capture(4d)
+            "5e 7g", // Capture(6f)
+            "8h 6f", // Capture(7g)
+            "4b 5a",
+            "6f 5e",
+            "4h 5g",
+            "6d 5c",
+            "8f 6d", // Capture(7e), with white King
+            "6d 3a", // Capture(5c), with white King while landing further
+        )
     }
     @Test fun `Win the game by capturing all opponent's checkers`() {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3g 4h w",
-            "6h 5g b",
-            "2f 3g w",
-            "5g 4f b",
-            "3e 5g w", // Capture(4f)
-            "6f 5e b",
-            "5g 6h w",
-            "7g 6f b",
-            "3a 4b w",
-            "8f 7g b",
-            "6h 8f w", // Capture(7g), also a white piece was made King
-            "6b 5c b",
-            "4b 5a w",
-            "6f 5g b",
-            "4h 6f w", // Capture(5g)
-            "6f 4d w", // Capture(5e)
-            "4d 6b w", // Capture(5c)
-            "7a 5c b", // Capture(6b)
-            "3g 4h w",
-            "6d 5e b",
-            "8f 6d w", // Capture(7e) using King
-            "6d 4f w", // Capture(5e) using King
-            "5c 4d b",
-            "3c 5e w", // Capture(4d)
-            "8d 7e b",
-            "2h 3g w",
-            "8b 7a b",
-            "5e 6d w",
-            "7c 5e b", // Capture(6d)
-            "4f 6d w", // Capture(5e)
-            "6d 8f w", // Capture(7e)
-            "7a 6b b",
-            "5a 7c w", // Capture(6b)
-            "8h 7g b",
-            "8f 6h w", // Capture(7g)
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
+            "6b 5c",
+            "4b 5a",
+            "6f 5g",
+            "4h 6f", // Capture(5g)
+            "6f 4d", // Capture(5e)
+            "4d 6b", // Capture(5c)
+            "7a 5c", // Capture(6b)
+            "3g 4h",
+            "6d 5e",
+            "8f 6d", // Capture(7e) using King
+            "6d 4f", // Capture(5e) using King
+            "5c 4d",
+            "3c 5e", // Capture(4d)
+            "8d 7e",
+            "2h 3g",
+            "8b 7a",
+            "5e 6d",
+            "7c 5e", // Capture(6d)
+            "4f 6d", // Capture(5e)
+            "6d 8f", // Capture(7e)
+            "7a 6b",
+            "5a 7c", // Capture(6b)
+            "8h 7g",
+            "8f 6h", // Capture(7g)
         )
         assertIs<BoardWin>(sut)
         val numberOfCaptures = 14
@@ -219,56 +251,48 @@ class TestBoard {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3g 4h w",
-            "6h 5g b",
-            "2f 3g w",
-            "5g 4f b",
-            "3e 5g w", // Capture(4f)
-            "6f 5e b",
-            "5g 6h w",
-            "7g 6f b",
-            "3a 4b w",
-            "8f 7g b",
-            "6h 8f w", // Capture(7g), also a white piece was made King
-            "6b 5c b",
-            "4b 5a w",
-            "6f 5g b",
-            "4h 6f w", // Capture(5g)
-            "6f 4d w", // Capture(5e)
-            "4d 6b w", // Capture(5c)
-            "7a 5c b", // Capture(6b)
-            "3g 4h w",
-            "6d 5e b",
-            "8f 6d w", // Capture(7e) using King
-            "6d 4f w", // Capture(5e) using King
-            "5c 4d b",
-            "3c 5e w", // Capture(4d)
-            "8d 7e b",
-            "2h 3g w",
-            "8b 7a b",
-            "5e 6d w",
-            "7e 5c b", // Capture(6d)
-            "4h 5g w",
-            "5c 4b b",
-            "5a 3c w", // Capture(4b)
-            "7a 6b b",
-            "5g 6h w",
-            "6b 5c b",
-            "4f 5g w",
-            "7c 6d b",
-            "5g 6f w",
-            "5c 4b b",
-            "3c 5a w", // Capture(4b)
-            "6d 5c b",
-            "6h 7g w",
-            "5c 4b b")
-        sut = sut.plays("5a 3c w") // Capture(4b)
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
+            "6b 5c",
+            "4b 5a",
+            "6f 5g",
+            "4h 6f", // Capture(5g)
+            "6f 4d", // Capture(5e)
+            "4d 6b", // Capture(5c)
+            "7a 5c", // Capture(6b)
+            "3g 4h",
+            "6d 5e",
+            "8f 6d", // Capture(7e) using King
+            "6d 4f", // Capture(5e) using King
+            "5c 4d",
+            "3c 5e", // Capture(4d)
+            "7c 6b",
+            "5a 7c", // Capture(6b)
+            "8d 6b", // Capture(7c)
+            "5e 6f",
+            "8b 7c",
+            "4f 8b", // Capture(7c) using King
+            "6b 5a",
+            "4h 5g",
+            "5a 4b",
+            "5g 6h",
+            "4b 3a",
+            "6h 7g",
+        )
         assertIs<BoardWin>(sut)
-        val numberOfCaptures = 13
+        val numberOfCaptures = 12
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - numberOfCaptures, sut.moves.size)
-        // Game was won but the player controlling the white checkes, but a black checker
+        // Game was won by the player with the white checkers, but a black checkers
         // still remain on the board
-        assertNotNull(sut[validateSqr("8h")])
         assertEquals(Player.w, sut.winner)
     }
     @Test fun `Draw a game`() {
@@ -277,70 +301,57 @@ class TestBoard {
             { "Max moves without capture should be 10 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
-            "3g 4h w",
-            "6h 5g b",
-            "2f 3g w",
-            "5g 4f b",
-            "3e 5g w", // Capture(4f)
-            "6f 5e b",
-            "5g 6h w",
-            "7g 6f b",
-            "3a 4b w",
-            "8f 7g b",
-            "6h 8f w", // Capture(7g), also a white piece was made King
-            "6b 5c b",
-            "4b 5a w",
-            "6f 5g b",
-            "4h 6f w", // Capture(5g)
-            "6f 4d w", // Capture(5e)
-            "4d 6b w", // Capture(5c)
-            "7a 5c b", // Capture(6b)
-            "3g 4h w",
-            "6d 5e b",
-            "8f 6d w", // Capture(7e) using King
-            "6d 4f w", // Capture(5e) using King
-            "5c 4d b",
-            "3c 5e w", // Capture(4d)
-            "8d 7e b",
-            "2h 3g w",
-            "8b 7a b",
-            "5e 6d w",
-            "7e 5c b", // Capture(6d)
-            "4h 5g w",
-            "5c 4b b",
-            "5a 3c w", // Capture(4b)
-            "7a 6b b",
-            "5g 6h w",
-            "6b 5a b",
-            "3c 4b w",
-            "5a 3c b", // Capture(4b)
-            "2b 4d w", // Capture(3c)
-            "7c 6b b",
-            "6h 7g w",
-            "8h 6f b", // Capture(7g)
-            "4d 5e w",
-            "6f 4d b", // Capture(5e)
-            "1a 2b w",
-            "6b 5a b",
-            "4f 5g w",
-            "5a 4b b",
-            "3g 4h w",
-            "4b 3a b",
-            "2b 3c w",
-            "4d 2b b", // Capture(3c)
-            "1e 2f w",
-            "2b 1a b", // A black piece was made King
-            "5g 6f w",
-            "1a 2b b",
-            "6f 5g w",
-            "2b 1a b",
-            "5g 6f w",
-            "1a 2b b",
-            "6f 5g w",
-            "2b 1a b",
+            "3g 4h",
+            "6h 5g",
+            "2f 3g",
+            "5g 4f",
+            "3e 5g", // Capture(4f)
+            "6f 5e",
+            "5g 6h",
+            "7g 6f",
+            "3a 4b",
+            "8f 7g",
+            "6h 8f", // Capture(7g), also a white piece was made King
+            "6b 5c",
+            "4b 5a",
+            "6f 5g",
+            "4h 6f", // Capture(5g)
+            "6f 4d", // Capture(5e)
+            "4d 6b", // Capture(5c)
+            "7a 5c", // Capture(6b)
+            "3g 4h",
+            "6d 5e",
+            "8f 6d", // Capture(7e) using King
+            "6d 3g", // Capture(5e) using King
+            "5c 4b",
+            "5a 6b",
+            "7c 5a", // Capture(6b)
+            "3c 4d",
+            "4b 3a",
+            "2b 3c",
+            "5a 4b",
+            "3c 5a", // Capture(4b)
+            "8h 7g",
+            "1c 2b",
+            "3a 1c", // Capture(2b)
+            "2d 3c",
+            "1c 3a",
+            "3g 5e",
+            "3a 1c",
+            "5e 8h", // Capture(7g)
+            "1c 3a",
+            "8h 5e",
+            "3a 1c",
+            "5e 8h",
+            "1c 3a",
+            "8h 5e",
+            "3a 1c",
+            "5e 8h",
+            "1c 3a",
+            "8h 5e",
         )
         assertIs<BoardDraw>(sut)
-        val numberOfCaptures = 16
+        val numberOfCaptures = 12
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - numberOfCaptures, sut.moves.size)
     }
 }

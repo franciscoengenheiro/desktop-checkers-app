@@ -10,8 +10,15 @@ object BoardSerializer: Serializer<Board, String> {
     override fun write(obj: Board): String {
         // ::class represents an instance of KClass the obj belongs to
         val boardType = obj::class.simpleName
-        val mvsWithoutCapt = if (obj is BoardRun) obj.mvsWithoutCapture else 0
-        return boardType + System.lineSeparator() + mvsWithoutCapt.toString() + System.lineSeparator() +
+        val turn = when(obj) {
+            is BoardDraw -> ""
+            is BoardRun -> obj.turn
+            is BoardWin -> obj.winner
+        }
+        val mvsWithoutCapture = if (obj is BoardRun) obj.mvsWithoutCapture else 0
+        val numberOfMoves = if (obj is BoardRun) obj.numberOfMoves else 0
+        val nl = System.lineSeparator()
+        return boardType + nl + turn + nl + numberOfMoves + nl + mvsWithoutCapture + nl +
             obj.moves
             // <Square> <Checker> <Player>
             // Example: Pair<Square(2,a), Piece(Player.w) will be: 2a Piece w
@@ -27,21 +34,15 @@ object BoardSerializer: Serializer<Board, String> {
     override fun parse(stream: String): Board {
         val words = stream.split(System.lineSeparator())
         val boardType = words[0]
-        val movesWithoutCapture = words[1].toInt()
-        val wordsFiltered = words.drop(2).filter { it.isNotEmpty() }
-        // Last move is always at the end of the file
-        val lastMove = wordsFiltered.last().reconstructMove()
+        val turn = Player.valueOf(words[1])
+        val numberOfMoves = words[2].toInt()
+        val mvsWithoutCapture = words[3].toInt()
+        val wordsFiltered = words.drop(4).filter { it.isNotEmpty() }
         // Re-construct board moves
         val moves = wordsFiltered.associate { it.reconstructMove() }
         // Assert the next player turn
-        val turn = if (moves == initialBoard().moves) Player.b else lastMove.second.player
         return when (boardType) {
-            BoardRun::class.simpleName -> {
-                val p = if (BoardRun(moves, movesWithoutCapture, turn)
-                            .getAvalaibleCaptures().isNotEmpty()) turn
-                        else turn.other()
-                BoardRun(moves, movesWithoutCapture, p)
-            }
+            BoardRun::class.simpleName -> BoardRun(moves, numberOfMoves, mvsWithoutCapture, turn)
             BoardWin::class.simpleName -> BoardWin(moves, turn)
             BoardDraw::class.simpleName -> BoardDraw(moves)
             else -> error("The board type: $boardType does not exist")
@@ -55,7 +56,7 @@ object BoardSerializer: Serializer<Board, String> {
 private fun String.reconstructMove(): Move {
     val words = this.split(sep)
     require(words.size == 3) { "Each line must have exaclty 3 words in string with" +
-            "the following format: <Square> <Checker> <Player>" }
+            " the following format: <Square> <Checker> <Player>" }
     val retrievedSquare = (words[0]).toSquareOrNull()
     requireNotNull(retrievedSquare) { "Retrieved square doens't exist on the board" }
     val retrievedPlayer = Player.valueOf(words[2])

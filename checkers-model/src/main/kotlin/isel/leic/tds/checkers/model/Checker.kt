@@ -9,6 +9,7 @@ sealed class Checker(val player: Player)
 class Piece (player: Player): Checker(player) {
     override fun toString() = player.name
     override fun equals(other: Any?) = if (other !is Piece) false else this.player == other.player
+    override fun hashCode() = javaClass.hashCode()
 }
 
 /**
@@ -18,5 +19,6 @@ class Piece (player: Player): Checker(player) {
 class King(player: Player): Checker(player) {
     override fun toString() = player.name.uppercase()
     override fun equals(other: Any?) = if (other !is King) false else this.player == other.player
+    override fun hashCode() = javaClass.hashCode()
 }
 
