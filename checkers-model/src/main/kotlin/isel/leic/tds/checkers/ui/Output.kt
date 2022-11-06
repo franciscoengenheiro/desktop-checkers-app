@@ -2,7 +2,7 @@ package isel.leic.tds.checkers.ui
 
 import isel.leic.tds.checkers.model.*
 
-// Board print model, assuming BOARD_DIM = 8
+// Board print model, assuming BOARD_DIM == 8
 /*
   +---------------+  Turn = w
 8 |  b   b   b   b|  Player = w
@@ -17,10 +17,12 @@ import isel.leic.tds.checkers.model.*
    a b c d e f g h
 */
 
-// if BOARD_DIM = 8: divLine = +---------------+
+// if BOARD_DIM == 8: divLine = +---------------+
 private val divLine = "   +" + "-".repeat(BOARD_DIM * 2 - 1) + "+"
 
-// Function to the print the current board to stdout
+/**
+ * Prints the specified boardtype message to the stdout.
+ */
 fun Board.print(g: Game) = when(this) {
     is BoardDraw -> {
         println("\nGame ended in a draw since there were $MAX_MOVES_WITHOUT_CAPTURE" +
@@ -33,6 +35,9 @@ fun Board.print(g: Game) = when(this) {
     }
 }
 
+/**
+ * Prints the current board to the stdout.
+ */
 fun Board.printAll(local_player: Player, turn: Player) {
     require(BOARD_DIM < 100) { "Board dimensions bigger than 100 affect board printing "}
     print(divLine).also { println ("  Turn = $turn") }
@@ -48,7 +53,7 @@ fun Board.printAll(local_player: Player, turn: Player) {
                 else -> print("   ")
             }
         if (sqr.column.index == BOARD_DIM - 1)
-            if (sqr.row.index == 0) println("|  Player = ${local_player}")
+            if (sqr.row.index == 0) println("|  Player = $local_player")
             else println("|")
     }
     println(divLine)

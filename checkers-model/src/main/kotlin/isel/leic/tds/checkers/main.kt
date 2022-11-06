@@ -9,16 +9,10 @@ import isel.leic.tds.checkers.storage.FileStorage
 import isel.leic.tds.checkers.storage.MongoStorage
 import org.litote.kmongo.KMongo
 
-private const val collection = "games"
-private const val connStr = "mongodb+srv://FranciscoLEICTDS32D:agwEI2MWzbYXnCJE@cluster0.b4vcgdl.mongodb.net/?retryWrites=true&w=majority"
-private val db: MongoDatabase = KMongo
-    .createClient(ConnectionString(connStr))
-    .getDatabase("Checkers")
-
 fun main() {
+    val cmds = getCommandsFrom("MongoDb")
     var game: Game? = null
-    // val cmds = getCommands(FileStorage("checkers-model/output", BoardSerializer))
-    val cmds = getCommands(MongoStorage(collection, db, BoardSerializer))
+    printWelcomeMsg()
     while( true ) {
         val (name, args) = readCommand()
         val cmd: Command? = cmds[name]
@@ -35,28 +29,57 @@ fun main() {
 }
 
 /**
- * Prints a message regarding the game rules and conditions to the stdout
+ * Access the game avalaible commands and saves game data in a specified storage.
+ * Currently supported storages: File (Simple text file), MongoDb (Online Documental database).
+ * @return All avalaible commands or throws [IllegalArgumentException] if the specified
+ * storage is not supported.
+ */
+private fun getCommandsFrom(s: String) =
+    when (s.uppercase()) {
+        "FILE" -> getCommands(FileStorage("checkers-model/output", BoardSerializer))
+        "MONGODB" -> {
+            val collection = "games"
+            val connStr = "mongodb+srv://FranciscoLEICTDS32D:agwEI2MWzbYXnCJE@cluster0.b4vcgdl.mongodb.net/?retryWrites=true&w=majority"
+            val db: MongoDatabase = KMongo
+                .createClient(ConnectionString(connStr))
+                .getDatabase("Checkers")
+            getCommands(MongoStorage(collection, db, BoardSerializer))
+        }
+        else -> throw IllegalArgumentException("Specified data storage it's not supported")
+}
+
+/**
+ * Prints a message regarding the game rules and conditions to the stdout.
  */
 private fun printWelcomeMsg() {
-    val separator = "*".repeat(100) // TODO ("revisit")
+    val separator = "*".repeat(110)
     listOf(
         separator,
-        "[Program]: Checkers in command line!",
+        "[Program]: CheckersCMD",
         "[Win]: Win the game by either capturing all of your opponent's",
-        "       checkers or by blocking them",
-        "[Draw]: A game will finish in a draw if a maximum limit of valid moves, made by both players,",
-        "        without a capture ($MAX_MOVES_WITHOUT_CAPTURE) was reached",
-        "[Rules]: (1) - All checkers can only move from and to a black square.",
-        "         (2) - A Piece can only move diagonally in a forward direction",
-        "               (towards the opponent), whereas a King can move forward and backward.",
-        "         (3) - A regular checker (Piece) can be upgraded to King if it reaches the first,",
-        "               row of the board on thhe opponent's side.",
-        "         (4) - A capture can only occurr if a checker is in close proximity of another",
-        "               checker belonging to the opponent. If there's an empty black square in the diagonal,",
-        "               then a capture is avalaible and once the capture is completed, the opponent's checker",
-        "               will be removed. All types of checkers can make foward and backward captures.",
-        "         (5) - If a capture is avalaible one must make it, in order to proceed. If more than one",
-        "               capture is avalaible at the same time, the player can decide which one to make.",
+        "       checkers or by blocking them.",
+        "[Draw]: A game will finish in a draw if a maximum limit of moves, made by both players,",
+        "        without a capture ($MAX_MOVES_WITHOUT_CAPTURE) is reached.",
+        "[Rules]: (1) - In a game, the first player to enter will use the white checkers, while",
+        "               the second player will use the black checkers.",
+        "         (2) - A regular checker (Piece) can be upgraded to King if it reaches the first,",
+        "               row of the board on the opponent's side.",
+        "         (3) - The player who crowns a Piece (to a King) loses it's turn",
+        "         (4) - All checkers can only move from and to a black square.",
+        "         (5) - A Piece can only move diagonally in a forward direction (towards the opponent),",
+        "               whereas a King can move forwards and backwards in a diagonal direction.",
+        "         (6) - A King can't jump over the same color checkers or the opponent's checkers ",
+        "               if they're in contiguous diagonal squares, meanwhile it can jump over ",
+        "               contiguous empty diagonal squares.",
+        "         (7) - Only when a piece is close to an opponent's checker and there is an empty",
+        "               black square in the same diagonal may it be captured with a piece. The ",
+        "               enemy's checker gets eliminated after a successful capture",
+        "         (8) - A Piece can perform a backwards capture.",
+        "         (9) - The process of capturing with a King is identical to that of capturing",
+        "               with a Piece, except it is not necessary for the start and finish squares",
+        "               to be near to the opponent checker that will be jumped.",
+        "         (8) - If a capture is available, it must be made in order to continue. If more ",
+        "               than one capture is possible at once, the player can choose which one to make.",
         "[Labels]: b - black Piece",
         "          B - black King",
         "          w - white Piece",

@@ -8,12 +8,12 @@ data class CommandLine(val name: String, val params: List<String>)
 
 /**
  * Reads user input commands in stdin and constructs a [CommandLine]
- * instance if the received input is not empty
+ * instance if the received input is not empty.
  */
 fun readCommand(): CommandLine {
     while (true) {
         print("> ")
-        // Read user input and split it for every space character
+        // Reads user input and split it for every space character
         val words = readln().split(" ").filter { it.isNotEmpty() }
         if (words.isNotEmpty())
             return CommandLine(words.first().uppercase(), words.drop(1))

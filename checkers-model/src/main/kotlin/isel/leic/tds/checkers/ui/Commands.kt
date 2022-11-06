@@ -4,14 +4,28 @@ import isel.leic.tds.checkers.model.*
 import isel.leic.tds.checkers.storage.Storage
 import kotlin.system.exitProcess
 
+/**
+ * Defines a Command for the [Game].
+ * @param execute Function to execute whatever the command was created for.
+ * @param show Prints the current state of the board by default.
+ * @param argsSyntax Represents the correct expected syntax of this command arguments.
+ */
 class Command(
     val execute: (args: List<String>, g: Game?) -> Game?,
     val show: (g: Game?) -> Unit = { g -> g?.board?.print(g) },
     val argsSyntax: String = "",
 )
 
+/**
+ * Distinguish a user syntax mistake with improper arguments from a regular
+ * [IllegalArgumentException].
+ */
 class SyntaxError(msg: String): IllegalArgumentException(msg)
 
+/**
+ * Creates all commands in the game and associates them with their respective
+ * identifier.
+ */
 fun getCommands(storage: Storage<String, Board>) = mapOf(
     "START" to Command(
         execute = { args, g ->
@@ -45,7 +59,7 @@ fun getCommands(storage: Storage<String, Board>) = mapOf(
         // Reads the current board stored in the file
         val b = storage.read(g.id)
         checkNotNull(b)
-        // Copy the updated board to the game
+        // Copies the updated board to the game
         g.copy(board = b)
     } ),
     "CONTINUE" to Command(
@@ -61,8 +75,9 @@ fun getCommands(storage: Storage<String, Board>) = mapOf(
         argsSyntax = "<gameName> w|b",
     ),
     "EXIT" to Command(
-        execute = { _,_ ->
+        execute = { _,_ -> // _ represents unused parameters
             println("Closing the game")
+            // Terminates the game
             exitProcess(0) }
     )
 ).also { map ->

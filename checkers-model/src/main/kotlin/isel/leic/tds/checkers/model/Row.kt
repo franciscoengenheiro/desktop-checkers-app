@@ -1,6 +1,6 @@
 package isel.leic.tds.checkers.model
 
-@JvmInline
+@JvmInline // Specifies this class as an inline class for the JVM
 value class Row private constructor(val num: Int) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
@@ -15,14 +15,25 @@ value class Row private constructor(val num: Int) {
     override fun toString() = "$num"
 }
 
-// Extension functions
+// Extension functions:
+/**
+ * Evaluates if the given int is a match for a valid row.
+ * @return The row it belongs to or null if none of the rows match.
+ */
 fun Int.toRowOrNull() = Row.values.firstOrNull { row -> this == row.number }
+
+/**
+ * Evaluates if the given int is a match for a valid row index.
+ * @return The row it belongs to or [IndexOutOfBoundsException] if the index does
+ * not match any row.
+ */
 fun Int.indexToRow() = Row.values[this]
+
 // As mentioned in previous lectures, the function below is a good practice to have
 // as it avoids calling an exception and instead returns null, useful when the objective
 // isn't to stop the programm abruptly
+/**
+ * Evaluates if the given int is a match for a valid index row.
+ * @return The row it belongs to or null if none of the rows match.
+ */
 fun Int.indexToRowOrNull() = if(this in Row.values.indices) indexToRow() else null
-
-
-
-

@@ -24,11 +24,26 @@ class Column private constructor(val letter: Char) {
     override fun toString() = "$letter"
 }
 
-// Extension functions
+// Extension functions:
+/**
+ * Evaluates if the given char is a match for a valid column.
+ * @return The column it belongs to or null if none of the columns match.
+ */
 fun Char.toColumnOrNull() = Column.values.firstOrNull { col -> this == col.symbol }
+
+/**
+ * Evaluates if the given int is a match for a valid column index.
+ * @return The column it belongs to or [IndexOutOfBoundsException] if the index does
+ * not match any column.
+ */
 fun Int.indexToColumn() = Column.values[this]
+
 // As mentioned in previous lectures, the function below is a good practice to have
 // as it avoids calling an exception and instead returns null, useful when the objective
 // isn't to stop the programm abruptly
+/**
+ * Evaluates if the given int is a match for a valid column index.
+ * @return The column it belongs to or null if none of the columns match.
+ */
 fun Int.indexToColumnOrNull() = if(this in Column.values.indices) indexToColumn() else null
 

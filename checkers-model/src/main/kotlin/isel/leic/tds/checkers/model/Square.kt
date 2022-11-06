@@ -5,31 +5,44 @@ class Square private constructor(val r: Row, val c: Column) {
     // when the property is called
     val row get() = r // Example: 1, 2, 3, ...
     val column get() = c // Example: a, b, c, ...
-    // if index sum (column and row) is even then square is black otherwise is white
+    // If index sum (column and row) is even then this Square is black otherwise is white
     val black get() = (r.index + c.index) % 2 != 0
-    // Retrieves a list of all adjacent diagonal black squares in proximity of this Square instance
+    // Retrieves a list of all adjacent diagonal quares in proximity of this Square instance
     val adjacentDiagonalsList get() =
         values
             .filter { (r.index == it.row.index + 1) || (r.index == it.row.index - 1) }
             .filter { (c.index == it.column.index + 1) || (c.index == it.column.index - 1) }
     // Retrieves a list of all diagonal squares in the same slash or backslash of this
     // Square instance, excluding itself
-    val diagonalsList get() = // TODO(sum of all 4 diagonals)
+    val diagonalsList get() =
         values
             .filter { (r.index + c.index == it.row.index + it.column.index // blackslash
                     || r.number + c.letter.code == it.row.number + it.column.letter.code) } // slash
             .filterNot { r.number == it.row.number && c.letter == it.column.letter } // exclude self
+    /*                         Labels:
+     * [X] [-] [-] [-] [S]     C - Center Square (this square instance)
+     * [-] [X] [-] [S] [-]     X - Upper backslash squares of C
+     * [-] [-] [C] [-] [-]     S - Upper slash squares of C
+     * [-] [s] [-] [x] [-]     x - Lower backslash squares of C
+     * [s] [-] [-] [-] [x]     s - Lower slash squares of C
+     */
+    // Retrieves a list of all the squares in the upper backslash of this Square instance
     val upperBackSlash get() =
         diagonalsList
             .filter { it.row.index < r.index && it.column.index < c.index }
-            .reversed()
+            .reversed() // This list must be sorted by the shortest distance from the center square,
+                        // and since the Squares are created from top to bottom, the "upper" lists
+                        // need to be reversed
+    // Retrieves a list of all the squares in the upper slash of this Square instance
     val upperSlash get () =
         diagonalsList
             .filter { it.row.index < r.index && it.column.index > c.index }
             .reversed()
+    // Retrieves a list of all the squares in the lower backslash of this Square instance
     val lowerBackSlash get() =
         diagonalsList
             .filter { it.row.index > r.index && it.column.index > c.index }
+    // Retrieves a list of all the squares in the lower slash of this Square instance
     val lowerSlash get () =
         diagonalsList
             .filter { it.row.index > r.index && it.column.index < c.index }
@@ -57,7 +70,10 @@ class Square private constructor(val r: Row, val c: Column) {
 
 // Extension functions:
 /**
- * Evaluates if the given string is a match for a valid square
- * @return null if it does not match any square
+ * Evaluates if the given string is a match for a valid square.
+ * @return The square it belongs to or null if none of the squares match.
  */
 fun String.toSquareOrNull() = Square.values.firstOrNull { sqr -> sqr.toString() == this }
+
+
+

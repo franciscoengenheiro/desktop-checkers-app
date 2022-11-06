@@ -6,7 +6,7 @@ import isel.leic.tds.checkers.ui.BoardSerializer.parse
 import isel.leic.tds.checkers.ui.BoardSerializer.write
 import isel.leic.tds.checkers.plays
 
-class TestFileStorageBoard {
+class TestBoardSerializer {
     @Test fun `Get an equivalent BoardRun from serialize and deserialize`() {
         val board = initialBoard().plays(
             "3c 4d w",

@@ -6,6 +6,9 @@ import isel.leic.tds.checkers.storage.Serializer
 // Contants
 private const val sep = " "
 
+/**
+ * Converts a [Board] instance to [String] and vice-versa.
+ */
 object BoardSerializer: Serializer<Board, String> {
     override fun write(obj: Board): String {
         // ::class represents an instance of KClass the obj belongs to
@@ -33,10 +36,12 @@ object BoardSerializer: Serializer<Board, String> {
     }
     override fun parse(stream: String): Board {
         val words = stream.split(System.lineSeparator())
+        // Retrieve single types
         val boardType = words[0]
         val turn = Player.valueOf(words[1])
         val numberOfMoves = words[2].toInt()
         val mvsWithoutCapture = words[3].toInt()
+        // Drop and filter the received stream
         val wordsFiltered = words.drop(4).filter { it.isNotEmpty() }
         // Re-construct board moves
         val moves = wordsFiltered.associate { it.reconstructMove() }
@@ -51,7 +56,7 @@ object BoardSerializer: Serializer<Board, String> {
 }
 
 /**
- * Given a string resulting from a serialized object, reconstruct a [Move]
+ * Given a string resulting from a serialized object, reconstruct a [Move].
  */
 private fun String.reconstructMove(): Move {
     val words = this.split(sep)
