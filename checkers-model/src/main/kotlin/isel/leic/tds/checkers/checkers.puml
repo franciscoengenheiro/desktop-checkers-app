@@ -57,7 +57,7 @@ package "Model" #DDDDDD {
         +onLastRow: Boolean
     }
 
-    class SquareValues <<O, Orange>>
+    class SquareValues <<(S, Orange) Singleton >>
 
     class Row {
         -num: Int <<Constructor>>
@@ -65,7 +65,7 @@ package "Model" #DDDDDD {
         +number: Int
     }
 
-    class RowValues <<O, Orange>>
+    class RowValues <<(S, Orange) Singleton >>
 
     class Column {
         -letter: Char <<Constructor>>
@@ -73,7 +73,7 @@ package "Model" #DDDDDD {
         +symbol: Char
     }
 
-    class ColumnValues <<O, Orange>>
+    class ColumnValues <<(S, Orange) Singleton >>
 
     'Connections:
     Game --> Board
