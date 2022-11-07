@@ -57,17 +57,23 @@ package "Model" #DDDDDD {
         +onLastRow: Boolean
     }
 
+    class SquareValues <<O, Orange>>
+
     class Row {
         -num: Int <<Constructor>>
         +index: Int
         +number: Int
     }
 
+    class RowValues <<O, Orange>>
+
     class Column {
         -letter: Char <<Constructor>>
         +index: Int
         +symbol: Char
     }
+
+    class ColumnValues <<O, Orange>>
 
     'Connections:
     Game --> Board
@@ -83,6 +89,9 @@ package "Model" #DDDDDD {
     Checker <|.. King
     Square --> Row
     Square --> Column
+    Square *-- SquareValues
+    Row *-- RowValues
+    Column *-- ColumnValues
 }
 
 package "Storage" {
@@ -121,8 +130,10 @@ package "Storage" {
 }
 
 package "UI" #EEEEEE {
-    class SyntaxError {
-        +msg: String
+    class SyntaxError
+
+    class IllegalArgumentException {
+        +msg: String <<Constructor>>
     }
 
     'Connections:
