@@ -106,7 +106,7 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         // Assert if the toSqr doesn't have a checker
         require(checkerB == null) { "Square $toSqr is occupied" }
         // Retrieve avalaible captures at the moment for the current player turn
-        val listCaptures = getAvalaibleCaptures()
+        val listCaptures = getAvalaibleCaptures(null)
         var validMove = false
         // Define a Capture instance
         var foundCapture: Capture? = null
@@ -158,7 +158,7 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         // from the landing position, and if so keep the same player turn otherwise
         // return turn to the other player
         val hasMoreCaptures = BoardRun(mvs, n, movesWithoutCapture, turn)
-                                .getAvalaibleCaptures().isNotEmpty()
+                                .getAvalaibleCaptures(foundCapture).isNotEmpty()
                                     && foundCapture != null && !lost_turn
         when {
             !hasMoreCaptures && BoardRun(mvs, n, movesWithoutCapture, turn).checkWin()
@@ -235,17 +235,27 @@ private fun BoardRun.checkIfOnlastRow(sqr: Square) =
 data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
 
 /**
- * Evaluates all current turn checkers for avalaible captures on the board
+ * Evaluates for avalaible captures on the board depending on the value of [previousCapture].
+ * All turn checkers are searched if it's value is null or only the square where the checker
+ * landed is evaluated.
+ * @param previousCapture Previously made capture that indicates the type of search.
  * @return A list<[Capture]> with the ones found
  */
-fun BoardRun.getAvalaibleCaptures(): List<Capture> {
+fun BoardRun.getAvalaibleCaptures(previousCapture: Capture?): List<Capture> {
     // Create a list to store found captures
     var listCaptures = emptyList<Capture>()
-    // Retrieve current turn squares with a checker
-    val turnMoves = moves.filter { it.value.player === turn }
+    // Evaluate if the previous capture was made
+    val turnMoves = if (previousCapture?.toSqr != null) {
+        // If a single capture was made, only consider the square where the checker,
+        // used for a previous capture, is
+        mapOf(previousCapture.toSqr to moves[previousCapture.toSqr])
+    } else {
+        // Retrieve current turn squares with a checker
+        moves.filter { it.value.player === turn }
+    }
     // Search every checker for a valid capture
     turnMoves.forEach { (sqr, checker) ->
-        findOpponentsCheckersInAllDiagonals(centerSqr = sqr, checker)
+        findOpponentsCheckersInAllDiagonals(centerSqr = sqr, checker as Checker)
             .forEach { dSqr -> // For every diagonal square in the list:
             // Find a path to land
             val path = findDiagonalPathToLandTo(centerSqr = sqr, other = dSqr)
