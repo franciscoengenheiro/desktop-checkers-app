@@ -5,8 +5,7 @@ import com.mongodb.client.MongoDatabase
 import isel.leic.tds.checkers.model.Game
 import isel.leic.tds.checkers.model.MAX_MOVES_WITHOUT_CAPTURE
 import isel.leic.tds.checkers.ui.*
-import isel.leic.tds.checkers.storage.FileStorage
-import isel.leic.tds.checkers.storage.MongoStorage
+import isel.leic.tds.checkers.storage.*
 import org.litote.kmongo.KMongo
 
 fun main() {

@@ -6,7 +6,6 @@ import com.mongodb.client.MongoDatabase
 import org.litote.kmongo.KMongo
 import isel.leic.tds.checkers.model.initialBoard
 import isel.leic.tds.checkers.plays
-import isel.leic.tds.checkers.ui.BoardSerializer
 import org.litote.kmongo.*
 import kotlin.random.Random
 import kotlin.test.*

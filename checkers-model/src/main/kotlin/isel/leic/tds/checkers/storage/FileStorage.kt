@@ -7,7 +7,10 @@ import java.io.File
  * @param [K] Folder where the target file is or will be.
  * @param [T] Object type to serialize to string format.
  */
-class FileStorage<K, T>(val folder: String, val serializer: Serializer<T, String>): Storage<K, T> {
+class FileStorage<K, T>(
+    private val folder: String,
+    private val serializer: Serializer<T, String>
+): Storage<K, T> {
     private fun path(id: K) = "$folder/$id.txt"
     /**
      * Creates a new file with the name of the id with suffix.txt

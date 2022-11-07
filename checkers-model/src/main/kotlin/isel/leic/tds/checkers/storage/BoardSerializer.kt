@@ -1,4 +1,4 @@
-package isel.leic.tds.checkers.ui
+package isel.leic.tds.checkers.storage
 
 import isel.leic.tds.checkers.model.*
 import isel.leic.tds.checkers.storage.Serializer

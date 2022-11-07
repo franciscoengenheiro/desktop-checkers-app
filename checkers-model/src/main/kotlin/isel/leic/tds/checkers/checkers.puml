@@ -1,0 +1,131 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'Modifiers:
+'hide members
+hide empty members
+
+package "Model" #DDDDDD {
+    class Game {
+        +id: String <<Constructor>>
+        +local_player: Player <<Constructor>>
+        +board: Board <<Constructor>>
+    }
+
+    abstract class Board {
+        +mvs: Map<Square, Checker> <<Constructor>>
+    }
+
+    class BoardRun {
+        +numberOfMoves: Int <<Constructor>>
+        +mvsWithoutCapture: Int <<Constructor>>
+        +turn: Player <<Constructor>>
+    }
+
+    class BoardWin {
+        +winner: Player <<Constructor>>
+    }
+
+    class BoardDraw
+
+    abstract class Checker {
+        +player: Player <<Constructor>>
+    }
+
+    class Piece
+
+    class King
+
+    enum Player {
+        w
+        b
+    }
+
+    class Square {
+        -r: Row <<Constructor>>
+        -c: Column <<Constructor>>
+        +row: Row
+        +column: Column
+        +black: Boolean
+        +adjacentDiagonalsList: List<Square>
+        +diagonalsList: List<Square>
+        +upperBackSlash: List<Square>
+        +upperSlash: List<Square>
+        +lowerBackSlash: List<Square>
+        +lowerSlash: List<Square>
+        +onFirstRow: Boolean
+        +onLastRow: Boolean
+    }
+
+    class Row {
+        -num: Int <<Constructor>>
+        +index: Int
+        +number: Int
+    }
+
+    class Column {
+        -letter: Char <<Constructor>>
+        +index: Int
+        +symbol: Char
+    }
+
+    'Connections:
+    Game --> Board
+    Game -> Player
+    Board <|. BoardRun: "                 "
+    Board <|.. BoardWin
+    Board <|.. BoardDraw
+    Board --> Square
+    Board --> Checker
+    King o--> Player
+    Piece o--> Player
+    Checker <|.. Piece
+    Checker <|.. King
+    Square --> Row
+    Square --> Column
+}
+
+package "Storage" {
+    interface Serializer<T, S> {
+        +fun write(obj: T): S
+        +fun parse(stream: S): T
+    }
+
+    interface Storage<K, T> {
+        +fun create(id: K, value: T)
+        +fun read(id: K): T?
+        +fun update(id: K, value: T)
+        +fun delete(id: K)
+    }
+
+    class MongoStorage<T> {
+        +collectionName: String <<Constructor>>
+        +db: MongoDatabase <<Constructor>>
+        -serializer: Serializer<T, String> <<Constructor>>
+    }
+
+    class FileStorage<K, T> {
+        -folder: String <<Constructor>>
+        -serializer: Serializer<T, String> <<Constructor>>
+        -fun path(id: K): String
+    }
+
+    class BoardSerializer <<(O, gold)>>
+
+    'Connections:
+    Storage <|.. MongoStorage
+    Storage <|.. FileStorage
+    Serializer <|. BoardSerializer : "       "
+    BoardSerializer --> MongoStorage
+    BoardSerializer --> FileStorage
+}
+
+package "UI" #EEEEEE {
+    class SyntaxError {
+        +msg: String
+    }
+
+    'Connections:
+    SyntaxError <|-- IllegalArgumentException
+}
+@enduml

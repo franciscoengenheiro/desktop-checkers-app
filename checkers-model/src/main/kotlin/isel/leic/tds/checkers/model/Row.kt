@@ -1,7 +1,7 @@
 package isel.leic.tds.checkers.model
 
 @JvmInline // Specifies this class as an inline class for the JVM
-value class Row private constructor(val num: Int) {
+value class Row private constructor(private val num: Int) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
     val index get() = BOARD_DIM - num  // Example: 0, 1, 2, ...

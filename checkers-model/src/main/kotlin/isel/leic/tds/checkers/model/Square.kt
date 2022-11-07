@@ -1,6 +1,6 @@
 package isel.leic.tds.checkers.model
 
-class Square private constructor(val r: Row, val c: Column) {
+class Square private constructor(private val r: Row, private val c: Column) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
     val row get() = r // Example: 1, 2, 3, ...
@@ -17,8 +17,8 @@ class Square private constructor(val r: Row, val c: Column) {
     val diagonalsList get() =
         values
             .filter { (r.index + c.index == it.row.index + it.column.index // blackslash
-                    || r.number + c.letter.code == it.row.number + it.column.letter.code) } // slash
-            .filterNot { r.number == it.row.number && c.letter == it.column.letter } // exclude self
+                    || r.number + c.symbol.code == it.row.number + it.column.symbol.code) } // slash
+            .filterNot { r.number == it.row.number && c.symbol == it.column.symbol } // exclude self
     /*                         Labels:
      * [X] [-] [-] [-] [S]     C - Center Square (this square instance)
      * [-] [X] [-] [S] [-]     X - Upper backslash squares of C

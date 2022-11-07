@@ -2,8 +2,8 @@ package isel.leic.tds.checkers.storage
 
 import kotlin.test.*
 import isel.leic.tds.checkers.model.*
-import isel.leic.tds.checkers.ui.BoardSerializer.parse
-import isel.leic.tds.checkers.ui.BoardSerializer.write
+import isel.leic.tds.checkers.storage.BoardSerializer.parse
+import isel.leic.tds.checkers.storage.BoardSerializer.write
 import isel.leic.tds.checkers.plays
 
 class TestBoardSerializer {

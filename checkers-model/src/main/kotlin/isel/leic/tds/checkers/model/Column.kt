@@ -5,7 +5,7 @@ package isel.leic.tds.checkers.model
 // The reason, according to Kotlinlang.org is: "Because inline classes may be represented both
 // as the underlying value and as a wrapper, referential equality is pointless for them and is
 // therefore prohibited".
-class Column private constructor(val letter: Char) {
+class Column private constructor(private val letter: Char) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
     val index get() = letter.code - 'a'.code // Example: 0, 1, 2, ...
