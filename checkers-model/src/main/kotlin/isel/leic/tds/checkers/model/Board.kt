@@ -236,7 +236,7 @@ data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
 
 /**
  * Evaluates all current turn checkers for avalaible captures on the board
- * @return A list of [Capture] with the ones found
+ * @return A list<[Capture]> with the ones found
  */
 fun BoardRun.getAvalaibleCaptures(): List<Capture> {
     // Create a list to store found captures
@@ -245,31 +245,8 @@ fun BoardRun.getAvalaibleCaptures(): List<Capture> {
     val turnMoves = moves.filter { it.value.player === turn }
     // Search every checker for a valid capture
     turnMoves.forEach { (sqr, checker) ->
-        // Retrieve a list of squares that have a checker from the other player,
-        // according to the turn checker type
-        val list = when (checker) {
-            is Piece -> {
-                // Find the other player checkers in the adjacent diagonal squares
-                sqr.adjacentDiagonalsList
-                    .filter {
-                        // Evaluate if the checker belongs to the other player
-                        moves[it]?.player === turn.other()
-                    }
-            }
-            is King -> {
-                // Search all diagonals to find a square with a checker
-                listOfNotNull(
-                    sqr.upperBackSlash.find { moves[it] != null },
-                    sqr.upperSlash.find { moves[it] != null },
-                    sqr.lowerBackSlash.find { moves[it] != null },
-                    sqr.lowerSlash.find { moves[it] != null }
-                ).filter {
-                        // Filter only the other player checkers
-                        moves[it]?.player === turn.other()
-                }
-            }
-        }
-        list.map { dSqr -> // For every diagonal square in the list:
+        findOpponentsCheckersInAllDiagonals(centerSqr = sqr, checker)
+            .forEach { dSqr -> // For every diagonal square in the list:
             // Find a path to land
             val path = findDiagonalPathToLandTo(centerSqr = sqr, other = dSqr)
             when (checker) {
@@ -292,13 +269,48 @@ fun BoardRun.getAvalaibleCaptures(): List<Capture> {
 }
 
 /**
+ * Using a square as input, this function returns a list of the first diagonal squares
+ * that include an opponent's checker in all diagonals. Only adjacent diagonals from
+ * the [centerSqr] are searched if the checker is a [Piece], but all diagonal squares
+ * are searched if the checker is a [King].
+ * @param centerSqr Square to start the search from.
+ * @param checker Checker type which is on top of the [centerSqr] and will indicate the
+ * type of search.
+ */
+private fun BoardRun.findOpponentsCheckersInAllDiagonals(centerSqr: Square, checker: Checker)
+: List<Square> {
+    requireNotNull(moves[centerSqr]) { "$centerSqr does not have a checker" }
+    require(moves[centerSqr] == checker) { "$centerSqr does not have $checker on it" }
+    // Retrieve a list of squares that have a checker from the other player,
+    // according to the current turn given checker
+    return when (checker) {
+        is Piece -> {
+            // Retrieve adjacent diagonal list
+            centerSqr.adjacentDiagonalsList
+        }
+        is King -> {
+            // Search all diagonals to find a square with a checker
+            listOfNotNull(
+                centerSqr.upperBackSlash.find { moves[it] != null },
+                centerSqr.upperSlash.find { moves[it] != null },
+                centerSqr.lowerBackSlash.find { moves[it] != null },
+                centerSqr.lowerSlash.find { moves[it] != null }
+            )
+        }
+    }.filter {
+        // Filter only the checkers belonging to the other player
+        moves[it]?.player === turn.other()
+    }
+}
+
+/**
  * Finds a path to land in a diagonal direction after a capture.
  * Given two squares, one can infer the direction to go next by working with 2D vectors.
  * @param centerSqr Square where the capture started.
  * @param other Square where the opponent's checker is.
  * @return A list of squares where the square to land to can be or throws
  * [IllegalArgumentException] if the squares are the same or [other] is not a diagonal
- * square of [centerSqr]
+ * square of [centerSqr].
  */
 private fun BoardRun.findDiagonalPathToLandTo(centerSqr: Square, other: Square): List<Square> {
     require(centerSqr !== other)
@@ -318,7 +330,7 @@ private fun BoardRun.findDiagonalPathToLandTo(centerSqr: Square, other: Square):
  */
 private fun BoardRun.checkWin(): Boolean {
     // Retrieve the other player moves
-    moves.filter { it.value.player == turn.other() }
+    moves.filter { it.value.player === turn.other() }
         .keys.forEach { // For every square in a move:
             // Get correspondent diagonal list:
             getAdjacentDiagonals(it, turn.other())
