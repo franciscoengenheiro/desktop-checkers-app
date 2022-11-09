@@ -19,6 +19,9 @@ gradle-app.setting
 # Ignore InteliJ output directory
 out
 
+# Ignore created games in local directory
+games
+
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
