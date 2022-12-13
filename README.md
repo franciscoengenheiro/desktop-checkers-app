@@ -2,6 +2,23 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.14 (13/12/2022):
+- Fixed a bug in a Board.kt function 'getValidAdjacentSquaresToMoveTo' where some squares with
+a checker were being used as a valid play end point.
+- The above-mentioned bug did not create a problem in the first CMD UI implementation 
+because there were checks in the 'board.play' function to ensure that a play can only 
+occur to an empty square, but while trying to show targets in the Compose UI implementation
+those checks weren't being used since show targets only displays the squares where the play
+can be done and not register an actual play.
+- Fixed a bug in Board extension function 'checkWin' where current turn was winning a game
+when blocking the opponent's last checker but that checker could still make a capture.
+- Changed game storage from File to MongoDb in ViewModel.
+- Updated project dependencies.
+- Added App option functionalities to ViewModel: autorefresh and showtargets.
+- It is now possible to play in two instances of the application, but more testing is required.
+- BoardView.kt and CellView.kt are now in a different package called 'board'.
+- Created BaseImages object to store App's own images (resource paths).
+
 ## Update v1.13 (13/12/2022):
 - Merged CheckersDesktopApp with CheckersCMD.
 - Organized and refactored code and project files.
@@ -94,7 +111,7 @@ functions.
 ## Update v1.03 (16/10/2022):
 - Finished implementation of Square.kt.
 - All given associated tests have approved this implementation.
-- 
+
 ## Update v1.02 (15/10/2022):
 - Finished implementation of Row.kt.
 - All given associated tests have approved this implementation.
