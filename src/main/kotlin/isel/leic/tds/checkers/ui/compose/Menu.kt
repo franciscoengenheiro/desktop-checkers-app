@@ -1,15 +1,11 @@
 package isel.leic.tds.checkers.ui.compose
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.Key.*
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import isel.leic.tds.checkers.ui.compose.base.BaseIcons
 

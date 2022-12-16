@@ -3,7 +3,14 @@ package isel.leic.tds.checkers.ui.compose.board
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.*
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.Game
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.board.get
+import isel.leic.tds.checkers.model.board.utils.getAvalaibleMoves
+import isel.leic.tds.checkers.model.moves.move.Square
+import isel.leic.tds.checkers.model.moves.square.indexToColumn
+import isel.leic.tds.checkers.model.moves.square.indexToRow
 
 @Composable
 fun BoardView(

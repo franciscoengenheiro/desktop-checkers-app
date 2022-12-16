@@ -1,4 +1,6 @@
-package isel.leic.tds.checkers.model
+package isel.leic.tds.checkers.model.moves.square
+
+import isel.leic.tds.checkers.model.board.BOARD_DIM
 
 // @JvmInline associated with the below class (as a value class) cannot be used in this case,
 // since there is a test in TestColumn.kt line 61, when comparing object instances, that fails.

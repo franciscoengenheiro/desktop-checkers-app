@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogState
-import isel.leic.tds.checkers.model.Player
+import isel.leic.tds.checkers.model.moves.move.Player
 import isel.leic.tds.checkers.ui.compose.base.BaseColors
 import isel.leic.tds.checkers.ui.compose.base.BaseIcons
 

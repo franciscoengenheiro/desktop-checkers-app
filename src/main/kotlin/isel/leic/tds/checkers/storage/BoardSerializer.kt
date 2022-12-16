@@ -1,6 +1,14 @@
 package isel.leic.tds.checkers.storage
 
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.board.Board
+import isel.leic.tds.checkers.model.board.BoardDraw
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.board.BoardWin
+import isel.leic.tds.checkers.model.moves.Move
+import isel.leic.tds.checkers.model.moves.move.King
+import isel.leic.tds.checkers.model.moves.move.Piece
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.toSquareOrNull
 import isel.leic.tds.storage.Serializer
 import isel.leic.tds.storage.Storage
 

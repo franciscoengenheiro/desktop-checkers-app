@@ -2,37 +2,17 @@ package isel.leic.tds.checkers.model
 
 import isel.leic.tds.checkers.createPersonalizedBoard
 import isel.leic.tds.checkers.getPlayerPieces
+import isel.leic.tds.checkers.model.board.*
+import isel.leic.tds.checkers.model.board.utils.play
+import isel.leic.tds.checkers.model.moves.move.King
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.Square
 import isel.leic.tds.checkers.plays
+import isel.leic.tds.checkers.ui.cmd.print
 import isel.leic.tds.checkers.validateSqr
 import kotlin.test.*
 
 class TestBoard {
-    @Test fun `Board equality`() {
-        // Suts - startingBoard
-        val startingBoard = initialBoard()
-        val boardWin_SB = BoardWin(startingBoard.moves, Player.b)
-        val boardDraw_SB = BoardDraw(startingBoard.moves)
-        // Suts - afterSomePlaysBoard
-        val afterSomePlaysBoard = initialBoard().plays(
-            "3c 4d",
-            "6d 5c"
-        )
-        val boardWin_ASPB = BoardWin(afterSomePlaysBoard.moves, Player.w)
-        val boardDraw_ASPB = BoardDraw(afterSomePlaysBoard.moves)
-        // Two boards are equal if they share the same checker's current position
-        // Starting Board
-        assertEquals<Board>(startingBoard, boardWin_SB)
-        assertEquals(startingBoard.hashCode(), boardWin_SB.hashCode())
-        assertEquals<Board>(startingBoard, boardDraw_SB)
-        assertEquals(startingBoard.hashCode(), boardDraw_SB.hashCode())
-        assertNotEquals(startingBoard, afterSomePlaysBoard)
-        assertNotEquals(startingBoard.hashCode(), afterSomePlaysBoard.hashCode())
-        // After Some Plays Board
-        assertEquals(afterSomePlaysBoard, boardWin_ASPB)
-        assertEquals(afterSomePlaysBoard.hashCode(), boardWin_ASPB.hashCode())
-        assertEquals(afterSomePlaysBoard, boardDraw_ASPB)
-        assertEquals(afterSomePlaysBoard.hashCode(), boardDraw_ASPB.hashCode())
-    }
     @Test fun `Sample values for getPlayerPieces`() {
         assertTrue(BOARD_DIM >= 8)
         val dimList = (8..16).step(2).toList()
@@ -50,7 +30,7 @@ class TestBoard {
         assertEquals(getPlayerPieces(BOARD_DIM), blackCheckers.size)
         // Assert if the starting checkers are in the right position
         Square.values.forEach{ sqr ->
-            if (sqr.black && sqr.row.index !in BOARD_DIM/2 - 1.. BOARD_DIM/2)
+            if (sqr.black && sqr.row.index !in BOARD_DIM /2 - 1.. BOARD_DIM /2)
                 assertNotNull(sut.moves[sqr])
             else
                 assertNull(sut.moves[sqr])
@@ -58,7 +38,7 @@ class TestBoard {
         // Evaluate if the top of the board has black checkers and the bottom
         // has white checkers associated with the respective player
         sut.moves.forEach{ sqr ->
-            if (sqr.key.row.index in 0 until BOARD_DIM/2)
+            if (sqr.key.row.index in 0 until BOARD_DIM /2)
                 assertSame(sqr.value.player, Player.b)
             else
                 assertSame(sqr.value.player, Player.w)
@@ -153,7 +133,7 @@ class TestBoard {
         )
         val blackKing = sut.moves[validateSqr("1e")]
         assertIs<King>(blackKing)
-        assertTrue{blackKing.player === Player.b}
+        assertSame(blackKing.player, Player.b)
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 2, sut.moves.size)
         assertIs<BoardRun>(sut)
         assertEquals(sut.turn, Player.w) // Assert lost turn on a crowned King
@@ -176,12 +156,12 @@ class TestBoard {
         )
         val whiteKing = sut.moves[validateSqr("8f")]
         assertIs<King>(whiteKing)
-        assertTrue{whiteKing.player === Player.w}
+        assertSame(whiteKing.player, Player.w)
         assertEquals(getPlayerPieces(BOARD_DIM)*2 - 2, sut.moves.size)
         assertIs<BoardRun>(sut)
         assertEquals(sut.turn, Player.b) // Assert lost turn on a crowned King
     }
-    @Test fun `Move a King in a digonal more than one square at once`() {
+    @Test fun `Move a King in a diagonal more than one square at once`() {
         require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
@@ -225,6 +205,26 @@ class TestBoard {
         assertFailsWith<IllegalArgumentException> {
             sut = beforeAnyCapture.plays("7g 1a")
         }
+    }
+    @Test fun `Fail to make a capture with a King since same color checker is in between`() {
+        require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+        var sut: Board = createPersonalizedBoard(
+            set_turn = Player.b, "1e B", "2d b", "3c w"
+        )
+        sut.print(Game("22", Player.w, sut))
+        // King possible move 1
+        assertFailsWith<IllegalArgumentException> {
+            sut = sut.plays("1e 4b")
+        }
+        // King possible move 2
+        assertFailsWith<IllegalArgumentException> {
+            sut = sut.plays("1e 5a")
+        }
+        // Previous plays should fail since a checker with the same color is blocking the
+        // King from a capture. Kings cannot jump same color checkers.
+        // Only the piece can make this capture.
+        sut = sut.plays("2d 4b")
+        sut.print(Game("22", Player.w, sut))
     }
     @Test fun `After a single capture more captures can be made`() {
         var sut: Board = createPersonalizedBoard(
@@ -283,5 +283,24 @@ class TestBoard {
             "8h 6f",
         )
         assertIs<BoardDraw>(sut)
+    }
+    @Test fun `Check if the last Piece can still capture when it's blocked from a regular move`() {
+        require( BOARD_DIM == 8) { "Board dim should be 8 for this test" }
+        var sut: Board = createPersonalizedBoard(
+            set_turn = Player.w, "1c W", "3e b", "4h b"
+        )
+        assertIs<BoardRun>(sut)
+        assertSame(Player.w, sut.turn)
+        sut.print(Game("22", Player.w, sut))
+        sut = sut.plays("1c 5g")
+        // After the previous play it should change the turn to the other player
+        // since, even though the other play only has one piece and it's blocked,
+        // it can still capture the King.
+        assertIs<BoardRun>(sut)
+        sut.print(Game("22", Player.w, sut))
+        assertSame(Player.b, sut.turn)
+        // Should be able to make this capture
+        sut = sut.plays("4h 6f") // Capture(5g)
+        sut.print(Game("22", Player.w, sut))
     }
 }

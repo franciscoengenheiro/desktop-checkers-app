@@ -18,18 +18,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.moves.move.*
 import isel.leic.tds.checkers.ui.compose.base.BaseColors
 import isel.leic.tds.checkers.ui.compose.base.BaseImages
 
-// Constants:
-val CELL_VIEW_SIZE = 70.dp - Dp.Hairline // The cell (box) size
-private const val CHECKER_VIEW_FACTOR = 0.78.toFloat() // 78 % of the cell is covered by the checker
-private val CHECKER_VIEW_SIZE = CELL_VIEW_SIZE * CHECKER_VIEW_FACTOR // The checker image size
-private val CIRCLE_VIEW_SIZE = CELL_VIEW_SIZE / 2 // Half a cell view as the diameter
+val CELL_VIEW_SIZE = 70.dp // The cell (box) size
 private val SELECTED_CELL_BORDER_WIDTH = 3.dp
-private val COLUMN_ROW_ID_SIZE = CHECKER_VIEW_SIZE / 3
-private val TWO_DIGIT_ROW_ID_SIZE = CHECKER_VIEW_SIZE / 2
+
+// Factors:
+private const val CHECKER_VIEW_SCALE_FACTOR
+    = 0.78f // Percentage of the cell which is covered by the square whose
+            // sides equal the diameter of the checker image
+private const val CIRCLE_VIEW_SCALE_FACTOR
+    = 0.40f  // Percentage of the cell which is covered by the square whose
+            // sides equal the diameter of the circle target
+
+// Size calculations according to cell view size:
+private val CHECKER_VIEW_SIZE
+    = CELL_VIEW_SIZE * CHECKER_VIEW_SCALE_FACTOR  // The checker (box) image size
+private val CIRCLE_VIEW_SIZE
+    = CELL_VIEW_SIZE * CIRCLE_VIEW_SCALE_FACTOR // The target (box) circle size
 
 @Composable
 fun CellView(
@@ -81,14 +90,12 @@ fun CellView(
                 contentDescription = null
             )
         }
-        val size = if (sqr.row.number >= 10) TWO_DIGIT_ROW_ID_SIZE
-                   else COLUMN_ROW_ID_SIZE
         if (displayRow) {
-            Box (modifier = Modifier.align(Alignment.TopStart).size(size)) {
+            Box (modifier = Modifier.align(Alignment.TopStart)) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(horizontal = 2.dp),
+                        .padding(horizontal = 2.dp, vertical = 2.dp),
                     text = "${sqr.row.number}",
                     fontSize = 15.sp,
                     color = color,
@@ -98,11 +105,11 @@ fun CellView(
             }
         }
         if (displayColumn) {
-            Box (modifier = Modifier.align(Alignment.BottomEnd).size(COLUMN_ROW_ID_SIZE)) {
+            Box (modifier = Modifier.align(Alignment.BottomEnd)) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(horizontal = 2.dp),
+                        .padding(horizontal = 2.dp, vertical = 2.dp),
                     text = "${sqr.column.symbol}",
                     fontFamily = FontFamily.SansSerif,
                     color = color,

@@ -11,7 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.Game
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.board.BoardDraw
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.board.BoardWin
 import isel.leic.tds.checkers.ui.compose.board.CELL_VIEW_SIZE
 
 private val GRID_OFFSET = 2.dp

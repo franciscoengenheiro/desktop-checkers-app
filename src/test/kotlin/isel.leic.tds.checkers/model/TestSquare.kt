@@ -1,5 +1,12 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.moves.move.Square
+import isel.leic.tds.checkers.model.moves.move.toSquareOrNull
+import isel.leic.tds.checkers.model.moves.square.indexToColumn
+import isel.leic.tds.checkers.model.moves.square.indexToRow
+import isel.leic.tds.checkers.model.moves.square.toColumnOrNull
+import isel.leic.tds.checkers.model.moves.square.toRowOrNull
 import isel.leic.tds.checkers.squaresToListOf
 import isel.leic.tds.checkers.validateSqr
 import kotlin.test.*
@@ -14,31 +21,31 @@ class TestSquare {
         assert(BOARD_DIM in 2..26 step 2){ "BOARD_DIM must be a pair in 2..26" }
     }
     @Test fun `Create a black square and convert to string`() {
-        assertTrue(BOARD_DIM>2)
+        assertTrue(BOARD_DIM >2)
         val square = Square(1.indexToRow(),2.indexToColumn())
-        assertEquals("${BOARD_DIM-1}${'a'+2}", square.toString())
+        assertEquals("${BOARD_DIM -1}${'a'+2}", square.toString())
         assertTrue(square.black)
     }
     @Test fun `String to a white square and use index values`() {
-        assertTrue(BOARD_DIM>3)
+        assertTrue(BOARD_DIM >3)
         val square = "3d".toSquareOrNull()
         assertNotNull(square)
         assertEquals(3, square.column.index)
-        assertEquals(BOARD_DIM-3, square.row.index)
+        assertEquals(BOARD_DIM -3, square.row.index)
         assertFalse(square.black)
     }
     @Test fun `Invalid string to Square results null`() {
         assertNull("b3b".toSquareOrNull())
         assertNull("b3".toSquareOrNull())
         assertNull("3$".toSquareOrNull())
-        assertNull("${BOARD_DIM+1}a".toSquareOrNull())
+        assertNull("${BOARD_DIM +1}a".toSquareOrNull())
         assertNull("1${'a'+ BOARD_DIM}".toSquareOrNull())
     }
     @Test fun `All valid squares`() {
         val all = Square.values
         assertEquals(BOARD_DIM * BOARD_DIM, all.size)
         assertEquals("${BOARD_DIM}a", all.first().toString())
-        assertEquals("1${'a'+ BOARD_DIM-1}", all.last().toString())
+        assertEquals("1${'a'+ BOARD_DIM -1}", all.last().toString())
     }
     @Test fun `Identity of squares`() {
         val row = 3.toRowOrNull()

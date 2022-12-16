@@ -1,7 +1,8 @@
 package isel.leic.tds.checkers.storage
 
 import isel.leic.tds.checkers.createPersonalizedBoard
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.board.*
+import isel.leic.tds.checkers.model.moves.move.Player
 import isel.leic.tds.checkers.plays
 import isel.leic.tds.checkers.storage.BoardSerializer.parse
 import isel.leic.tds.checkers.storage.BoardSerializer.write

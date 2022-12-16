@@ -1,4 +1,11 @@
-package isel.leic.tds.checkers.model
+package isel.leic.tds.checkers.model.moves.move
+
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.board.MAX_SQUARES
+import isel.leic.tds.checkers.model.moves.square.Column
+import isel.leic.tds.checkers.model.moves.square.Row
+import isel.leic.tds.checkers.model.moves.square.indexToColumn
+import isel.leic.tds.checkers.model.moves.square.indexToRow
 
 class Square private constructor(private val r: Row, private val c: Column) {
     // Class properties initialized with getters, so that their value is only calculated

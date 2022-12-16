@@ -1,6 +1,6 @@
 package isel.leic.tds.checkers.storage
 
-import isel.leic.tds.checkers.model.initialBoard
+import isel.leic.tds.checkers.model.board.initialBoard
 import isel.leic.tds.checkers.plays
 import isel.leic.tds.checkers.storage.MongoDbAccess.database
 import isel.leic.tds.checkers.storage.MongoDbAccess.envVariable

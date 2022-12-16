@@ -1,6 +1,6 @@
 package isel.leic.tds.checkers.storage
 
-import isel.leic.tds.checkers.model.Board
+import isel.leic.tds.checkers.model.board.Board
 import isel.leic.tds.storage.MongoStorage
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo

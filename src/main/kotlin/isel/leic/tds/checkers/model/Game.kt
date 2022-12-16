@@ -1,9 +1,13 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.model.board.Board
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.board.initialBoard
+import isel.leic.tds.checkers.model.board.utils.play
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.Square
 import isel.leic.tds.checkers.storage.BoardStorage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /**

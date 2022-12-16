@@ -1,9 +1,9 @@
 package isel.leic.tds.checkers.ui.cmd
 
-import isel.leic.tds.checkers.model.BOARD_DIM
 import isel.leic.tds.checkers.model.Game
-import isel.leic.tds.checkers.model.Player
-import isel.leic.tds.checkers.model.initialBoard
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.board.initialBoard
+import isel.leic.tds.checkers.model.moves.move.Player
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream

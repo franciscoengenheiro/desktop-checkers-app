@@ -1,6 +1,10 @@
 package isel.leic.tds.checkers.ui.cmd
 
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.Game
+import isel.leic.tds.checkers.model.board.*
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.Square
+import isel.leic.tds.checkers.model.moves.square.Column
 
 /*
       Board print model, assuming BOARD_DIM == 8
@@ -65,7 +69,7 @@ fun Board.printAll(local_player: Player, turn: Player) {
             }
             println()
             // Next line:
-            if (sqr.row.index == BOARD_DIM/2 - 1) println(actualMiddleLine)
+            if (sqr.row.index == BOARD_DIM /2 - 1) println(actualMiddleLine)
             else if (!sqr.onFirstRow) println(middleLine)
         }
     }

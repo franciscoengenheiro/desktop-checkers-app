@@ -1,5 +1,8 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.model.moves.move.King
+import isel.leic.tds.checkers.model.moves.move.Piece
+import isel.leic.tds.checkers.model.moves.move.Player
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

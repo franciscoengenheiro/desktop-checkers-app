@@ -2,6 +2,13 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.16 (16/12/2022):
+- Organized model package.
+- Fixed another bug regarding Kings being able to capture above own color checkers in
+some situations. Added more board tests to verify the new implementation.
+- Introduced scale factors to Cell View to easily adjust element sizes placed within.
+- Changed rules dialog alignment.
+
 ## Update v1.15 (15/12/2022):
 - Added Resume game option in the menu. This option opens a dialog window for the user to
 write the game id and to choose the player to be assigned with.

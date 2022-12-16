@@ -1,4 +1,4 @@
-package isel.leic.tds.checkers.model
+package isel.leic.tds.checkers.model.moves.move
 
 /**
  * Represents the players of the game: [w] to identify the player with white checkers

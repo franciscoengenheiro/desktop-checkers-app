@@ -1,6 +1,11 @@
 package isel.leic.tds.checkers.ui.cmd
 
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.Game
+import isel.leic.tds.checkers.model.createGame
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.toSquareOrNull
+import isel.leic.tds.checkers.model.play
+import isel.leic.tds.checkers.model.resumeGame
 import isel.leic.tds.checkers.storage.BoardStorage
 import kotlinx.coroutines.runBlocking
 import kotlin.system.exitProcess

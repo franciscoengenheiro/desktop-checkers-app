@@ -1,4 +1,6 @@
-package isel.leic.tds.checkers.model
+package isel.leic.tds.checkers.model.moves.square
+
+import isel.leic.tds.checkers.model.board.BOARD_DIM
 
 @JvmInline // Specifies this class as an inline class for the JVM
 value class Row private constructor(private val num: Int) {

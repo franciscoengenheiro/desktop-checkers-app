@@ -1,6 +1,10 @@
 package isel.leic.tds.checkers
 
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.board.Board
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.board.utils.play
+import isel.leic.tds.checkers.model.moves.move.*
 
 /**
  * Receives a variable amount of strings, each one indicating a square, and returns a list
@@ -50,11 +54,11 @@ fun createPersonalizedBoard(set_turn: Player, vararg s: String): BoardRun {
  * Receives a variable amount of strings, each one indicating a move, and places them
  * on the board. If the strings are not in the expected format or if the squares or checkers
  * they represent are not valid then throws [IllegalArgumentException].
+ * Example: "2a w" corresponds to Pair<Square(2, a), Piece(Player.w)>
  * @return A list of moves with only the moves requested.
  */
 fun createMoves(vararg s: String) =
     // Expected format: <Square> <Checker>
-    // Example: "2a w" corresponds to Pair<Square(2, a), Piece(Player.w)>
     s.fold(emptyMap<Square, Checker>()) { mvs, string ->
         require(string.length == 4) { "Incorrect expected arguments" }
         val list = string.split(" ")
@@ -66,14 +70,14 @@ fun createMoves(vararg s: String) =
         try {
             player = Player.valueOf(player_name.lowercase())
         } catch (e: Exception) {
-            throw IllegalArgumentException( "Invalid player" )
+            throw IllegalArgumentException("Invalid player")
         }
         mvs + when (player_name) {
             'w' -> sqr to Piece(player)
             'b' -> sqr to Piece(player)
             'W' -> sqr to King(player)
             'B' -> sqr to King(player)
-            else -> throw IllegalArgumentException( "Invalid checker" )
+            else -> throw IllegalArgumentException("Invalid checker")
         }
     }
 

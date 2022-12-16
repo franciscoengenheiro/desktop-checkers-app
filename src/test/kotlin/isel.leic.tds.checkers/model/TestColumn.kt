@@ -1,5 +1,9 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.moves.square.Column
+import isel.leic.tds.checkers.model.moves.square.indexToColumn
+import isel.leic.tds.checkers.model.moves.square.toColumnOrNull
 import kotlin.test.*
 
 /**

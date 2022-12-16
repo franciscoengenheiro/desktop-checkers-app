@@ -1,5 +1,9 @@
 package isel.leic.tds.checkers.model
 
+import isel.leic.tds.checkers.model.board.BOARD_DIM
+import isel.leic.tds.checkers.model.moves.square.Row
+import isel.leic.tds.checkers.model.moves.square.indexToRow
+import isel.leic.tds.checkers.model.moves.square.toRowOrNull
 import kotlin.test.*
 
 /**
@@ -12,11 +16,11 @@ class TestRow {
     @Test fun `Number to Row with index property`() {
         val row = 3.toRowOrNull()
         assertNotNull(row)
-        assertEquals(BOARD_DIM-3, row.index)
+        assertEquals(BOARD_DIM -3, row.index)
     }
     @Test fun `Index to Row with number property`() {
         val row = 3.indexToRow()
-        assertEquals(BOARD_DIM-3 ,row.number)
+        assertEquals(BOARD_DIM -3 ,row.number)
     }
     @Test fun `Invalid index to Row throws IndexOutOfBounds`() {
         assertFailsWith<IndexOutOfBoundsException> {
@@ -29,7 +33,7 @@ class TestRow {
     }
     @Test fun `All valid numbers to rows`() {
         assertEquals(
-            (BOARD_DIM-1 downTo 0).toList(),
+            (BOARD_DIM -1 downTo 0).toList(),
             (1..BOARD_DIM).mapNotNull{ it.toRowOrNull()?.index }
         )
     }

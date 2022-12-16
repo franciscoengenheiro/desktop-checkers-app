@@ -3,7 +3,14 @@ package isel.leic.tds.checkers.ui.compose
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import isel.leic.tds.checkers.model.*
+import isel.leic.tds.checkers.model.Game
+import isel.leic.tds.checkers.model.board.Board
+import isel.leic.tds.checkers.model.board.BoardRun
+import isel.leic.tds.checkers.model.createGame
+import isel.leic.tds.checkers.model.moves.move.Player
+import isel.leic.tds.checkers.model.moves.move.Square
+import isel.leic.tds.checkers.model.play
+import isel.leic.tds.checkers.model.resumeGame
 import isel.leic.tds.checkers.storage.BoardStorage
 import isel.leic.tds.checkers.storage.MongoDbAccess
 import kotlinx.coroutines.CoroutineScope
