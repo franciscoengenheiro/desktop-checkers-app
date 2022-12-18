@@ -2,6 +2,18 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.17 (18/12/2022):
+- An inverted board is now avalaible for the player assigned with the black checkers to
+increase gameplay realism. 
+- Solved CellView refresh bug. This Composable was being recomposed without necessaty when 
+a cell was selected and the player remained idle.
+- Created ViewUtils.kt to store both CellView and BoardView utility functions.
+- Created an interface and object to enable Text File access along with a set of tests to verify 
+this implementation.
+- Created another packaged inside dialog's to store App's own custom composables used in 
+other dialogs. Also created previews for some of them.
+- Reorganized more packages.
+
 ## Update v1.16 (16/12/2022):
 - Organized model package.
 - Fixed another bug regarding Kings being able to capture above own color checkers in
@@ -68,7 +80,7 @@ example an Icon before to the title.
 - Started CheckersDesktopApp project development.
 - The project previous UI in command line (CMD) was restructured to Compose framework 
 aimed for the JVM.
-- First UI implementation of the board in Compose was created and several compose functions 
+- First UI implementation of the board in Compose was created and several compose funlctions 
 were also created and can be accessed in the UI-Compose package.
 - A ViewModel was created to store all the App's logic and state.
 - Since the files that belonged to the storage package, besides BoardSerializer.kt, could 
