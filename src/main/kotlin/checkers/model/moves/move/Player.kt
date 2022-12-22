@@ -9,7 +9,6 @@ enum class Player { w, b; // ; marks the end of the constants
      * Method to retrieve the other [Player].
      */
     fun other() = if (this == w) b else w
-
     /**
      * Method to retrieve the [Player] label (name).
      * @return The defined string representation of this player.

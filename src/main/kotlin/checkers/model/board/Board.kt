@@ -7,7 +7,7 @@ import checkers.model.moves.move.Player
 import checkers.model.moves.move.Square
 
 // Constants
-val BOARD_DIM: Int = 8
+val BOARD_DIM by lazy { setActualBoardDimension() }
 val MAX_SQUARES = BOARD_DIM * BOARD_DIM
 const val MAX_MOVES_WITHOUT_CAPTURE = 20
 

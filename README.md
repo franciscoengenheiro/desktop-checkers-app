@@ -2,6 +2,21 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.18 (22/12/2022):
+- In the current version, a global variable (Dimension) must be initialized before 
+building the board.
+- Added an option to select board dimension from a set of avalaible dimensions,
+before starting the application in both ui implementations (cmd and compose).
+- Refactored scale factors in CellView.kt in order to present a board which is not
+hardcoded in ui generic terms. Now, when the board dimension increases, the cell view 
+size won't grow linearly and instead algorithmically.
+- Added a database for each avalaible dimension to avoid unexpected behaviors when 
+resuming a game with a board dimension different from the one selected at the start.
+- Introduced window and dialog states to ViewModel.
+- Added an interface for the Radio Buttons Options.
+- Separated composables that only work in the App's context from generic ones.
+- Added more previews to composables.
+
 ## Update v1.17 (18/12/2022):
 - An inverted board is now avalaible for the player assigned with the black checkers to
 increase gameplay realism. 
@@ -10,6 +25,7 @@ a cell was selected and the player remained idle.
 - Created ViewUtils.kt to store both CellView and BoardView utility functions.
 - Created an interface and object to enable Text File access along with a set of tests to verify 
 this implementation.
+- Rules is now a text file instead of hardcoded strings.
 - Created another packaged inside dialog's to store App's own custom composables used in 
 other dialogs. Also created previews for some of them.
 - Reorganized more packages.

@@ -1,5 +1,7 @@
 package storage
 
+import checkers.model.board.BoardDim
+import checkers.model.board.Dimension
 import checkers.model.board.initialBoard
 import checkers.plays
 import checkers.storage.BoardSerializer
@@ -24,6 +26,7 @@ class MongoStorageTest {
             db.getCollection<Student>(collection)
                 .deleteOneById(gameId)
         }
+        Dimension = BoardDim.EIGHT
     }
     @Test fun `Check Mongo Db Connection`() {
         runBlocking {

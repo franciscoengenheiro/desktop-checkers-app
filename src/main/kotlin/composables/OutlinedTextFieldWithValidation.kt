@@ -1,6 +1,6 @@
-package checkers.ui.compose.dialogs.util
+package composables
 
-import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -16,11 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import checkers.ui.compose.base.BaseColors
 
-// Constants:
-private const val MAX_GAME_ID_LENGTH = 10
-
 @Composable
-fun CustomOutlinedTextField(): Pair<String, Boolean> {
+fun OutlinedTextFieldWithValidation(
+    validateField: (text: String) -> Boolean
+): Pair<String, Boolean> {
     var name by remember { mutableStateOf("") }
     var invalidField by remember { mutableStateOf(!validateField(name)) }
     OutlinedTextField(
@@ -52,5 +51,11 @@ fun CustomOutlinedTextField(): Pair<String, Boolean> {
     return name to invalidField
 }
 
-private fun validateField(txt: String) =
-    txt.length in 1.. MAX_GAME_ID_LENGTH && txt.isNotBlank()
+@Preview
+@Composable
+private fun TestExpandableCard() {
+    fun validateField(text: String): Boolean = text.length > 2
+    OutlinedTextFieldWithValidation(
+        validateField = ::validateField
+    )
+}

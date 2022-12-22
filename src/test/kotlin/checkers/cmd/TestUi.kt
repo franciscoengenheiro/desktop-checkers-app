@@ -2,6 +2,8 @@ package checkers.cmd
 
 import checkers.model.Game
 import checkers.model.board.BOARD_DIM
+import checkers.model.board.BoardDim
+import checkers.model.board.Dimension
 import checkers.model.board.initialBoard
 import checkers.model.moves.move.Player
 import checkers.ui.cmd.print
@@ -9,10 +11,15 @@ import checkers.ui.cmd.readCommand
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TestUi {
+    @BeforeTest fun setup() {
+        // Sets board global dimension
+        Dimension = BoardDim.EIGHT
+    }
     @Test fun `readCommand Play Square1 Square2`() {
         val out = redirectInOut("","    ", "play    3c    4d ") {
             val (name,args) = readCommand()

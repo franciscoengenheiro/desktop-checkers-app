@@ -1,34 +1,24 @@
 package checkers
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.lightColors
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.WindowState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.application
-import checkers.ui.compose.App
-import checkers.ui.compose.base.BaseIcons
+import checkers.ui.compose.ViewModel
+import checkers.ui.compose.windows.InitialWindow
+import checkers.ui.compose.windows.MainWindow
+import checkers.ui.compose.windows.WindowState.Initial
+import checkers.ui.compose.windows.WindowState.Main
 import com.mongodb.MongoException
 
-fun main(){
+fun main() {
     try {
         application {
-            Window(
-                onCloseRequest = ::exitApplication,
-                title = "Checkers",
-                state = WindowState(
-                    position = WindowPosition(Alignment.Center),
-                    size = DpSize.Unspecified
-                ),
-                icon = painterResource(BaseIcons.App),
-                resizable = false
-            ) {
-                MaterialTheme(colors = lightColors()) {
-                    App(onExit = ::exitApplication)
-                }
+            // Returns a CoroutineScope in the current thread
+            val scope = rememberCoroutineScope()
+            val viewModel = remember{ ViewModel(scope) }
+            when(viewModel.window) {
+                Initial -> InitialWindow(viewModel)
+                Main -> MainWindow(viewModel)
             }
         }
     } catch(ex: Exception) {

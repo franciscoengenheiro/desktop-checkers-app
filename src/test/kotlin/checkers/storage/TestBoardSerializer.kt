@@ -6,12 +6,13 @@ import checkers.model.moves.move.Player
 import checkers.plays
 import checkers.storage.BoardSerializer.parse
 import checkers.storage.BoardSerializer.write
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNotSame
+import kotlin.test.*
 
 class TestBoardSerializer {
+    @BeforeTest fun setup() {
+        // Sets board global dimension
+        Dimension = BoardDim.EIGHT
+    }
     @Test fun `Get an equivalent BoardRun from serialize and deserialize`() {
         val board = initialBoard().plays(
             "3c 4d",

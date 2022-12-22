@@ -1,6 +1,7 @@
 package checkers.storage
 
 import checkers.model.board.Board
+import checkers.model.board.Dimension
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 import storage.MongoStorage
@@ -11,7 +12,7 @@ import storage.MongoStorage
  * the IDE.
  */
 object MongoDbAccess {
-    private const val collection = "games"
+    private val collection = "$Dimension"
     const val database = "Checkers"
     const val envVariable = "MONGO_CONNECTION"
     fun createClient(): MongoStorage<Board> {

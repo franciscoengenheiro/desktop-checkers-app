@@ -14,11 +14,6 @@ object CheckerColors {
         private set
     var black: Color = BaseColors.DarkBrown
         private set
-    fun invertColors() {
-        val aux = white
-        white = black
-        black = aux
-    }
 }
 
 fun onCellClick(

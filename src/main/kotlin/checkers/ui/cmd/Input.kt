@@ -1,5 +1,8 @@
 package checkers.ui.cmd
 
+import checkers.model.board.BoardDim
+import checkers.model.board.setGlobalBoardDimension
+
 /**
  * Representes a command retrieved from the stdin which is identified by
  * a [name] and variable number of [params] which can be non-existent.
@@ -17,5 +20,21 @@ fun readCommand(): CommandLine {
         val words = readln().split(" ").filter { it.isNotEmpty() }
         if (words.isNotEmpty())
             return CommandLine(words.first().uppercase(), words.drop(1))
+    }
+}
+
+/**
+ * Reads user input commands in stdin and constructs a [CommandLine]
+ * instance if the received input is not empty.
+ */
+fun readBoardDimension() {
+    while (true) {
+        print("> ")
+        // Reads user input and split it for every space character
+        when (readln()) {
+            "${BoardDim.EIGHT}" -> { setGlobalBoardDimension(BoardDim.EIGHT); break }
+            "${BoardDim.TEN}" -> { setGlobalBoardDimension(BoardDim.TEN); break }
+            "${BoardDim.TWELVE}" -> { setGlobalBoardDimension(BoardDim.TWELVE); break }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package checkers.ui.compose.dialogs.util
+package composables
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -19,12 +20,13 @@ fun BoxWithText(
     boxModifier: Modifier,
     text: String,
     textColor: Color,
-    textModifier: Modifier
+    textModifier: Modifier,
+    fontSize: TextUnit
 ) = Box (modifier = boxModifier) {
     Text(
         modifier = textModifier,
         text = text,
-        fontSize = 15.sp,
+        fontSize = fontSize,
         color = textColor,
         style = MaterialTheme.typography.subtitle1,
         fontWeight = FontWeight.Bold
@@ -42,9 +44,10 @@ private fun BoxWithTextTest() {
                 .align(Alignment.TopStart)
                 .background(Color.Yellow)
                 .size(25.dp),
-            textModifier = Modifier.align(Alignment.Center),
             text = "1",
-            textColor = Color.Red
+            textColor = Color.Red,
+            textModifier = Modifier.align(Alignment.Center),
+            fontSize = 15.sp
         )
     }
 }

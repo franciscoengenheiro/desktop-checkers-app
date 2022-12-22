@@ -16,6 +16,7 @@ import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowPosition
 import checkers.model.board.MAX_MOVES_WITHOUT_CAPTURE
 import checkers.ui.compose.base.BaseIcons
+import composables.ExpandableCard
 import file.TextFile
 
 // Constants:

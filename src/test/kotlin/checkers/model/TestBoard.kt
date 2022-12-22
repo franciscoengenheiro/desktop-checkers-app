@@ -12,15 +12,16 @@ import checkers.validateSqr
 import kotlin.test.*
 
 class TestBoard {
-    @Test
-    fun `Sample values for getPlayerPieces`() {
+    @BeforeTest fun setup() {
+        // Sets board global dimension
+        Dimension = BoardDim.EIGHT
+    }
+    @Test fun `Sample values for getPlayerPieces`() {
         assertTrue(BOARD_DIM >= 8)
         val dimList = (8..16).step(2).toList()
         assertEquals(listOf(12, 20, 30, 42, 56), dimList.map { dim -> getPlayerPieces(dim) })
     }
-
-    @Test
-    fun `Initial Board with nxn Squares`() {
+    @Test fun `Initial Board with nxn Squares`() {
         val sut = initialBoard()
         assertEquals(getPlayerPieces(BOARD_DIM) * 2, sut.moves.size)
         assertEquals(Player.w, sut.turn)
@@ -46,9 +47,7 @@ class TestBoard {
                 assertSame(sqr.value.player, Player.w)
         }
     }
-
-    @Test
-    fun `One move only`() {
+    @Test fun `One move only`() {
         var sut: Board = initialBoard()
         val movesBefore = sut.moves
         sut = sut.play(validateSqr("3c"), validateSqr("4d"))
@@ -58,9 +57,7 @@ class TestBoard {
         assertNotNull(sut[validateSqr("4d")])
         assertEquals(movesBefore.size, movesAfter.size)
     }
-
-    @Test
-    fun `Each player plays once with some illegal moves`() {
+    @Test fun `Each player plays once with some illegal moves`() {
         var sut: Board = initialBoard()
         // Player w turn:
         assertFailsWith<IllegalArgumentException>("Invalid move") {
@@ -94,9 +91,7 @@ class TestBoard {
         // Play a valid move
         sut = sut.plays("6f 5e")
     }
-
-    @Test
-    fun `Make a capture`() {
+    @Test fun `Make a capture`() {
         var sut: Board = initialBoard()
         // Valid moves
         sut = sut.plays("3c 4d", "6d 5c", "4d 5e")
@@ -114,9 +109,7 @@ class TestBoard {
         val blackCheckers = sut.moves.values.filter { it.player === Player.b }
         assertEquals(getPlayerPieces(BOARD_DIM), blackCheckers.size)
     }
-
-    @Test
-    fun `More than one capture is avalaible at once`() {
+    @Test fun `More than one capture is avalaible at once`() {
         var sut: Board = initialBoard()
         sut = sut.plays("3e 4f", "6d 5c", "4f 5g")
         val boardbeforeACapture = sut
@@ -126,9 +119,7 @@ class TestBoard {
         sut = boardbeforeACapture.plays("6h 4f") // Second capture
         assertEquals(getPlayerPieces(BOARD_DIM) * 2 - 1, sut.moves.size)
     }
-
-    @Test
-    fun `Make a black King`() {
+    @Test fun `Make a black King`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
@@ -150,9 +141,7 @@ class TestBoard {
         assertIs<BoardRun>(sut)
         assertEquals(sut.turn, Player.w) // Assert lost turn on a crowned King
     }
-
-    @Test
-    fun `Make a white King`() {
+    @Test fun `Make a white King`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
@@ -175,9 +164,7 @@ class TestBoard {
         assertIs<BoardRun>(sut)
         assertEquals(sut.turn, Player.b) // Assert lost turn on a crowned King
     }
-
-    @Test
-    fun `Move a King in a diagonal more than one square at once`() {
+    @Test fun `Move a King in a diagonal more than one square at once`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = initialBoard()
         sut = sut.plays(
@@ -202,9 +189,7 @@ class TestBoard {
         sut = sut.plays("8f 6h") // Move king backwards in a diagonal
         assertNotNull(sut[validateSqr("6h")])
     }
-
-    @Test
-    fun `Make a capture with a King`() {
+    @Test fun `Make a capture with a King`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.w, "5e b", "7g W", "1a w"
@@ -224,9 +209,7 @@ class TestBoard {
             sut = beforeAnyCapture.plays("7g 1a")
         }
     }
-
-    @Test
-    fun `Fail to make a capture with a King since same color checker is in between`() {
+    @Test fun `Fail to make a capture with a King since same color checker is in between`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.b, "1e B", "2d b", "3c w"
@@ -244,9 +227,7 @@ class TestBoard {
         // Only the piece can make this capture.
         sut = sut.plays("2d 4b")
     }
-
-    @Test
-    fun `After a single capture more captures can be made`() {
+    @Test fun `After a single capture more captures can be made`() {
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.w, "3g b", "2f w", "8f W", "5c b", "2b b"
         )
@@ -256,9 +237,7 @@ class TestBoard {
         }
         sut = sut.plays("3a 1c") // Second Capture: Capture(2b)
     }
-
-    @Test
-    fun `Win the game by capturing all opponent's checkers`() {
+    @Test fun `Win the game by capturing all opponent's checkers`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.w, "7a w", "7e B", "6b b"
@@ -267,9 +246,7 @@ class TestBoard {
         assertIs<BoardWin>(sut)
         assertEquals(Player.b, sut.winner)
     }
-
-    @Test
-    fun `Win the game by blocking opponent's remaining checkers`() {
+    @Test fun `Win the game by blocking opponent's remaining checkers`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.w, "7a b", "8h b", "6f W", "6h w", "6b w"
@@ -278,9 +255,7 @@ class TestBoard {
         assertIs<BoardWin>(sut)
         assertEquals(Player.w, sut.winner)
     }
-
-    @Test
-    fun `Draw a game`() {
+    @Test fun `Draw a game`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         require(MAX_MOVES_WITHOUT_CAPTURE == 20)
         { "Max moves without capture should be 20 for this test" }
@@ -312,9 +287,7 @@ class TestBoard {
         )
         assertIs<BoardDraw>(sut)
     }
-
-    @Test
-    fun `Check if the last Piece can still capture when it's blocked from a regular move`() {
+    @Test fun `Check if the last Piece can still capture when it's blocked from a regular move`() {
         require(BOARD_DIM == 8) { "Board dim should be 8 for this test" }
         var sut: Board = createPersonalizedBoard(
             set_turn = Player.w, "1c W", "3e b", "4h b"

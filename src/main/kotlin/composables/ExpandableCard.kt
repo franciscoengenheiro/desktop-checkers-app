@@ -1,9 +1,10 @@
-package checkers.ui.compose.dialogs
+package composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -16,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import checkers.ui.compose.base.BaseIcons
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -102,4 +105,16 @@ fun ExpandableCard(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun TestExpandableCard() {
+    ExpandableCard(
+        title = "Some random text",
+        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
+                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when " +
+                "an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        painter = painterResource(BaseIcons.Rules)
+    )
 }
