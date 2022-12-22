@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.FrameWindowScope
 import checkers.ui.compose.board.BoardView
+import checkers.ui.compose.dialogs.DialogState
 import checkers.ui.compose.dialogs.NewGameDialog
 import checkers.ui.compose.dialogs.ResumeGameDialog
 import checkers.ui.compose.dialogs.RulesDialog
