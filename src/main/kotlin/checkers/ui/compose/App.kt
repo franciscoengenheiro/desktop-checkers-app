@@ -2,36 +2,29 @@ package checkers.ui.compose
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.FrameWindowScope
 import checkers.ui.compose.board.BoardView
+import checkers.ui.compose.dialogs.DialogState
 import checkers.ui.compose.dialogs.NewGameDialog
 import checkers.ui.compose.dialogs.ResumeGameDialog
 import checkers.ui.compose.dialogs.RulesDialog
 
 @Composable
-fun FrameWindowScope.App(onExit: () -> Unit) {
-    // Returns a CoroutineScope in the current thread
-    val scope = rememberCoroutineScope()
-    val viewModel = remember{ ViewModel(scope) }
+fun FrameWindowScope.App(viewModel: ViewModel, onExit: () -> Unit) {
     Menu(viewModel, onExit)
-    if (viewModel.openNewGameDialog) {
-        NewGameDialog(
+    when (viewModel.dialog) {
+        DialogState.NewGameDialog -> NewGameDialog(
             onConfirm = { name, _ -> viewModel.newGame(name) },
-            onDismiss = { viewModel.newGame() }
+            onDismiss = { viewModel.closeDialog() }
         )
-    }
-    if (viewModel.openResumeGameDialog) {
-        ResumeGameDialog(
-            onConfirm = { name, player -> viewModel.resume(name, player) },
-            onDismiss = { viewModel.resume() }
+        DialogState.ResumeGameDialog -> ResumeGameDialog(
+            onConfirm = { name, player -> viewModel.resumeGame(name, player) },
+            onDismiss = { viewModel.closeDialog() }
         )
-    }
-    if (viewModel.openRulesDialog) {
-         RulesDialog(
-             onDismiss = { viewModel.showRulesToggle() }
-         )
+        DialogState.RulesDialog -> RulesDialog(
+            onDismiss = { viewModel.closeDialog() }
+        )
+        DialogState.NoDialogOpen -> {}
     }
     Column {
         // Consult game state
@@ -46,3 +39,10 @@ fun FrameWindowScope.App(onExit: () -> Unit) {
         StatusBar(game)
     }
 }
+
+/*
+
+SetBoardDimDialog(
+    onConfirm = { _ -> viewModel.setBoardDimension(BoardDim.EIGHT) },
+    onDismiss = { viewModel.setBoardDimension() }
+)*/

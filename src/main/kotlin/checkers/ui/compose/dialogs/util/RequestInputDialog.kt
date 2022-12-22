@@ -1,7 +1,7 @@
 package checkers.ui.compose.dialogs.util
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -10,6 +10,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogState
 import checkers.model.moves.move.Player
 import checkers.ui.compose.base.BaseIcons
+import composables.OutlinedTextFieldWithValidation
+
+// Constants:
+private const val MAX_GAME_ID_LENGTH = 10
 
 @Composable
 fun RequestInputDialog(
@@ -23,12 +27,12 @@ fun RequestInputDialog(
     title = title,
     state = DialogState(width = 300.dp, height = Dp.Unspecified),
     resizable = false,
-    icon = painterResource(BaseIcons.WriteTextDialog),
+    icon = painterResource(BaseIcons.WriteTextDialog)
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val (name, invalidField) = CustomOutlinedTextField()
+        val (name, invalidField) = OutlinedTextFieldWithValidation(::validateField)
         val selectedPlayer = content()
         AcknowledgeButtons(
             gameName = name,
@@ -40,3 +44,6 @@ fun RequestInputDialog(
         )
     }
 }
+
+private fun validateField(txt: String) =
+    txt.length in 1.. MAX_GAME_ID_LENGTH && txt.isNotBlank()

@@ -11,7 +11,7 @@ import checkers.ui.compose.base.BaseIcons
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun FrameWindowScope.Menu(viewModel: ViewModel, onExit: () -> Unit) {
+fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {
     MenuBar {
         Menu("Game") {
             Item(
@@ -19,13 +19,13 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExit: () -> Unit) {
                 icon = painterResource(BaseIcons.NewGame),
                 shortcut = KeyShortcut(Key.N),
                 mnemonic = 'N'
-            ) { viewModel.newGame() }
+            ) { viewModel.openNewGameDialog() }
             Item(
                 text = "Resume",
                 icon = painterResource(BaseIcons.ResumeGame),
                 shortcut = KeyShortcut(Key.R),
                 mnemonic = 'R'
-            ) { viewModel.resume() }
+            ) { viewModel.openResumeGameDialog() }
             Item(
                 text = "Refresh   ",
                 icon = painterResource(BaseIcons.Refresh),
@@ -34,11 +34,12 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExit: () -> Unit) {
                 onClick = viewModel::refresh,
                 enabled = viewModel.refreshStatus
             )
+            Separator()
             Item(
                 text = "Exit",
                 icon = painterResource(BaseIcons.Exit),
                 shortcut = KeyShortcut(Key.Escape),
-                onClick = onExit
+                onClick = onExitRequest
             )
         }
         Menu("Options") {
@@ -55,7 +56,7 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExit: () -> Unit) {
                 shortcut = KeyShortcut(Key.A),
                 mnemonic = 'A',
                 checked = viewModel.autoRefreshStatus
-            ) { viewModel.enableAutoRefreshToggle() }
+            ) { viewModel.autoRefreshToggle() }
         }
         Menu("Help") {
             Item(
@@ -63,7 +64,7 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExit: () -> Unit) {
                 icon = painterResource(BaseIcons.Help),
                 shortcut = KeyShortcut(Key.U),
                 mnemonic = 'u'
-            ) { viewModel.showRulesToggle() }
+            ) { viewModel.openRulesDialog() }
         }
     }
 }

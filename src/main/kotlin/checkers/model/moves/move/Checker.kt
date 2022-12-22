@@ -10,7 +10,8 @@ sealed class Checker(val player: Player)
 class Piece (player: Player): Checker(player) {
     override fun toString() = player.name
     // A Piece is equal to another checker if it has the same type and player assigned to it
-    override fun equals(other: Any?) = if (other !is Piece) false else this.player === other.player
+    override fun equals(other: Any?) = if (other !is Piece) false
+        else this.player === other.player
     override fun hashCode() = player.hashCode() * Piece::class.hashCode()
 }
 
@@ -21,6 +22,7 @@ class Piece (player: Player): Checker(player) {
 class King(player: Player): Checker(player) {
     override fun toString() = player.name.uppercase()
     // A King is equal to another checker if it has the same type and player assigned to it
-    override fun equals(other: Any?) = if (other !is King) false else this.player === other.player
+    override fun equals(other: Any?) = if (other !is King) false
+        else this.player === other.player
     override fun hashCode() = player.hashCode() * King::class.hashCode()
 }

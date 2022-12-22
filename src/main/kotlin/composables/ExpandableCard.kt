@@ -1,4 +1,4 @@
-package checkers.ui.compose.dialogs
+package composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing

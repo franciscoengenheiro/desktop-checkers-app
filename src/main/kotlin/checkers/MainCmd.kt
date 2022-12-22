@@ -1,21 +1,22 @@
 package checkers
 
 import checkers.model.Game
+import checkers.model.board.BOARD_DIM
+import checkers.model.board.BoardDim
+import checkers.model.board.Dimension
 import checkers.storage.BoardSerializer
 import checkers.storage.BoardStorage
 import checkers.storage.MongoDbAccess
-import checkers.ui.cmd.Command
-import checkers.ui.cmd.SyntaxError
-import checkers.ui.cmd.getCommands
-import checkers.ui.cmd.readCommand
+import checkers.ui.cmd.*
 import storage.FileStorage
 
 fun main() {
+    beforeBoardDimSetMsg().also { readBoardDimension() }
     val storage = saveGameDataIn("MongoDb")
     val cmds = getCommands(storage)
     var game: Game? = null
-    printWelcomeMsg()
-    while( true ) {
+    afterBoardDimSetMsg()
+    while(true) {
         val (name, args) = readCommand()
         val cmd: Command? = cmds[name]
         if (cmd == null) println("Invalid command: $name")
@@ -46,11 +47,24 @@ private fun saveGameDataIn(s: String): BoardStorage {
 }
 
 /**
- * Prints a message to the stdout.
+ * Prints a message to the stdout after a board dimension was set.
  */
-private fun printWelcomeMsg() =
+private fun afterBoardDimSetMsg() =
     listOf(
-        "[Program]: Checkers in command line!",
-        "[Commands]: To see the avalaible commands type: help"
+        "[INFO]: Board dimension was set to:",
+        "[INFO]: To see the avalaible commands type: help"
     ).forEach { println(it) }
 
+/**
+ * Prints a message to the stdout before a board dimension was set.
+ */
+private fun beforeBoardDimSetMsg() {
+    var dimensions = ""
+    for (dim in BoardDim.values()) {
+        dimensions += "$dim "
+    }
+    listOf(
+        "[INIT]: Checkers in command line!",
+        "[REQUEST]: Choose a board dimension: $dimensions"
+    ).forEach { println(it) }
+}
