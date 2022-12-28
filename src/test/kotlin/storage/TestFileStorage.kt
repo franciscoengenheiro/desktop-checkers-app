@@ -14,7 +14,7 @@ private object StudentSerializer: Serializer<Student, String> {
     override fun parse(stream: String): Student {
         val words = stream.split(" ")
         require(words.size == 2) { "Source stream in illegal format, " +
-                "it should contain <nr> <name>"}
+                "it should contain <nr> <name>" }
         val nr = words.first().toIntOrNull()
         requireNotNull(nr) { "Number received is not a valid number" }
         return Student(nr, words[1])
@@ -40,7 +40,7 @@ private class TestFileStorage {
             }
         }
     }
-    @Test fun `Serialize add deserialize`() {
+    @Test fun `Serialize and deserialize`() {
         runBlocking {
             val fs = FileStorage<Int, Student>(folder, StudentSerializer)
             assertNull(fs.read(studentNr))

@@ -1,40 +1,48 @@
 package file
 
-import java.io.BufferedReader
-import java.io.FileReader
+import java.io.File
 import java.io.PrintWriter
 
+/**
+ * Object that implements read and write operations to a text file stored in
+ * the path: src/main/resorces
+ */
 object TextFile: FileAccess<String, String> {
-    // Function to read from a specified file and return data as an Array of Strings
-    // Returns the array pointer
-    override fun read(fileName: String): Array<String> {
-        // Creates a reader
-        val reader = BufferedReader(FileReader(fileName))
-        // Creates an array to store all data lines
-        var dataList: Array<String> = emptyArray()
-        // Creates a mutable variable to store the current line that bufferedReader is reading
-        var currentLine = reader.readLine()
-        while (currentLine != null) {
-            // Adds data line to the array
-            dataList += currentLine
-            // Moves to next data line
-            currentLine = reader.readLine()
-        }
-        // Closes reader
-        reader.close()
-        return dataList
-    }
-
     /**
-     * Writes given data as a List of Strings to the specified file
-     * @fi
+     * Function to read from a specified file and return data as a List of Strings,
+     * each string is a line separated by the current system line separator.
+     * @param fileName unique file name.
+     * @throws IllegalArgumentException if the file doesn't exist or is not located
+     * in the current project resources.
      */
-    override fun write(fileName: String, data: Array<String>) {
+    override fun read(fileName: String): List<String> {
+        val url = this::class.java.getResource("/$fileName.txt")
+        requireNotNull(url) { "Could not find resource file: $fileName.txt" }
+        val ls = System.lineSeparator()
+        return url.readText().split(ls)
+    }
+    /**
+     * Specifies a path independent of the operating system.
+     * @param folderList a variable amount of strings, each one representing a folder
+     * and the last one the file, that make a path to a file.
+     */
+    fun createPathToFile(vararg folderList: String) =
+        folderList.joinToString(separator = File.separator)
+    /**
+     * Writes given data as a List of Strings to the specified file.
+     * The new file will be located in the current project resources. If the
+     * file already exists it will be overriden.
+     * @param fileName unique file name.
+     * @param data data to store.
+     */
+    override fun write(fileName: String, data: List<String>) {
         // Creates a writer
-        val writer = PrintWriter(fileName)
+        val writer = PrintWriter(
+            createPathToFile("src", "main", "resources", "$fileName.txt"))
         for (line in data) {
             // Writes the current data line
-            writer.println(line)
+            if (line == data.last()) writer.print(line)
+            else writer.println(line)
         }
         // Closes writer
         writer.close()

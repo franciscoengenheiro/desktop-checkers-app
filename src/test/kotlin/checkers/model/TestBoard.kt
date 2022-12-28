@@ -301,6 +301,6 @@ class TestBoard {
         assertIs<BoardRun>(sut)
         assertSame(Player.b, sut.turn)
         // Should be able to make this capture
-        sut = sut.plays("4h 6f") // Capture(5g)
+        sut.plays("4h 6f") // Capture(5g)
     }
 }

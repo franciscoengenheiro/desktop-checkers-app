@@ -19,9 +19,6 @@ import checkers.ui.compose.base.BaseIcons
 import composables.ExpandableCard
 import file.TextFile
 
-// Constants:
-const val RULES_FILE_NAME = "Rules.txt"
-
 @Composable
 fun RulesDialog(onDismiss: ()->Unit) = Dialog(
     onCloseRequest = onDismiss,
@@ -74,7 +71,7 @@ fun RulesDialog(onDismiss: ()->Unit) = Dialog(
 @JvmInline
 value class Rule private constructor(val description: String) {
     companion object {
-        private val rulesFromFile = TextFile.read(RULES_FILE_NAME)
+        private val rulesFromFile = TextFile.read("Rules")
         val list = List(rulesFromFile.size) { idx -> Rule(rulesFromFile[idx]) }
     }
 }

@@ -2,6 +2,12 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.20 (28/12/2022):
+- Changed TextFile implementation to read files from project resources only and with that
+incorporate project files inside the executable.
+- Updated related test modules.
+- Added encryption package to access decrypt function.
+
 ## Update v1.19 (28/12/2022):
 - Created another window to introduce the game and let the user choose a board dimension
 before starting.

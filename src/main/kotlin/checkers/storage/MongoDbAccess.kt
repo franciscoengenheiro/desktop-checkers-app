@@ -2,8 +2,7 @@ package checkers.storage
 
 import checkers.model.board.Board
 import checkers.model.board.Dimension
-import checkers.ui.compose.dialogs.RULES_FILE_NAME
-import checkers.ui.compose.dialogs.Rule
+import encryption.decrypt
 import file.TextFile
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
@@ -21,20 +20,11 @@ import javax.crypto.spec.SecretKeySpec
 object MongoDbAccess {
     private val collection = "$Dimension"
     const val database = "Checkers"
-    private fun decrypt(cipherText: String): String {
-        val key = SecretKeySpec("3edd5c8a-85ec-11".toByteArray(), "AES")
-        // Initialization vector
-        val iv = IvParameterSpec(ByteArray(16))
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        cipher.init(Cipher.DECRYPT_MODE, key, iv)
-        val plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText))
-        return String(plainText)
-    }
-    private val encryptedConnectionString
-        get() = TextFile.read("EncryptedConnString.txt").first()
+    val connectionString = decrypt(
+        cipherText = TextFile.read("EncryptedConnString").first(),
+        key = "3edd5c8a-85ec-11"
+    )
     fun createClient(): MongoStorage<Board> {
-        // Decrypts connection string
-        val connectionString = decrypt(encryptedConnectionString)
         // Creates a client asynchronously
         val client = KMongo.createClient(connectionString).coroutine
         return MongoStorage(collection, client.getDatabase(database), BoardSerializer)

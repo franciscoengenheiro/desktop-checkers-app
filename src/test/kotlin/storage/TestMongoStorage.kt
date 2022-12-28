@@ -5,8 +5,8 @@ import checkers.model.board.Dimension
 import checkers.model.board.initialBoard
 import checkers.plays
 import checkers.storage.BoardSerializer
+import checkers.storage.MongoDbAccess.connectionString
 import checkers.storage.MongoDbAccess.database
-import checkers.storage.MongoDbAccess.envVariable
 import kotlinx.coroutines.runBlocking
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
@@ -17,8 +17,8 @@ import kotlin.test.assertEquals
 
 class MongoStorageTest {
     class Student(val _id: Any, val name: String)
-    private val envConnection = System.getenv(envVariable)
-    private val db = KMongo.createClient(envConnection).coroutine.getDatabase(database)
+    private val db = KMongo.createClient(connectionString)
+        .coroutine.getDatabase(database)
     private val collection = "test"
     private val gameId = "super"
     @BeforeTest fun setup() {
@@ -26,6 +26,7 @@ class MongoStorageTest {
             db.getCollection<Student>(collection)
                 .deleteOneById(gameId)
         }
+        // Set global board dimension
         Dimension = BoardDim.EIGHT
     }
     @Test fun `Check Mongo Db Connection`() {
