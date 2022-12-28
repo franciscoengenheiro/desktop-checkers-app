@@ -4,8 +4,11 @@ package checkers.ui.compose.base
  * Defines Application own image models.
  */
 object BaseImages {
-    val whitePiece = "whitePiece.png"
-    val blackPiece = "blackPiece.png"
-    val whiteKing = "whiteKing.png"
-    val blackKing = "blackKing.png"
+    const val WhitePiece = "whitePiece.png"
+    const val BlackPiece = "blackPiece.png"
+    const val WhiteKing = "whiteKing.png"
+    const val BlackKing = "blackKing.png"
+    const val BoardWithCheckers = "boardWithCheckers.png"
+    const val VerticalMarble = "verticalMarble.png"
+    const val NoInternet = "noInternet.png"
 }

@@ -29,7 +29,7 @@ val CELL_VIEW_SIZE = 70.dp * (BOARD_DIM_SCALE_FACTOR + 1f) // The cell (box) siz
 
 // Scale factors:
 private const val CHECKER_VIEW_SCALE_FACTOR
-        = 0.78f // Percentage of the cell which is covered by the square whose
+        = 0.75f // Percentage of the cell which is covered by the square whose
                 // sides equal the diameter of the checker image
 private const val CIRCLE_VIEW_SCALE_FACTOR
         = 0.40f // Percentage of the cell which is covered by the square whose
@@ -61,10 +61,10 @@ fun CellView(
 ) {
     println("CellView Recomposed")
     val image = when(checker) {
-        is Piece -> if (checker.player == Player.w) BaseImages.whitePiece
-                    else BaseImages.blackPiece
-        is King -> if (checker.player == Player.w) BaseImages.whiteKing
-                   else BaseImages.blackKing
+        is Piece -> if (checker.player == Player.w) BaseImages.WhitePiece
+                    else BaseImages.BlackPiece
+        is King -> if (checker.player == Player.w) BaseImages.WhiteKing
+                   else BaseImages.BlackKing
         null -> null
     }
     val checkerColors = CheckerColors

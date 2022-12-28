@@ -1,7 +1,5 @@
 package checkers.ui.compose.windows
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
@@ -17,7 +15,7 @@ import checkers.ui.compose.base.BaseIcons
 @Composable
 fun ApplicationScope.MainWindow(viewModel: ViewModel) = Window(
     onCloseRequest = ::exitApplication,
-    title = "Checkers",
+    title = MainWindow.title,
     state = WindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize.Unspecified
@@ -25,8 +23,7 @@ fun ApplicationScope.MainWindow(viewModel: ViewModel) = Window(
     icon = painterResource(BaseIcons.App),
     resizable = false
 ) {
-    MaterialTheme(colors = lightColors()) {
-        App(viewModel = viewModel, onExit = ::exitApplication)
-    }
+    println("MainWindow recomposition")
+    App(viewModel = viewModel, onExit = ::exitApplication)
 }
 

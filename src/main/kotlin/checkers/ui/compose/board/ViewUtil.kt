@@ -12,7 +12,7 @@ import checkers.ui.compose.base.BaseColors
 object CheckerColors {
     var white: Color = BaseColors.LightBrown
         private set
-    var black: Color = BaseColors.DarkBrown
+    var black: Color = BaseColors.Brown
         private set
 }
 

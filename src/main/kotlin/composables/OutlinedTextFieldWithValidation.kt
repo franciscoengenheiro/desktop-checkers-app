@@ -3,10 +3,7 @@ package composables
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
@@ -28,11 +25,18 @@ fun OutlinedTextFieldWithValidation(
             name = it
             invalidField = !validateField(name)
         },
-        label = { Text("Input", color = Color.Black) },
+        label = { Text(
+            text = "Input",
+            color = Color.Black,
+            style = MaterialTheme.typography.subtitle2
+        ) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 15.dp, vertical = 10.dp),
-        placeholder = { Text("Enter game id") },
+        placeholder = { Text(
+            text = "Enter game id",
+            style = MaterialTheme.typography.subtitle2
+        ) },
         singleLine = true,
         trailingIcon = {
             if (invalidField)
@@ -53,7 +57,7 @@ fun OutlinedTextFieldWithValidation(
 
 @Preview
 @Composable
-private fun TestExpandableCard() {
+private fun TestOutlinedTextFieldWithValidation() {
     fun validateField(text: String): Boolean = text.length > 2
     OutlinedTextFieldWithValidation(
         validateField = ::validateField

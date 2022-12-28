@@ -4,5 +4,6 @@ enum class DialogState {
     NoDialogOpen,
     NewGameDialog,
     ResumeGameDialog,
-    RulesDialog
+    RulesDialog,
+    NoInternetDialog
 }

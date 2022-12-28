@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.FrameWindowScope
 import checkers.ui.compose.board.BoardView
-import checkers.ui.compose.dialogs.DialogState
 import checkers.ui.compose.dialogs.NewGameDialog
+import checkers.ui.compose.dialogs.NoInternetDialog
 import checkers.ui.compose.dialogs.ResumeGameDialog
 import checkers.ui.compose.dialogs.RulesDialog
 import checkers.ui.compose.dialogs.util.DialogState
@@ -25,6 +25,9 @@ fun FrameWindowScope.App(viewModel: ViewModel, onExit: () -> Unit) {
         DialogState.RulesDialog -> RulesDialog(
             onDismiss = { viewModel.closeDialog() }
         )
+        DialogState.NoInternetDialog -> NoInternetDialog(
+            onDismiss = { viewModel.closeDialog() }
+        )
         DialogState.NoDialogOpen -> {}
     }
     Column {
@@ -40,10 +43,3 @@ fun FrameWindowScope.App(viewModel: ViewModel, onExit: () -> Unit) {
         StatusBar(game)
     }
 }
-
-/*
-
-SetBoardDimDialog(
-    onConfirm = { _ -> viewModel.setBoardDimension(BoardDim.EIGHT) },
-    onDismiss = { viewModel.setBoardDimension() }
-)*/

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import checkers.model.moves.move.Player
-import checkers.ui.compose.base.BaseColors
+import composables.DismissButton
 
 @Composable
 fun AcknowledgeButtons(
@@ -37,14 +37,10 @@ fun AcknowledgeButtons(
             ),
             shape = RoundedCornerShape(10.dp)
         ) { Text(confirmButtonText) }
-        Button(
-            onClick = onDismiss,
-            enabled = enable,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = BaseColors.DarkRed,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(10.dp)
-        ) { Text("Cancel") }
+        DismissButton(
+            onButtonText = "Cancel",
+            enable = enable,
+            onDismiss = onDismiss
+        )
     }
 }

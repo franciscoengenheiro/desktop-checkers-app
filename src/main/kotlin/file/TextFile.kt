@@ -6,6 +6,7 @@ import java.io.PrintWriter
 
 object TextFile: FileAccess<String, String> {
     // Function to read from a specified file and return data as an Array of Strings
+    // Returns the array pointer
     override fun read(fileName: String): Array<String> {
         // Creates a reader
         val reader = BufferedReader(FileReader(fileName))

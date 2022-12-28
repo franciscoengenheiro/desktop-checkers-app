@@ -1,13 +1,14 @@
 package checkers.ui.compose.dialogs.util
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import checkers.model.board.BoardDim
 import composables.radiobuttons.RadioButtons
@@ -15,20 +16,23 @@ import composables.radiobuttons.RadioOptions
 
 @Composable
 fun BoardDimButtons(): BoardDim {
-    Row(
-        modifier = Modifier.absolutePadding(top = 10.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Choose a Board Dimension",
-            style = MaterialTheme.typography.h6,
-            fontWeight = FontWeight.Bold
-        )
-    }
     val options = BoardDimRadioOptions
     lateinit var selectedOption: String
-    Row {
-        selectedOption = RadioButtons(options.list)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.absolutePadding(top = 10.dp),
+        ) {
+            Text(
+                text = "Choose a board dimension",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h6
+            )
+        }
+        Column {
+            selectedOption = RadioButtons(options.list)
+        }
     }
     return options.get(selectedOption)
 }

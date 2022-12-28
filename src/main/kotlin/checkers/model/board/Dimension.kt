@@ -9,9 +9,7 @@ enum class BoardDim(val value: Int) {
 
 lateinit var Dimension: BoardDim
 
-fun setGlobalBoardDimension(dim: BoardDim) {
-    Dimension = dim
-}
+fun setGlobalBoardDimension(dim: BoardDim) { Dimension = dim }
 
 fun setActualBoardDimension() =
     if (!(::Dimension.isInitialized))

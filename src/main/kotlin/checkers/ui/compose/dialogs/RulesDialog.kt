@@ -64,7 +64,7 @@ fun RulesDialog(onDismiss: ()->Unit) = Dialog(
                 ExpandableCard(
                     title = "Rule ${index + 1}",
                     description = Rule.list[index].description,
-                    painter = painterResource(BaseIcons.Rules)
+                    painter = painterResource(BaseIcons.Rule)
                 )
             }
         }

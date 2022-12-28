@@ -2,6 +2,7 @@ package composables.radiobuttons
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
@@ -12,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -32,7 +32,7 @@ fun RadioButtons(
                 onClick = { onOptionSelected(option) },
                 colors = RadioButtonDefaults.colors(Color.Black)
             )
-            Text(text = option, fontWeight = FontWeight.Bold)
+            Text(text = option, style = MaterialTheme.typography.subtitle1)
             // Useful when inside a Row Scope
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
         }

@@ -5,20 +5,23 @@ package checkers.ui.compose.base
  */
 object BaseIcons {
     // App:
-    val App = "appIcon.png"
+    const val App = "appIcon.png"
+    // InitialWindow Screen
+    const val GitHub = "gitHubIcon.png"
     // Dialogs:
-    val WriteTextDialog = "newGameDialogIcon.png"
+    const val WriteTextDialog = "newGameDialogIcon.png"
+    const val NoInternet = "noInternetIcon.png"
     // Menu - Game:
-    val NewGame = "newGameIcon.png"
-    val ResumeGame = "resumeGameIcon.png"
-    val Refresh = "refreshIcon.png"
-    val Exit = "exitIcon.png"
+    const val NewGame = "newGameIcon.png"
+    const val ResumeGame = "resumeGameIcon.png"
+    const val Refresh = "refreshIcon.png"
+    const val Exit = "exitIcon.png"
     // Menu - Options:
-    val ShowTargets = "showTargetsIcon.png"
-    val AutoRefresh = "autoRefreshIcon.png"
+    const val ShowTargets = "showTargetsIcon.png"
+    const val AutoRefresh = "autoRefreshIcon.png"
     // Menu - Help:
-    val Help = "helpIcon.png"
-    val Win = "winIcon.png"
-    val Draw = "drawIcon.png"
-    val Rules = "rulesIcon.png"
+    const val Help = "helpIcon.png"
+    const val Win = "winIcon.png"
+    const val Draw = "drawIcon.png"
+    const val Rule = "ruleIcon.png"
 }

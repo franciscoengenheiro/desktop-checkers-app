@@ -35,7 +35,7 @@ fun BoxWithText(
 
 @Preview
 @Composable
-private fun BoxWithTextTest() {
+private fun TestBoxWithTest() {
     Box(
         modifier = Modifier.size(40.dp).background(Color.Green)
     ) {

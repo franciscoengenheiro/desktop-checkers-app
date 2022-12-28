@@ -1,7 +1,6 @@
 package checkers.ui.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -22,21 +21,20 @@ import checkers.ui.compose.board.BOARD_DIM_DIFF
 import checkers.ui.compose.board.CELL_VIEW_SIZE
 
 private val GRID_OFFSET = if (-BOARD_DIM_DIFF <= 2) 2.dp else 1.dp
-private val GRID_VIEW_SIZE = CELL_VIEW_SIZE * BOARD_DIM + GRID_OFFSET  // TODO
+private val GRID_VIEW_SIZE = CELL_VIEW_SIZE * BOARD_DIM + GRID_OFFSET
 
 @Composable
 fun StatusBar(game: Game?) = Row(
-    Modifier.background(MaterialTheme.colors.onSurface)
+    modifier = Modifier.background(Color.Black)
         .requiredWidth(GRID_VIEW_SIZE)
-        .height(30.dp)
-        .border(1.dp, Color.Black),
+        .height(30.dp),
     horizontalArrangement = Arrangement.SpaceBetween
 ) {
     val style: TextStyle = MaterialTheme.typography.h5
     if (game == null) {
         Text(
             text = "Start or resume a game",
-            color = MaterialTheme.colors.onPrimary,
+            color = Color.White,
             style = style)
     } else {
         val turnStatus = when(game.board) {
@@ -49,14 +47,14 @@ fun StatusBar(game: Game?) = Row(
         }
         Text(
             text = "Game: ${game.id}",
-            color = MaterialTheme.colors.onPrimary,
+            color = Color.White,
             style = style
         )
         Text(
             text = "You: ${game.localPlayer.label()}",
-            color = MaterialTheme.colors.onPrimary,
+            color = Color.White,
             style = style
         )
-        Text(turnStatus, color = MaterialTheme.colors.onPrimary, style = style)
+        Text(turnStatus, color = Color.White, style = style)
     }
 }
