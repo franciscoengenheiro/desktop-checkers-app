@@ -45,5 +45,9 @@ fun RequestInputDialog(
     }
 }
 
-private fun validateField(txt: String) =
-    txt.length in 1.. MAX_GAME_ID_LENGTH && txt.isNotBlank()
+private fun validateField(txt: String): Boolean {
+    for(index in txt.indices) {
+        if (!txt[index].isLetterOrDigit()) return false
+    }
+    return txt.length in 1.. MAX_GAME_ID_LENGTH
+}

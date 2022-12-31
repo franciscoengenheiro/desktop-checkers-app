@@ -2,6 +2,9 @@ package checkers.storage
 
 import checkers.model.board.Board
 import checkers.model.board.Dimension
+import com.mongodb.MongoClientSettings
+import com.mongodb.MongoConfigurationException
+import com.mongodb.MongoException
 import encryption.decrypt
 import file.TextFile
 import org.litote.kmongo.coroutine.coroutine
@@ -14,8 +17,7 @@ import javax.crypto.spec.SecretKeySpec
 
 /**
  * Creates a client to access a Mongo database inside a collection
- * by using a connection string stored in an environmental variable within
- * the IDE.
+ * by using decrypting a connection string stored in a resource file.
  */
 object MongoDbAccess {
     private val collection = "$Dimension"

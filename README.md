@@ -2,6 +2,20 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.21 (31/12/2022):
+- Changed connection string options for the server timeout to be more quick in order to not let 
+the user wait 30 seconds (default) for a timeout and the no internet dialog to appear after.
+- Removed suboptimal function to check for internet connection for every user action.
+- Introduced a new error dialog, which is an internal dialog, that shows errors as messages.
+- Added more images and icons to better suit this dialog style.
+- Alert Dialog is now avalaible in the generic composables package.
+- Introduced try/catch blocks in viewmodel in order to catch specific exceptions and show
+the corresponding dialog to the user.
+- The function onCellClick, in ViewUtil.kt, still has its own try/catch block, with catch 
+being empty, because it will be annoying for the user to see an error dialog after every 
+miss click or invalid play on a given square. If removed in the future will be catched by 
+the new error dialog on ViewModel.kt
+
 ## Update v1.20 (28/12/2022):
 - Changed TextFile implementation to read files from project resources only and with that
 incorporate project files inside the executable.
@@ -39,8 +53,8 @@ increase gameplay realism.
 - Solved CellView refresh bug. This Composable was being recomposed without necessaty when 
 a cell was selected and the player remained idle.
 - Created ViewUtils.kt to store both CellView and BoardView utility functions.
-- Created an interface and object to enable Text File access along with a set of tests to verify 
-this implementation.
+- Created an interface and object to enable Text File access along with a set of tests to 
+verify this implementation.
 - Rules is now a text file instead of hardcoded strings.
 - Created another packaged inside dialog's to store App's own custom composables used in 
 other dialogs. Also created previews for some of them.

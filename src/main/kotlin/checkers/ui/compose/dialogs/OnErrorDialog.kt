@@ -14,16 +14,18 @@ import checkers.ui.compose.base.BaseImages
 import composables.AlertDialog
 
 @Composable
-fun NoInternetDialog(onDismiss: () -> Unit) = AlertDialog(
-    title = "Lost internet connection",
-    icon = painterResource(BaseIcons.NoInternet),
+fun OnErrorDialog(
+    message: String?,
+    onDismiss: () -> Unit
+) = AlertDialog(
+    title = "An error ocurred",
+    icon = painterResource(BaseIcons.AlertTriangle),
     image = { Image(
-        painterResource(BaseImages.NoInternet),
+        painterResource(BaseImages.AlertTriangle),
         contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.size(150.dp).clip(CircleShape)
+        modifier = Modifier.size(150.dp)
     )},
-    centeredText = "No Internet",
-    subtitleText = "No internet connection found. Check your connection or try again.",
+    centeredText = "Error",
+    subtitleText = message,
     onDismiss = onDismiss
 )

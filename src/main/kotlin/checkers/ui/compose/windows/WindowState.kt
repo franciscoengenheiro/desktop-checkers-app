@@ -6,7 +6,7 @@ sealed class WindowState() {
     var dialog: DialogState = DialogState.NoDialogOpen
         set(value) {
             if (value !in this.dialogs)
-                throw IllegalStateException("Dialog $value does not exist in this window state")
+                throw IllegalStateException("Dialog $value does not exist in $this")
             else
                 field = value
         }

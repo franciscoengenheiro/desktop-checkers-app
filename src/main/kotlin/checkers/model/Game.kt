@@ -25,7 +25,7 @@ data class Game(val id: String, val localPlayer: Player, val board: Board)
  * from its initial starting position in an existing game, a new game is constructed
  * from scratch.
  * @param id Game unique identifier.
- * @param storage Storage where the game data will be.
+ * @param storage Storage where the game data will be stored.
  */
 suspend fun createGame(
     id: String,

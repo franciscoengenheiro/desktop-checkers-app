@@ -59,7 +59,6 @@ fun CellView(
     drawTarget: Boolean,
     onClick: () -> Unit
 ) {
-    println("CellView Recomposed")
     val image = when(checker) {
         is Piece -> if (checker.player == Player.w) BaseImages.WhitePiece
                     else BaseImages.BlackPiece

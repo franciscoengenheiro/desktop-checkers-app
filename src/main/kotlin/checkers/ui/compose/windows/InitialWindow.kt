@@ -29,6 +29,7 @@ import checkers.ui.compose.base.BaseColors
 import checkers.ui.compose.base.BaseIcons
 import checkers.ui.compose.base.BaseImages
 import checkers.ui.compose.dialogs.NoInternetDialog
+import checkers.ui.compose.dialogs.OnErrorDialog
 import checkers.ui.compose.dialogs.util.BoardDimButtons
 import checkers.ui.compose.dialogs.util.DialogState
 
@@ -47,9 +48,12 @@ fun ApplicationScope.InitialWindow(viewModel: ViewModel) = Window(
     icon = painterResource(BaseIcons.App),
     resizable = false
 ) {
-    println("InitialWindow recomposition")
     when(viewModel.dialog) {
         DialogState.NoInternetDialog -> NoInternetDialog(
+            onDismiss = { viewModel.closeDialog() }
+        )
+        DialogState.OnError -> OnErrorDialog(
+            message = viewModel.error,
             onDismiss = { viewModel.closeDialog() }
         )
     }

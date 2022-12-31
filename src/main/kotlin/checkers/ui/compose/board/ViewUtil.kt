@@ -27,10 +27,11 @@ fun onCellClick(
     var selectedCell: Square? = selCell
     if (localPlayerTurn(board, localPlayer)) {
         if (selCell != null && selCell != cell)
-            try { onPlay(selCell, cell) }
-            catch(ex: Exception) {}
+            try {
+                onPlay(selCell, cell)
+            } catch(e: Exception) {}
         selectedCell = if (selCell != cell && checker?.player === localPlayer) cell
-        else null
+                       else null
     }
     return selectedCell
 }

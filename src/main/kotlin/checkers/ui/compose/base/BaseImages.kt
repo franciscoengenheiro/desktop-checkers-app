@@ -11,4 +11,5 @@ object BaseImages {
     const val BoardWithCheckers = "boardWithCheckers.png"
     const val VerticalMarble = "verticalMarble.png"
     const val NoInternet = "noInternet.png"
+    const val AlertTriangle =  "alertTriangle.png"
 }

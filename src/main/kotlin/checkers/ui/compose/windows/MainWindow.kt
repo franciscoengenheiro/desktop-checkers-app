@@ -23,7 +23,6 @@ fun ApplicationScope.MainWindow(viewModel: ViewModel) = Window(
     icon = painterResource(BaseIcons.App),
     resizable = false
 ) {
-    println("MainWindow recomposition")
     App(viewModel = viewModel, onExit = ::exitApplication)
 }
 

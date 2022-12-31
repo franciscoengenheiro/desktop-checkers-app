@@ -18,7 +18,6 @@ fun BoardView(
     onPlay: (fromSqr: Square, toSqr: Square) -> Unit,
     enableTargets: Boolean
 ) {
-    println("BoardView Recomposed")
     var selectedCell by remember { mutableStateOf<Square?>(null) }
     val (colRange, rowRange) = calculateRanges(invert)
     Column {
