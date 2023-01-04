@@ -91,7 +91,7 @@ private fun String.reconstructMove(): Move {
     require(words.size == 3) { "Each line must have exactly 3 words in a string with" +
             " the following format: <Square> <Checker> <Player>" }
     val retrievedSquare = (words[0]).toSquareOrNull()
-    requireNotNull(retrievedSquare) { "Retrieved square doens't exist on the board" }
+    requireNotNull(retrievedSquare) { "Retrieved square doesn't exist on the board" }
     val retrievedPlayer = Player.valueOf(words[2])
     val checkerType = when(words[1]) {
         Piece::class.simpleName -> Piece(retrievedPlayer)

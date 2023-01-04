@@ -2,7 +2,7 @@ package checkers.ui.compose.windows
 
 import checkers.ui.compose.dialogs.util.DialogState
 
-sealed class WindowState() {
+sealed class WindowState {
     var dialog: DialogState = DialogState.NoDialogOpen
         set(value) {
             if (value !in this.dialogs)
@@ -17,16 +17,18 @@ sealed class WindowState() {
 object InitialWindow: WindowState() {
     override val dialogs = listOf(
         DialogState.NoDialogOpen,
-        DialogState.NoInternetDialog
+        DialogState.NoInternet
     )
 }
 
 object MainWindow: WindowState() {
     override val dialogs = listOf(
         DialogState.NoDialogOpen,
-        DialogState.NewGameDialog,
-        DialogState.ResumeGameDialog,
-        DialogState.RulesDialog,
-        DialogState.NoInternetDialog
+        DialogState.NewGame,
+        DialogState.ResumeGame,
+        DialogState.Rules,
+        DialogState.NoInternet,
+        DialogState.OnError,
+        DialogState.EndGame
     )
 }

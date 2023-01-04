@@ -1,10 +1,7 @@
 package checkers.model.board
 
 import checkers.model.moves.Moves
-import checkers.model.moves.move.Checker
-import checkers.model.moves.move.Piece
-import checkers.model.moves.move.Player
-import checkers.model.moves.move.Square
+import checkers.model.moves.move.*
 
 // Constants
 val BOARD_DIM by lazy { setActualBoardDimension() }

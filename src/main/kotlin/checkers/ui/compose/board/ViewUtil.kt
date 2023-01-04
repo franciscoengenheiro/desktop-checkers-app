@@ -29,7 +29,9 @@ fun onCellClick(
         if (selCell != null && selCell != cell)
             try {
                 onPlay(selCell, cell)
-            } catch(e: Exception) {}
+            } catch(e: Exception) {
+                print("OnCellClick: ${e.message}")
+            }
         selectedCell = if (selCell != cell && checker?.player === localPlayer) cell
                        else null
     }

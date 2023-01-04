@@ -20,6 +20,7 @@ import checkers.model.board.BoardWin
 import checkers.ui.compose.board.BOARD_DIM_DIFF
 import checkers.ui.compose.board.CELL_VIEW_SIZE
 
+// Constants
 private val GRID_OFFSET = if (-BOARD_DIM_DIFF <= 2) 2.dp else 1.dp
 private val GRID_VIEW_SIZE = CELL_VIEW_SIZE * BOARD_DIM + GRID_OFFSET
 

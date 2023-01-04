@@ -34,7 +34,7 @@ import checkers.ui.compose.dialogs.util.BoardDimButtons
 import checkers.ui.compose.dialogs.util.DialogState
 
 private val INITIAL_WINDOW_HEIGHT = 600.dp
-private const val emailTo = "franciscoengenheiro.195@gmail.com"
+private const val emailTo = "checkersdesktopapp@gmail.com"
 private val subject = "Report an issue".replace(" ", "+")
 
 @Composable
@@ -49,12 +49,12 @@ fun ApplicationScope.InitialWindow(viewModel: ViewModel) = Window(
     resizable = false
 ) {
     when(viewModel.dialog) {
-        DialogState.NoInternetDialog -> NoInternetDialog(
-            onDismiss = { viewModel.closeDialog() }
+        DialogState.NoInternet -> NoInternetDialog(
+            onDismiss = { viewModel.closeCurrentDialog() }
         )
         DialogState.OnError -> OnErrorDialog(
             message = viewModel.error,
-            onDismiss = { viewModel.closeDialog() }
+            onDismiss = { viewModel.closeCurrentDialog() }
         )
     }
     Row(

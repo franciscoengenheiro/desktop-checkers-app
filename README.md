@@ -2,6 +2,14 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.22 (04/01/2023):
+- Fixed inverted board bug which was caused by a bad auto refresh implementation in ViewModel.
+- Fixed an issue when a play was made without internet would cause an uncaught exception.
+- Created 3 new dialogs (which are built using the same dialog util function) to 
+represent all end game states: win, lose and draw.
+- Changed all image and icon assets to sharper vector images.
+- Added SoundPool dependency for future implementation.
+
 ## Update v1.21 (31/12/2022):
 - Changed connection string options for the server timeout to be more quick in order to not let 
 the user wait 30 seconds (default) for a timeout and the no internet dialog to appear after.

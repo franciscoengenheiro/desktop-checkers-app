@@ -56,7 +56,7 @@ fun AlertDialog(
                     style = MaterialTheme.typography.subtitle2,
                     textAlign = TextAlign.Center,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 3
+                    maxLines = 6
                 )
             }
         }

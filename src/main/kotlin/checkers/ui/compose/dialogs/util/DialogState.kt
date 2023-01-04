@@ -2,9 +2,10 @@ package checkers.ui.compose.dialogs.util
 
 enum class DialogState {
     NoDialogOpen,
-    NewGameDialog,
-    ResumeGameDialog,
-    RulesDialog,
-    NoInternetDialog,
-    OnError
+    NewGame,
+    ResumeGame,
+    Rules,
+    NoInternet,
+    OnError,
+    EndGame
 }

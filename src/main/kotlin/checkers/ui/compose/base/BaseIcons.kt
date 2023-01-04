@@ -12,6 +12,7 @@ object BaseIcons {
     const val WriteTextDialog = "newGameDialogIcon.png"
     const val NoInternet = "noInternetIcon.png"
     const val AlertTriangle = "alertTriangleIcon.png"
+    const val Info = "infoIcon.png"
     // Menu - Game:
     const val NewGame = "newGameIcon.png"
     const val ResumeGame = "resumeGameIcon.png"

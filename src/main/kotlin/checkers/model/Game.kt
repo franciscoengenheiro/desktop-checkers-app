@@ -32,7 +32,7 @@ suspend fun createGame(
     storage: BoardStorage
 ): Game {
     // Check if a board is in the specified storage
-    val board = storage.read(id)
+    val board = storage.read(id).also { println("read from database") }
     // If the storage has a board:
     if (board != null) {
         // Check if the already created board has a maximum of one move done
@@ -42,13 +42,13 @@ suspend fun createGame(
             return Game(id, Player.b, board)
         } else {
             // Delete the previous board from the storage
-            storage.delete(id)
+            storage.delete(id).also { println("deleted a file") }
         }
     }
     // Create a new game
     return Game(id, Player.w, initialBoard()).also {
         // Create a storage to store the new board
-        storage.create(id, initialBoard())
+        storage.create(id, initialBoard()).also { println("created a file") }
     }
 }
 
@@ -65,8 +65,8 @@ suspend fun resumeGame(
     storage: BoardStorage
 ): Game {
     // Await for the value of the retrieved board, without blocking the current thread
-    val newBoard = storage.read(id)
-    requireNotNull(newBoard) { "Game with id $id does not exist" }
+    val newBoard = storage.read(id).also { println("read from database (resume game)") }
+    requireNotNull(newBoard) { "Game with id $id does not exist." }
     // If the storage has a previously created board, the game will resume with
     // the specified player
     return Game(id, localPlayer, newBoard)
@@ -83,22 +83,21 @@ suspend fun resumeGame(
  * @throws [IllegalStateException] If the board is not of [BoardRun] type or
  * if the current board turn does not belong to the player trying to make a move.
  */
-fun Game.play(
+suspend fun Game.play(
     fromSqr: Square,
     toSqr: Square,
     storage: BoardStorage,
     scope: CoroutineScope
 ): Game {
-    check(board is BoardRun) { "Game is over" }
-    check(localPlayer == board.turn) { "Not your turn" }
+    check(board is BoardRun) { "Game is over." }
+    check(localPlayer == board.turn) { "Not your turn." }
     // Create a new board with the recent play
     val newBoard = board.play(fromSqr, toSqr)
     // Launch a coroutine, to update the game asynchronously, since there's no need
     // to wait for it to finish to resume the game
-    scope.launch {
         // Update the board in the storage
-        storage.update(this@play.id, newBoard)
-    }
+        storage.update(this@play.id, newBoard) // TODO("fix this")
+
     // Replace the old board with the new board
     return copy(board = newBoard)
 }

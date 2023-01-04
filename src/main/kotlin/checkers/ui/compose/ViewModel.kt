@@ -4,10 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import checkers.model.Game
-import checkers.model.board.Board
-import checkers.model.board.BoardDim
-import checkers.model.board.BoardRun
-import checkers.model.board.setGlobalBoardDimension
+import checkers.model.board.*
 import checkers.model.createGame
 import checkers.model.moves.move.Player
 import checkers.model.moves.move.Square
@@ -21,6 +18,7 @@ import checkers.ui.compose.windows.MainWindow
 import checkers.ui.compose.windows.WindowState
 import com.mongodb.MongoException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -32,6 +30,7 @@ class ViewModel (private val scope: CoroutineScope) {
         private set
     var error by mutableStateOf<String?>(null)
         private set
+    private var job by mutableStateOf<Job?>(null)
     lateinit var storage: BoardStorage
         // FileStorage("games", BoardSerializer)
     val refreshStatus: Boolean
@@ -48,6 +47,11 @@ class ViewModel (private val scope: CoroutineScope) {
         get() = showTargets
     val autoRefreshStatus: Boolean
         get() = autoRefresh
+    val gameStatus: Boolean
+        get() {
+            val g = game ?: return false
+            return g.board is BoardRun
+        }
     // Game state
     var game: Game? by mutableStateOf(null)
         private set
@@ -61,7 +65,7 @@ class ViewModel (private val scope: CoroutineScope) {
             storage = MongoDbAccess.createClient()
             window = MainWindow
         } catch (e: Exception) {
-            when(e) {
+            when (e) {
                 is MongoException -> openNoInternetDialog()
                 else -> openErrorDialog(e.message)
             }
@@ -72,8 +76,9 @@ class ViewModel (private val scope: CoroutineScope) {
             scope.launch {
                 try {
                     game = createGame(name, storage)
-                    closeDialog()
+                    closeCurrentDialog()
                     val g = game ?: return@launch
+                    job?.cancel()
                     if (!isLocalPlayerTurn()) autoRefresh(g)
                 } catch (e: Exception) {
                     when(e) {
@@ -89,7 +94,8 @@ class ViewModel (private val scope: CoroutineScope) {
             scope.launch {
                 try {
                     game = resumeGame(name, player, storage)
-                    closeDialog()
+                    closeCurrentDialog()
+                    job?.cancel()
                     val g = game
                     g?.let { if (!isLocalPlayerTurn()) autoRefresh(it) }
                 } catch (e: Exception) {
@@ -104,15 +110,17 @@ class ViewModel (private val scope: CoroutineScope) {
     fun play(tosqr: Square, fromSqr: Square) {
         val g = game ?: return
         if (isLocalPlayerTurn()) {
-            try {
-                game = g.play(tosqr, fromSqr, storage, scope)
-                scope.launch {
-                    autoRefresh(g)
-                }
-            } catch (e: Exception) {
-                when(e) {
-                    is MongoException -> openNoInternetDialog()
-                    else -> openErrorDialog(e.message)
+            scope.launch {
+                try {
+                    game = g.play(tosqr, fromSqr, storage, scope)
+                    scope.launch {
+                        autoRefresh(g)
+                    }
+                } catch (e: Exception) {
+                    when(e) {
+                        is MongoException -> openNoInternetDialog()
+                        else -> openErrorDialog(e.message)
+                    }
                 }
             }
         }
@@ -125,39 +133,54 @@ class ViewModel (private val scope: CoroutineScope) {
                 board = storage.read(g.id)
                 checkNotNull(board)
                 game = g.copy(board = board)
-            } catch (e: MongoException) {
-                openNoInternetDialog()
+            } catch (e: Exception) {
+                when(e) {
+                    is MongoException -> openNoInternetDialog()
+                    else -> openErrorDialog(e.message)
+                }
             }
         }
     }
     private suspend fun autoRefresh(g: Game) {
-        if (!autoRefreshStatus) return
-        var board: Board? = null
-        do {
-            delay(1.seconds)
-            try {
-                board = storage.read(g.id)
-                checkNotNull(board)
-                game = g.copy(board = board)
-            } catch (e: MongoException) {
-                openNoInternetDialog()
-            }
-        } while (board is BoardRun && !isLocalPlayerTurn(board))
+        job = scope.launch {
+            var board: Board? = null
+            do {
+                delay(1.seconds)
+                try {
+                    board = storage.read(g.id)
+                    checkNotNull(board)
+                    game = g.copy(board = board)
+                } catch (e: Exception) {
+                    when(e) {
+                        is MongoException -> openNoInternetDialog()
+                        else -> openErrorDialog(e.message)
+                    }
+                }
+            } while (board is BoardRun && !isLocalPlayerTurn(board) && autoRefreshStatus)
+        }
     }
     private fun isLocalPlayerTurn(board: Board? = null): Boolean {
         val g = game ?: return false
         val b = board ?: g.board
         return b is BoardRun && g.localPlayer == b.turn
     }
+    fun evaluateGameState() {
+        val g = game ?: return
+        if (g.board is BoardRun) return
+        openEndGameDialog()
+    }
+    // User driven actions
     fun showTargetsToggle() { showTargets = !showTargets }
     fun autoRefreshToggle() { autoRefresh = !autoRefresh }
-    fun openNewGameDialog() { dialog = DialogState.NewGameDialog }
-    fun openResumeGameDialog() { dialog = DialogState.ResumeGameDialog }
-    fun openRulesDialog() { dialog = DialogState.RulesDialog }
-    private fun openNoInternetDialog() { dialog = DialogState.NoInternetDialog }
+    fun openNewGameDialog() { dialog = DialogState.NewGame }
+    fun openResumeGameDialog() { dialog = DialogState.ResumeGame }
+    fun openRulesDialog() { dialog = DialogState.Rules }
+    // Internal reactions
+    private fun openNoInternetDialog() { dialog = DialogState.NoInternet }
+    private fun openEndGameDialog() { dialog = DialogState.EndGame }
     private fun openErrorDialog(msg: String?) {
         error = msg
         dialog = DialogState.OnError
     }
-    fun closeDialog() { dialog = DialogState.NoDialogOpen }
+    fun closeCurrentDialog() { dialog = DialogState.NoDialogOpen }
 }

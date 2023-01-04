@@ -12,4 +12,7 @@ object BaseImages {
     const val VerticalMarble = "verticalMarble.png"
     const val NoInternet = "noInternet.png"
     const val AlertTriangle =  "alertTriangle.png"
+    const val Trophy = "trophy.png"
+    const val Contract = "contract.png"
+    const val Skull = "skull.png"
 }

@@ -23,11 +23,11 @@ object TextFile: FileAccess<String, String> {
     }
     /**
      * Specifies a path independent of the operating system.
-     * @param folderList a variable amount of strings, each one representing a folder
+     * @param pathSegments a variable amount of strings, each one representing a folder
      * and the last one the file, that make a path to a file.
      */
-    fun createPathToFile(vararg folderList: String) =
-        folderList.joinToString(separator = File.separator)
+    fun createPathToFile(vararg pathSegments: String) =
+        pathSegments.joinToString(separator = File.separator)
     /**
      * Writes given data as a List of Strings to the specified file.
      * The new file will be located in the current project resources. If the

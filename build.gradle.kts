@@ -26,6 +26,8 @@ dependencies {
     implementation("org.litote.kmongo:kmongo:4.8.0")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
     implementation("org.litote.kmongo:kmongo-coroutine:4.8.0")
+    // Sound
+    implementation("com.olekdia:sound-pool:3.7.1")
     // Redux Kotlin (middlewares)
     implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5")
 }
