@@ -15,10 +15,10 @@ fun main() {
     val cmds = getCommands(storage)
     var game: Game? = null
     afterBoardDimSetMsg()
-    while(true) {
+    while (true) {
         val (name, args) = readCommand()
         val cmd: Command? = cmds[name]
-        if (cmd == null) println("Invalid command: $name")
+        if (cmd == null) println("Invalid command.")
         else try {
             game = cmd.execute(args, game)
             cmd.show(game)
@@ -46,15 +46,6 @@ private fun saveGameDataIn(s: String): BoardStorage {
 }
 
 /**
- * Prints a message to the stdout after a board dimension was set.
- */
-private fun afterBoardDimSetMsg() =
-    listOf(
-        "[INFO]: Board dimension was set to: $Dimension",
-        "[INFO]: To see the avalaible commands type: help"
-    ).forEach { println(it) }
-
-/**
  * Prints a message to the stdout before a board dimension was set.
  */
 private fun beforeBoardDimSetMsg() {
@@ -67,3 +58,12 @@ private fun beforeBoardDimSetMsg() {
         "[REQUEST]: Choose a board dimension: $dimensions"
     ).forEach { println(it) }
 }
+
+/**
+ * Prints a message to the stdout after a board dimension was set.
+ */
+private fun afterBoardDimSetMsg() =
+    listOf(
+        "[INFO]: Board dimension was set to: $Dimension",
+        "[INFO]: To see the avalaible commands type: help"
+    ).forEach { println(it) }

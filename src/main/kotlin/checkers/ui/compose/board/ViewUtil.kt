@@ -26,12 +26,7 @@ fun onCellClick(
 ): Square? {
     var selectedCell: Square? = selCell
     if (localPlayerTurn(board, localPlayer)) {
-        if (selCell != null && selCell != cell)
-            try {
-                onPlay(selCell, cell)
-            } catch(e: Exception) {
-                print("OnCellClick: ${e.message}")
-            }
+        if (selCell != null && selCell != cell) onPlay(selCell, cell)
         selectedCell = if (selCell != cell && checker?.player === localPlayer) cell
                        else null
     }

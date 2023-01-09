@@ -1,4 +1,4 @@
-package checkers.ui.compose
+package checkers.ui.compose.base
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography

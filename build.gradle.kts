@@ -13,21 +13,23 @@ version = "1.0"
 repositories {
     google()
     mavenCentral()
+    flatDir { dirs("libs") }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
+    // Kotlin test framework
     testImplementation(kotlin("test"))
-    // Compose
+    // Desktop Compose
     implementation(compose.desktop.currentOs)
     // Async File access
     implementation("com.github.javasync:RxIo:1.2.6")
-    // MongoDB integration
+    // MongoDb integration (Sync and Async versions)
     implementation("org.litote.kmongo:kmongo:4.8.0")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
     implementation("org.litote.kmongo:kmongo-coroutine:4.8.0")
-    // Sound
-    implementation("com.olekdia:sound-pool:3.7.1")
+    // Custom canvas (for sound access functions)
+    implementation("pt.isel:CanvasLib-jvm:1.0.1")
     // Redux Kotlin (middlewares)
     implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5")
 }
@@ -52,6 +54,7 @@ tasks.jar {
 
 compose.desktop {
     application {
+        // Define the main class of the application
         mainClass = "checkers.MainKt"
         nativeDistributions {
             // macOS — .dmg (TargetFormat.Dmg), .pkg (TargetFormat.Pkg)
@@ -59,11 +62,10 @@ compose.desktop {
             // Linux — .deb (TargetFormat.Deb), .rpm (TargetFormat.Rpm)
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "CheckersDesktopApp"
-            packageVersion = "1.19"
-            modules("java.sql")
+            packageVersion = "1.23"
             windows {
                 // a version for all Windows distributables
-                packageVersion = "1.19"
+                packageVersion = "1.23"
                 // a version only for the msi package
                 // msiPackageVersion = "..."
                 // a version only for the exe package

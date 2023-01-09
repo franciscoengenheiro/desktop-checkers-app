@@ -13,6 +13,7 @@ import checkers.model.resumeGame
 import checkers.storage.BoardStorage
 import checkers.storage.MongoDbAccess
 import checkers.ui.compose.dialogs.util.DialogState
+import checkers.ui.compose.sound.MediaPlayer
 import checkers.ui.compose.windows.InitialWindow
 import checkers.ui.compose.windows.MainWindow
 import checkers.ui.compose.windows.WindowState
@@ -23,6 +24,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+private val REFRESH_DELAY = 1.seconds
+
 class ViewModel (private val scope: CoroutineScope) {
     var window by mutableStateOf<WindowState>(InitialWindow)
         private set
@@ -30,7 +33,7 @@ class ViewModel (private val scope: CoroutineScope) {
         private set
     var error by mutableStateOf<String?>(null)
         private set
-    private var job by mutableStateOf<Job?>(null)
+    private var autoRefreshJob by mutableStateOf<Job?>(null)
     lateinit var storage: BoardStorage
         // FileStorage("games", BoardSerializer)
     val refreshStatus: Boolean
@@ -38,6 +41,7 @@ class ViewModel (private val scope: CoroutineScope) {
             val g = game ?: return false
             return !onRefresh && g.board is BoardRun && g.localPlayer != g.board.turn
         }
+    // Game status
     val invertBoardStatus: Boolean
         get() {
             val g = game ?: return false
@@ -47,10 +51,12 @@ class ViewModel (private val scope: CoroutineScope) {
         get() = showTargets
     val autoRefreshStatus: Boolean
         get() = autoRefresh
-    val gameStatus: Boolean
+    val soundStatus: Boolean
+        get() = soundEnabled
+    val gameFinishedStatus: Boolean
         get() {
             val g = game ?: return false
-            return g.board is BoardRun
+            return g.board !is BoardRun
         }
     // Game state
     var game: Game? by mutableStateOf(null)
@@ -59,9 +65,11 @@ class ViewModel (private val scope: CoroutineScope) {
     private var onRefresh by mutableStateOf(false)
     private var showTargets by mutableStateOf(true)
     private var autoRefresh by mutableStateOf(true)
+    private var soundEnabled by mutableStateOf(true)
     fun setBoardDimension(dim: BoardDim) {
+        MediaPlayer.loadSounds()
+        setGlobalBoardDimension(dim)
         try {
-            setGlobalBoardDimension(dim)
             storage = MongoDbAccess.createClient()
             window = MainWindow
         } catch (e: Exception) {
@@ -71,14 +79,15 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
-    fun newGame(name: String? = null) {
+    fun newGame(name: String?) {
         if (name != null) {
             scope.launch {
                 try {
                     game = createGame(name, storage)
+                    if (soundEnabled) MediaPlayer.onBoardStart()
                     closeCurrentDialog()
                     val g = game ?: return@launch
-                    job?.cancel()
+                    autoRefreshJob?.cancel()
                     if (!isLocalPlayerTurn()) autoRefresh(g)
                 } catch (e: Exception) {
                     when(e) {
@@ -89,15 +98,17 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
-    fun resumeGame(name: String? = null, player: Player? = null) {
+    fun resumeGame(name: String?, player: Player?) {
         if (name != null && player != null) {
             scope.launch {
                 try {
                     game = resumeGame(name, player, storage)
                     closeCurrentDialog()
-                    job?.cancel()
+                    autoRefreshJob?.cancel()
                     val g = game
-                    g?.let { if (!isLocalPlayerTurn()) autoRefresh(it) }
+                    g?.let {
+                        if (!isLocalPlayerTurn()) autoRefresh(it)
+                    }
                 } catch (e: Exception) {
                     when(e) {
                         is MongoException -> openNoInternetDialog()
@@ -112,13 +123,15 @@ class ViewModel (private val scope: CoroutineScope) {
         if (isLocalPlayerTurn()) {
             scope.launch {
                 try {
-                    game = g.play(tosqr, fromSqr, storage, scope)
-                    scope.launch {
-                        autoRefresh(g)
-                    }
+                    game = g.play(tosqr, fromSqr, storage)
+                    if (soundEnabled) MediaPlayer.onCheckerMove()
+                    autoRefresh(g)
                 } catch (e: Exception) {
                     when(e) {
                         is MongoException -> openNoInternetDialog()
+                        // This exception was added to try/catch block in order to not
+                        // constantly bother the user with invalid play warnings
+                        is IllegalArgumentException -> {}
                         else -> openErrorDialog(e.message)
                     }
                 }
@@ -127,12 +140,15 @@ class ViewModel (private val scope: CoroutineScope) {
     }
     fun refresh() {
         val g = game ?: return
+        if (onRefresh) return
+        onRefresh = true
         scope.launch {
-            val board: Board?
             try {
-                board = storage.read(g.id)
+                delay(REFRESH_DELAY)
+                val board: Board? = storage.read(g.id)
                 checkNotNull(board)
                 game = g.copy(board = board)
+                onRefresh = false
             } catch (e: Exception) {
                 when(e) {
                     is MongoException -> openNoInternetDialog()
@@ -142,10 +158,11 @@ class ViewModel (private val scope: CoroutineScope) {
         }
     }
     private suspend fun autoRefresh(g: Game) {
-        job = scope.launch {
-            var board: Board? = null
+        if (!autoRefresh) return
+        autoRefreshJob = scope.launch {
             do {
-                delay(1.seconds)
+                delay(REFRESH_DELAY)
+                var board: Board? = null
                 try {
                     board = storage.read(g.id)
                     checkNotNull(board)
@@ -157,6 +174,7 @@ class ViewModel (private val scope: CoroutineScope) {
                     }
                 }
             } while (board is BoardRun && !isLocalPlayerTurn(board) && autoRefreshStatus)
+            if (soundEnabled && !gameFinishedStatus) MediaPlayer.onCheckerMove()
         }
     }
     private fun isLocalPlayerTurn(board: Board? = null): Boolean {
@@ -166,12 +184,22 @@ class ViewModel (private val scope: CoroutineScope) {
     }
     fun evaluateGameState() {
         val g = game ?: return
-        if (g.board is BoardRun) return
+        when(g.board) {
+            is BoardRun -> return
+            is BoardDraw -> if (soundEnabled) MediaPlayer.onDraw()
+            is BoardWin -> if (soundEnabled)
+                                if (g.localPlayer == g.board.winner) MediaPlayer.onVictory()
+                                else MediaPlayer.onDefeat()
+        }
         openEndGameDialog()
     }
     // User driven actions
     fun showTargetsToggle() { showTargets = !showTargets }
-    fun autoRefreshToggle() { autoRefresh = !autoRefresh }
+    fun autoRefreshToggle() {
+        autoRefreshJob?.cancel()
+        autoRefresh = !autoRefresh
+    }
+    fun soundToggle() { soundEnabled = !soundEnabled }
     fun openNewGameDialog() { dialog = DialogState.NewGame }
     fun openResumeGameDialog() { dialog = DialogState.ResumeGame }
     fun openRulesDialog() { dialog = DialogState.Rules }
@@ -182,5 +210,6 @@ class ViewModel (private val scope: CoroutineScope) {
         error = msg
         dialog = DialogState.OnError
     }
+    // Independent
     fun closeCurrentDialog() { dialog = DialogState.NoDialogOpen }
 }

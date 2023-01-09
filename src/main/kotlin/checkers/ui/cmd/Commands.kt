@@ -35,7 +35,6 @@ class SyntaxError(msg: String): IllegalArgumentException(msg)
 fun getCommands(storage: BoardStorage) = mapOf(
     "START" to Command(
         execute = { args, g ->
-            if (g != null) throw IllegalArgumentException("Game already started")
             if (args.size != 1) throw SyntaxError("Missing game name")
             // Provide a coroutine scope to the suspend function
             // and await its completion
@@ -66,7 +65,7 @@ fun getCommands(storage: BoardStorage) = mapOf(
             // Provide a coroutine scope to the suspend function
             // and await its completion
             runBlocking {
-                g.play(fromSqr, toSqr, storage, this)
+                g.play(fromSqr, toSqr, storage)
             }
         },
         argsSyntax = "<fromSquare> <toSquare>",
@@ -84,9 +83,8 @@ fun getCommands(storage: BoardStorage) = mapOf(
             g.copy(board = board)
         }
     ),
-    "CONTINUE" to Command(
+    "RESUME" to Command(
         execute = { args, g ->
-            require(g == null) { "Game already started" }
             if (args.size != 2) throw SyntaxError("Missing game name and player")
             val player = when(args.last()) {
                 "w" -> Player.valueOf(args.last())
@@ -104,7 +102,7 @@ fun getCommands(storage: BoardStorage) = mapOf(
     "EXIT" to Command(
         execute = { _,_ -> // _ represents unused parameters
             println("Closing the application...")
-            // Terminates the game
+            // Terminates the process where the game is running
             exitProcess(0)
         }
     )

@@ -21,6 +21,7 @@ object BaseIcons {
     // Menu - Options:
     const val ShowTargets = "showTargetsIcon.png"
     const val AutoRefresh = "autoRefreshIcon.png"
+    const val Sound = "soundIcon.png"
     // Menu - Help:
     const val Help = "helpIcon.png"
     const val Win = "winIcon.png"

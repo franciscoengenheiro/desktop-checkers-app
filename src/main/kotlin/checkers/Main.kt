@@ -3,8 +3,8 @@ package checkers
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.application
-import checkers.ui.compose.DesktopCheckersTheme
 import checkers.ui.compose.ViewModel
+import checkers.ui.compose.base.DesktopCheckersTheme
 import checkers.ui.compose.windows.InitialWindow
 import checkers.ui.compose.windows.MainWindow
 

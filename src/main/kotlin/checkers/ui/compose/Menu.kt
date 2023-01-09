@@ -46,8 +46,8 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {
             CheckboxItem(
                 text = "Show Targets",
                 icon = painterResource(BaseIcons.ShowTargets),
-                shortcut = KeyShortcut(Key.S),
-                mnemonic = 'S',
+                shortcut = KeyShortcut(Key.T),
+                mnemonic = 'T',
                 checked = viewModel.showTargetsStatus
             ) { viewModel.showTargetsToggle() }
             CheckboxItem(
@@ -57,6 +57,13 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {
                 mnemonic = 'A',
                 checked = viewModel.autoRefreshStatus
             ) { viewModel.autoRefreshToggle() }
+            CheckboxItem(
+                text = "Enable sound",
+                icon = painterResource(BaseIcons.Sound),
+                shortcut = KeyShortcut(Key.S),
+                mnemonic = 'S',
+                checked = viewModel.soundStatus
+            ) { viewModel.soundToggle() }
         }
         Menu("Help") {
             Item(

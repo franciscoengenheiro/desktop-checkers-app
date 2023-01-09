@@ -66,11 +66,10 @@ fun CellView(
                    else BaseImages.BlackKing
         null -> null
     }
-    val checkerColors = CheckerColors
-    val colorRGB = if (sqr.black) checkerColors.black else checkerColors.white
+    val colorRGB = if (sqr.black) CheckerColors.black else CheckerColors.white
     val defaultMod = Modifier.requiredSize(CELL_VIEW_SIZE).background(colorRGB)
     // Invert checker colors
-    val colorRGBInverted = if (sqr.black) checkerColors.white else checkerColors.black
+    val colorRGBInverted = if (sqr.black) CheckerColors.white else CheckerColors.black
     val displayRow = sqr.column.index == 0 // Print row
     val displayColumn = if (invertRowId) sqr.row.index == 0
     else sqr.row.index == BOARD_DIM - 1 // Print Column

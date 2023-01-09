@@ -5,8 +5,6 @@ import kotlin.test.assertEquals
 
 class TestTextFile {
     private val testFileName = "testFile"
-    private val path =
-        TextFile.createPathToFile("src", "main", "resources", "$testFileName.txt")
     private val dataSize = 10
     private val data = List(dataSize) { idx -> "line: $idx" }
     @Test fun `write to a text file`() {

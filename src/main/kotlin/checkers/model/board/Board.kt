@@ -1,10 +1,13 @@
 package checkers.model.board
 
 import checkers.model.moves.Moves
-import checkers.model.moves.move.*
+import checkers.model.moves.move.Checker
+import checkers.model.moves.move.Piece
+import checkers.model.moves.move.Player
+import checkers.model.moves.move.Square
 
 // Constants
-val BOARD_DIM by lazy { setActualBoardDimension() }
+val BOARD_DIM = setActualBoardDimension()
 val MAX_SQUARES = BOARD_DIM * BOARD_DIM
 const val MAX_MOVES_WITHOUT_CAPTURE = 20
 
@@ -66,6 +69,8 @@ operator fun Board.get(sqr: Square): Checker? = moves[sqr]
 fun initialBoard(): BoardRun {
     require(BOARD_DIM % 2 == 0) { "Board dim is not an even number" }
     var mvs: Moves = emptyMap()
+    // mvs += Square(0,1) to King(Player.w)
+    // mvs += Square(5,6) to King(Player.b)
     // For every square in the board:
     Square.values.forEach { sqr ->
         // Check if the current square is black, and it's not in the middle lines

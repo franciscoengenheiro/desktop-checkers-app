@@ -28,10 +28,10 @@ class TestUi {
         }
         assertEquals(listOf("> > > "), out)
     }
-    @Test fun `readCommand Continue gameName Player`() {
-        val out = redirectInOut("CONTINUE game1 b") {
+    @Test fun `readCommand RESUME gameName Player`() {
+        val out = redirectInOut("RESUME game1 b") {
             val (name,args) = readCommand()
-            assertEquals("CONTINUE", name)
+            assertEquals("RESUME", name)
             assertEquals(listOf("game1", "b"), args)
         }
         assertEquals(listOf("> "), out)

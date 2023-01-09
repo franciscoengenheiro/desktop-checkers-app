@@ -52,7 +52,7 @@ fun RulesDialog(onDismiss: ()->Unit) = Dialog(
                 ExpandableCard(
                     title = "Draw",
                     description = "A game will finish in a draw if a maximum limit of moves, " +
-                            "made by both players, without a capture ($MAX_MOVES_WITHOUT_CAPTURE) " +
+                            "made by both players, without a capture ($MAX_MOVES_WITHOUT_CAPTURE), " +
                             "is reached.",
                     painter = painterResource(BaseIcons.Draw)
                 )

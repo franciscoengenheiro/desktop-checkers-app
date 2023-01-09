@@ -2,18 +2,11 @@ package checkers.storage
 
 import checkers.model.board.Board
 import checkers.model.board.Dimension
-import com.mongodb.MongoClientSettings
-import com.mongodb.MongoConfigurationException
-import com.mongodb.MongoException
 import encryption.decrypt
 import file.TextFile
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 import storage.MongoStorage
-import java.util.*
-import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 /**
  * Creates a client to access a Mongo database inside a collection

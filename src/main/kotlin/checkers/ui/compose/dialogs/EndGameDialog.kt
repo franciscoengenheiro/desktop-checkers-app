@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import checkers.model.Game
@@ -71,8 +70,8 @@ object DrawState: EndGameState() {
     override val title: String
         get() = "Game Tied"
     override val description: String
-        get() = "The game ended in a draw because the total amount of moves " +
-                "made without a capture was reached."
+        get() = "You found your nemesis! The game ended in a draw because the maximum amount " +
+                "of moves made without a capture was reached."
     override val image: String
         get() = BaseImages.Contract
 }
