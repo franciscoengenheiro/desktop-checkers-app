@@ -1,4 +1,4 @@
-package checkers.ui.compose
+package checkers.ui.compose.windows.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,13 +14,18 @@ import checkers.model.board.BOARD_DIM
 import checkers.model.board.BoardDraw
 import checkers.model.board.BoardRun
 import checkers.model.board.BoardWin
-import checkers.ui.compose.board.BOARD_DIM_DIFF
-import checkers.ui.compose.board.CELL_VIEW_SIZE
+import checkers.ui.compose.windows.main.board.BOARD_DIM_DIFF
+import checkers.ui.compose.windows.main.board.CELL_VIEW_SIZE
 
 // Constants
 private val GRID_OFFSET = if (-BOARD_DIM_DIFF <= 2) 2.dp else 1.dp
 private val GRID_VIEW_SIZE = CELL_VIEW_SIZE * BOARD_DIM + GRID_OFFSET
 
+/**
+ * Defines the bottom status bar responsible for showing information regarding
+ * the current state of the game.
+ * @param game Current [game] instance.
+ */
 @Composable
 fun StatusBar(game: Game?) = Row(
     modifier = Modifier.background(Color.Black)

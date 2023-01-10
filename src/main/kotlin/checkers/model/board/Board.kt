@@ -65,12 +65,11 @@ operator fun Board.get(sqr: Square): Checker? = moves[sqr]
 /**
  * Constructs initial board with all board pieces in their starting place:
  * white checkers at the bottom and black checkers at the top.
+ * @throws IllegalArgumentException If the board dimension is not an even number.
  */
 fun initialBoard(): BoardRun {
     require(BOARD_DIM % 2 == 0) { "Board dim is not an even number" }
     var mvs: Moves = emptyMap()
-    // mvs += Square(0,1) to King(Player.w)
-    // mvs += Square(5,6) to King(Player.b)
     // For every square in the board:
     Square.values.forEach { sqr ->
         // Check if the current square is black, and it's not in the middle lines

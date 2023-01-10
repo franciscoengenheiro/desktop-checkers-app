@@ -37,7 +37,7 @@ fun getCommands(storage: BoardStorage) = mapOf(
         execute = { args, g ->
             if (args.size != 1) throw SyntaxError("Missing game name")
             // Provide a coroutine scope to the suspend function
-            // and await its completion
+            // and await its completion by blocking the current thread
             runBlocking {
                 createGame(args.first(), storage)
             }
@@ -63,7 +63,7 @@ fun getCommands(storage: BoardStorage) = mapOf(
             val toSqr = args.last().toSquareOrNull()
                 ?: throw SyntaxError("Invalid square ${args.last()}")
             // Provide a coroutine scope to the suspend function
-            // and await its completion
+            // and await its completion by blocking the current thread
             runBlocking {
                 g.play(fromSqr, toSqr, storage)
             }
@@ -92,7 +92,7 @@ fun getCommands(storage: BoardStorage) = mapOf(
                 else -> throw SyntaxError("Invalid player name")
             }
             // Provide a coroutine scope to the suspend function
-            // and await its completion
+            // and await its completion by blocking the current thread
             runBlocking {
                 resumeGame(args.first(), player, storage)
             }

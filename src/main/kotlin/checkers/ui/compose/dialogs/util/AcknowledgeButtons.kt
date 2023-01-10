@@ -15,6 +15,17 @@ import androidx.compose.ui.unit.dp
 import checkers.model.moves.move.Player
 import composables.DismissButton
 
+/**
+ * Draws two bottons in a row representing the confirm and dismiss buttons respectively.
+ * This composable is not generic and should only be used for the functions that support it.
+ * @param gameName Game indentifier.
+ * @param selectedPlayer Player selected to start the game.
+ * @param enable Controls the enabled state of the buttons. When false, this buttons will
+ * not be clickable.
+ * @param confirmButtonText Text to place on top of the confirm button.
+ * @param onConfirm Callback function to be executed when the confirm button is clicked.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun AcknowledgeButtons(
     gameName: String,

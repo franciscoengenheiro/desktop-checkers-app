@@ -1,10 +1,11 @@
 package checkers.model.moves.move
 
 /**
- * Represents the players of the game: [w] to identify the player with white checkers
- * and [b] for the player with black checkers.
+ * Represents a player in the game.
  */
-enum class Player { w, b; // ; marks the end of the constants
+enum class Player {
+    w, // identifies the player with white checkers
+    b; // identifies the player with black checkers
     /**
      * Method to retrieve the other [Player].
      */

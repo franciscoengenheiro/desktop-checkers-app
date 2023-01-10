@@ -30,7 +30,6 @@ fun readCommand(): CommandLine {
 fun readBoardDimension() {
     while (true) {
         print("> ")
-        // Reads user input and split it for every space character
         when (readln()) {
             "${BoardDim.EIGHT}" -> { setGlobalBoardDimension(BoardDim.EIGHT); break }
             "${BoardDim.TEN}" -> { setGlobalBoardDimension(BoardDim.TEN); break }

@@ -14,8 +14,8 @@ data class Capture(val fromSqr: Square, val toSqr: Square, val rmvSqr: Square)
 /**
  * Evaluates for avalaible captures on the board depending on the value of
  * [previousCaptureSqr] and the received [turn].
- * All turn checkers are searched if it's value is null or if not, only the square
- * where the checker landed is evaluated.
+ * All turn checkers are searched if the value of [previousCaptureSqr] value is null or
+ * if not, only the square where the previous capture landed is evaluated.
  * @param previousCaptureSqr Previously made capture that indicates the type of search.
  * @param turn Player turn to evaluate. By default, is set to the current player turn.
  * @return A list of [Capture]s with the ones found.
@@ -45,7 +45,7 @@ fun BoardRun.getAvalaibleCaptures(
                     is Piece -> {
                         // Only evaluate the first square in that path
                         if (path.isNotEmpty() && moves[path.first()] == null)
-                        // A capture was found
+                            // A capture was found
                             listCaptures += Capture(sqr, path.first(), dSqr)
                     }
                     is King -> {

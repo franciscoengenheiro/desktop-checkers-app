@@ -26,22 +26,40 @@ import kotlin.time.Duration.Companion.seconds
 
 private val REFRESH_DELAY = 1.seconds
 
+/**
+ * Represents the Application logic.
+ * According to [Developer Android](https://developer.android.com/topic/libraries/architecture/viewmodel),
+ * viewModel is a module that exposes state to the UI and encapsulates related business
+ * logic. Its principal advantage is that it caches state and persists it
+ * through configuration changes.
+ */
 class ViewModel (private val scope: CoroutineScope) {
+    // Public states
     var window by mutableStateOf<WindowState>(InitialWindow)
         private set
     var dialog by mutableStateOf<DialogState>(window.dialog)
         private set
     var error by mutableStateOf<String?>(null)
         private set
+    var game: Game? by mutableStateOf(null)
+        private set
+    // Private states
+    private var onRefresh by mutableStateOf(false)
+    private var showTargets by mutableStateOf(true)
+    private var autoRefresh by mutableStateOf(true)
+    private var soundEnabled by mutableStateOf(true)
+    // Variable that represents the coroutine job of the auto refresh function.
+    // By mantaining state of this job one can easily cancel it when necessary
     private var autoRefreshJob by mutableStateOf<Job?>(null)
+    // Defines the storage where the game data will be stored
     lateinit var storage: BoardStorage
         // FileStorage("games", BoardSerializer)
+    // Variables that represent game and option status:
     val refreshStatus: Boolean
         get() {
             val g = game ?: return false
             return !onRefresh && g.board is BoardRun && g.localPlayer != g.board.turn
         }
-    // Game status
     val invertBoardStatus: Boolean
         get() {
             val g = game ?: return false
@@ -58,15 +76,14 @@ class ViewModel (private val scope: CoroutineScope) {
             val g = game ?: return false
             return g.board !is BoardRun
         }
-    // Game state
-    var game: Game? by mutableStateOf(null)
-        private set
-    // Game options state
-    private var onRefresh by mutableStateOf(false)
-    private var showTargets by mutableStateOf(true)
-    private var autoRefresh by mutableStateOf(true)
-    private var soundEnabled by mutableStateOf(true)
-    fun setBoardDimension(dim: BoardDim) {
+    // Functions:
+    /**
+     * Redirects the user to main window of the App, while setting the board global
+     * dimension, connecting to the database and loading sounds. If an error occurs,
+     * a dialog window will pop up with the message.
+     * @param dim dimension to set [Dimension] value with.
+     */
+    fun redirectToMainWindow(dim: BoardDim) {
         MediaPlayer.loadSounds()
         setGlobalBoardDimension(dim)
         try {
@@ -79,6 +96,12 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
+
+    /**
+     * Function called when the user requested a new game creation.
+     * If an error occurs, a dialog window will pop up with the message.
+     * @param name Name of the game to create.
+     */
     fun newGame(name: String?) {
         if (name != null) {
             scope.launch {
@@ -98,6 +121,13 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
+
+    /**
+     * Function called when the user requested to resume a game.
+     * If an error occurs, a dialog window will pop up with the message.
+     * @param name Name of the game to create.
+     * @param player Type of the player to resume the game with.
+     */
     fun resumeGame(name: String?, player: Player?) {
         if (name != null && player != null) {
             scope.launch {
@@ -118,12 +148,19 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
-    fun play(tosqr: Square, fromSqr: Square) {
+
+    /**
+     * Function called when the user requested a play on the board.
+     * If an error occurs, a dialog window will pop up with the message.
+     * @param toSqr Square to move a checker to.
+     * @param fromSqr Square to move a checker from.
+     */
+    fun play(toSqr: Square, fromSqr: Square) {
         val g = game ?: return
         if (isLocalPlayerTurn()) {
             scope.launch {
                 try {
-                    game = g.play(tosqr, fromSqr, storage)
+                    game = g.play(toSqr, fromSqr, storage)
                     if (soundEnabled) MediaPlayer.onCheckerMove()
                     autoRefresh(g)
                 } catch (e: Exception) {
@@ -138,6 +175,13 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
+
+    /**
+     * Function called when the user requested a refresh from the game storage.
+     * This function also executes a delay before processing and can only be
+     * executed again when it finishes.
+     * If an error occurs, a dialog window will pop up with the message.
+     */
     fun refresh() {
         val g = game ?: return
         if (onRefresh) return
@@ -157,6 +201,13 @@ class ViewModel (private val scope: CoroutineScope) {
             }
         }
     }
+
+    /**
+     * This function is executed only if the user enabled auto refresh
+     * in the Options menu. After a certain delay between searches, it constantly
+     * checks if the other player has made a move and updates the board when it does.
+     * If an error occurs, a dialog window will pop up with the message.
+     */
     private suspend fun autoRefresh(g: Game) {
         if (!autoRefresh) return
         autoRefreshJob = scope.launch {
@@ -177,11 +228,21 @@ class ViewModel (private val scope: CoroutineScope) {
             if (soundEnabled && !gameFinishedStatus) MediaPlayer.onCheckerMove()
         }
     }
+
+    /**
+     * Evaluates if the current turn of the board belongs to the local player.
+     * @param board [Board] to evaluate. Is set to null by default.
+     */
     private fun isLocalPlayerTurn(board: Board? = null): Boolean {
         val g = game ?: return false
         val b = board ?: g.board
         return b is BoardRun && g.localPlayer == b.turn
     }
+
+    /**
+     * Evaluates if the current [Board] type is at an end game state.
+     * If it does, plays the respective sound and opens the end game dialog.
+     */
     fun evaluateGameState() {
         val g = game ?: return
         when(g.board) {
@@ -193,23 +254,24 @@ class ViewModel (private val scope: CoroutineScope) {
         }
         openEndGameDialog()
     }
-    // User driven actions
+    // User driven actions - Toggle
     fun showTargetsToggle() { showTargets = !showTargets }
     fun autoRefreshToggle() {
         autoRefreshJob?.cancel()
         autoRefresh = !autoRefresh
     }
     fun soundToggle() { soundEnabled = !soundEnabled }
+    // User driven actions - Dialog
     fun openNewGameDialog() { dialog = DialogState.NewGame }
     fun openResumeGameDialog() { dialog = DialogState.ResumeGame }
     fun openRulesDialog() { dialog = DialogState.Rules }
-    // Internal reactions
+    // Internal reactions (not user related)
     private fun openNoInternetDialog() { dialog = DialogState.NoInternet }
     private fun openEndGameDialog() { dialog = DialogState.EndGame }
     private fun openErrorDialog(msg: String?) {
         error = msg
         dialog = DialogState.OnError
     }
-    // Independent
+    // Resets dialog state
     fun closeCurrentDialog() { dialog = DialogState.NoDialogOpen }
 }

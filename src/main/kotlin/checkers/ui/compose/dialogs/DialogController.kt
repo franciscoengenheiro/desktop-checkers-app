@@ -4,10 +4,18 @@ import androidx.compose.runtime.*
 import checkers.ui.compose.ViewModel
 import checkers.ui.compose.dialogs.util.DialogState
 
+/**
+ * Defines which dialog to present to the user.
+ * @param viewModel View model that defines the application logic.
+ */
 @Composable
 fun DialogController(viewModel: ViewModel) {
+    // This variable is used to hold state of when the user dismissed the
+    // end game dialog, so it will not show up again and only in the subsequent games.
     var enableEndGameDialog by remember { mutableStateOf(true) }
+    // If the dialog wasn't dismissed yet evaluate the current game state
     if (enableEndGameDialog) viewModel.evaluateGameState()
+    // Or if the game hasn't been finished:
     else if (!viewModel.gameFinishedStatus) enableEndGameDialog = true
     when (viewModel.dialog) {
         DialogState.NewGame -> NewGameDialog(
@@ -32,7 +40,7 @@ fun DialogController(viewModel: ViewModel) {
             EndGameDialog(
                 game = it,
                 onDismiss = {
-                    enableEndGameDialog = false
+                    enableEndGameDialog = false // User dismissed the end game dialog
                     viewModel.closeCurrentDialog()
                 }
             )

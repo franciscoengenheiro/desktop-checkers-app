@@ -3,6 +3,9 @@ package checkers.model.moves.square
 import checkers.model.board.BOARD_DIM
 
 @JvmInline // Specifies this class as an inline class for the JVM
+/**
+ * Represents a row instance defined by a unique [num].
+ */
 value class Row private constructor(private val num: Int) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
@@ -30,8 +33,8 @@ fun Int.toRowOrNull() = Row.values.firstOrNull { row -> this == row.number }
 
 /**
  * Evaluates if the given int is a match for a valid row index.
- * @return The row it belongs to or [IndexOutOfBoundsException] if the index does
- * not match any row.
+ * @return The row it belongs to.
+ * @throws [IndexOutOfBoundsException] if the index does not match any row.
  */
 fun Int.indexToRow() = Row.values[this]
 

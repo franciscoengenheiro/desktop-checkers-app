@@ -8,7 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import checkers.ui.compose.base.BaseColors
 
+/**
+ * A generic close button for dismissing content like dialogs.
+ * @param onButtonText Text to be placed in the button.
+ * @param enable Indicates whether the button should be enabled.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun DismissButton(
     onButtonText: String,
@@ -19,7 +26,7 @@ fun DismissButton(
         onClick = onDismiss,
         enabled = enable,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xFFB00020), // DarkRed
+            backgroundColor = BaseColors.DarkRed,
             contentColor = Color.White
         ),
         shape = RoundedCornerShape(10.dp)

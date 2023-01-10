@@ -7,6 +7,8 @@ import checkers.ui.compose.ViewModel
 import checkers.ui.compose.base.DesktopCheckersTheme
 import checkers.ui.compose.windows.InitialWindow
 import checkers.ui.compose.windows.MainWindow
+import checkers.ui.compose.windows.initial.InitialWindow
+import checkers.ui.compose.windows.main.MainWindow
 
 fun main() {
     application {

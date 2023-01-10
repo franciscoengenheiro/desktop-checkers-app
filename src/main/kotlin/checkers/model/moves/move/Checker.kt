@@ -1,7 +1,9 @@
 package checkers.model.moves.move
 
-// Checker is a sealed class because this class can only two instances, which represent
-// the possible types of checkers in the game
+/**
+ * Checker is a sealed class because this class can only two instances, which represent
+ * the possible types of checkers in the game
+ */
 sealed class Checker(val player: Player)
 
 /**

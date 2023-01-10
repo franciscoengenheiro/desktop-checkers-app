@@ -19,11 +19,19 @@ import checkers.ui.compose.base.BaseIcons
 import composables.ExpandableCard
 import file.TextFile
 
+/**
+ * Defines the [Dialog] window that appears when the user wants to know the rules of
+ * the game.
+ * It uses a [LazyColumn], a [VerticalScrollbar] and several [ExpandableCard]s to
+ * achieve its functionality.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun RulesDialog(onDismiss: ()->Unit) = Dialog(
     onCloseRequest = onDismiss,
     title = "Rules",
     state = DialogState(
+        // Align this window to the center right of the screen
         position = WindowPosition(BiasAlignment(0.75f, 0f)),
         width = 350.dp,
         height = 600.dp
@@ -68,6 +76,9 @@ fun RulesDialog(onDismiss: ()->Unit) = Dialog(
     }
 }
 
+/**
+ * Represents a rule instance defined by a [description].
+ */
 @JvmInline
 value class Rule private constructor(val description: String) {
     companion object {

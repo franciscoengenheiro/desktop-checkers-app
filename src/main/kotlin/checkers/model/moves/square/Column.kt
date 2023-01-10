@@ -2,11 +2,9 @@ package checkers.model.moves.square
 
 import checkers.model.board.BOARD_DIM
 
-// @JvmInline associated with the below class (as a value class) cannot be used in this case,
-// since there is a test in TestColumn.kt line 61, when comparing object instances, that fails.
-// The reason, according to Kotlinlang.org is: "Because inline classes may be represented both
-// as the underlying value and as a wrapper, referential equality is pointless for them and is
-// therefore prohibited".
+/**
+ * Represents a column instance defined by a [letter].
+ */
 class Column private constructor(private val letter: Char) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
@@ -19,7 +17,7 @@ class Column private constructor(private val letter: Char) {
         val values = List(BOARD_DIM) { idx -> Column((idx + 'a'.code).toChar()) } // [a, b, c, ...]
         // Since this class constructor is private, meaning we don't want to let the user
         // create more columns besides the already existing unique ones, it was considered
-        // useful to have a public way to call the class as if the constructor wasn't private.
+        // useful to have a public way to call the class as if the constructor wasn't private
         operator fun invoke(letter: Char) = values.first { letter == it.symbol }
     }
     override fun toString() = "$letter"
@@ -34,7 +32,8 @@ fun Char.toColumnOrNull() = Column.values.firstOrNull { col -> this == col.symbo
 
 /**
  * Evaluates if the given int is a match for a valid column index.
- * @return The column it belongs to or [IndexOutOfBoundsException] if the index does
+ * @return The column it belongs to.
+ * @throws [IndexOutOfBoundsException] if the index does
  * not match any column.
  */
 fun Int.indexToColumn() = Column.values[this]

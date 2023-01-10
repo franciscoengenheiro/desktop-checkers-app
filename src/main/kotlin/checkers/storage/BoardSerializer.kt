@@ -14,6 +14,7 @@ import storage.Storage
 
 // Constants
 private const val sep = " "
+private const val noTurn = ""
 
 /**
  * Represents a storage used to store [Board] types as data, using [String]
@@ -25,7 +26,6 @@ typealias BoardStorage = Storage<String, Board>
  * Converts a [Board] instance to [String] and vice-versa.
  */
 object BoardSerializer: Serializer<Board, String> {
-    private const val noTurn = ""
     override fun write(obj: Board): String {
         // ::class represents an instance of KClass the obj belongs to
         val boardType = obj::class.simpleName
@@ -82,9 +82,9 @@ object BoardSerializer: Serializer<Board, String> {
 
 /**
  * Given a string resulting from a serialized object, reconstruct a [Move].
- * @throws [IllegalArgumentException] If the expected format: <Square> <Checker>
- * <Player> is incorrect, if the retrieved square does not exist on the board
- * or even the checker type retrieved does not exist.
+ * @throws [IllegalArgumentException] If the expected format is incorrect, if
+ * the retrieved square does not exist on the board or if the checker type
+ * retrieved does not exist.
  */
 private fun String.reconstructMove(): Move {
     val words = this.split(sep)

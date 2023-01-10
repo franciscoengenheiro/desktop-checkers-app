@@ -1,4 +1,4 @@
-package checkers.ui.compose.windows
+package checkers.ui.compose.windows.main
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,10 +12,14 @@ import checkers.ui.compose.App
 import checkers.ui.compose.ViewModel
 import checkers.ui.compose.base.BaseIcons
 
+/**
+ * Defines the application main window.
+ * @param viewModel View model that defines the application logic.
+ */
 @Composable
 fun ApplicationScope.MainWindow(viewModel: ViewModel) = Window(
     onCloseRequest = ::exitApplication,
-    title = MainWindow.title,
+    title = checkers.ui.compose.windows.MainWindow.title,
     state = WindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize.Unspecified
@@ -23,6 +27,5 @@ fun ApplicationScope.MainWindow(viewModel: ViewModel) = Window(
     icon = painterResource(BaseIcons.App),
     resizable = false
 ) {
-    App(viewModel = viewModel, onExit = ::exitApplication)
+    App(viewModel = viewModel, onExitRequest = ::exitApplication)
 }
-

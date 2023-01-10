@@ -15,6 +15,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowPosition
 
+/**
+ * Defines a custom alert dialog in the current window.
+ * @param title Dialog title.
+ * @param icon Dialog icon. It is using the default icon if non is provided.
+ * @param image Composable that is used to define an image, but any other composable
+ * can be used to achieve the same effect.
+ * @param centeredText Text used to define the title of the message.
+ * @param subtitleText Text used to define the subtitle of the message.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun AlertDialog(
     title: String,

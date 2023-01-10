@@ -5,6 +5,11 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
+/**
+ * Decrypts a [cipherText] with a [key] using the AES Algorithm.
+ * @param cipherText encrypted string to decrypt.
+ * @param key key used in the decryption process.
+ */
 fun decrypt(cipherText: String, key: String): String {
     val encryptionKey = SecretKeySpec(key.toByteArray(), "AES")
     // Initialization vector

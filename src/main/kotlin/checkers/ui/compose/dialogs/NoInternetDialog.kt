@@ -13,6 +13,11 @@ import checkers.ui.compose.base.BaseIcons
 import checkers.ui.compose.base.BaseImages
 import composables.AlertDialog
 
+/**
+ * Defines the dialog window that appears when an error occurs while connecting to the
+ * online database. It uses the [AlertDialog] to achieve its functionality.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun NoInternetDialog(onDismiss: () -> Unit) = AlertDialog(
     title = "Lost internet connection",

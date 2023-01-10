@@ -14,9 +14,17 @@ import checkers.model.board.BoardDraw
 import checkers.model.board.BoardRun
 import checkers.model.board.BoardWin
 import checkers.ui.compose.base.BaseIcons
-import checkers.ui.compose.base.BaseImages
+import checkers.ui.compose.dialogs.util.DrawState
+import checkers.ui.compose.dialogs.util.LoseState
+import checkers.ui.compose.dialogs.util.WinState
 import composables.AlertDialog
 
+/**
+ * Defines an end game dialog that represents the received [game] state using a
+ * generic [AlertDialog] composable.
+ * @param game The current [game] instance.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun EndGameDialog(
     game: Game,
@@ -38,45 +46,10 @@ fun EndGameDialog(
     )
 }
 
-sealed class EndGameState() {
-    abstract val title: String
-    abstract val description: String
-    abstract val image: String
-}
-
-object LoseState: EndGameState() {
-    override val title: String
-        get() = "You lose"
-    override val description: String
-        get() = "You lost the game. Remember to control the center, " +
-                "play agressive and be willing to sacrifice a checker when necessary. " +
-                "Better luck next time!"
-    override val image: String
-        get() = BaseImages.Skull
-}
-
-object WinState: EndGameState() {
-    override val title: String
-        get() = "You win"
-    override val description: String
-        get() = "Congratulations! Your victory established your status " +
-                "as the world's foremost checkers player, but keep in mind " +
-                "there are always more battles to be won!"
-    override val image: String
-        get() = BaseImages.Trophy
-}
-
-object DrawState: EndGameState() {
-    override val title: String
-        get() = "Game Tied"
-    override val description: String
-        get() = "You found your nemesis! The game ended in a draw because the maximum amount " +
-                "of moves made without a capture was reached."
-    override val image: String
-        get() = BaseImages.Contract
-}
-
-@Composable
+/**
+ * Retrieves an end game state according to the received [game] instance.
+ * @param game The current [game] instance.
+ */
 private fun getEndGameState(game: Game) =
     when (game.board) {
         is BoardWin -> if (game.board.winner == game.localPlayer)

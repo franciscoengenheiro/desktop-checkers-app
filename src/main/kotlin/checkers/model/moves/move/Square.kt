@@ -7,6 +7,9 @@ import checkers.model.moves.square.Row
 import checkers.model.moves.square.indexToColumn
 import checkers.model.moves.square.indexToRow
 
+/**
+ * Represents a square instance defined by a unique combination of a [Row] and [Column].
+ */
 class Square private constructor(private val r: Row, private val c: Column) {
     // Class properties initialized with getters, so that their value is only calculated
     // when the property is called
@@ -38,7 +41,7 @@ class Square private constructor(private val r: Row, private val c: Column) {
         diagonalsList
             .filter { it.row.index < r.index && it.column.index < c.index }
             .reversed() // This list must be sorted by the shortest distance from the center square,
-                        // and since the Squares are created from top to bottom, the "upper" lists
+                        // since the Squares are created from top to bottom, the "upper" lists
                         // need to be reversed
     // Retrieves a list of all the squares in the upper slash of this Square instance
     val upperSlash get () =

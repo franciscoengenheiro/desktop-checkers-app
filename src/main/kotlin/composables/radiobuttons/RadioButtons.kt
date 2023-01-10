@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+/**
+ * Implements a set of radio buttons.
+ * @param radioOptions A list of strings, each representing an option to choose from.
+ * @return A string that represents the radio button selected.
+ */
 @Composable
-fun RadioButtons(
-    radioOptions: List<String>,
-): String {
-    require(radioOptions.size >= 2) {
-        "Radio options provided are less than two"
-    }
+fun RadioButtons(radioOptions: List<String>): String {
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     radioOptions.forEach { option ->
         Row(

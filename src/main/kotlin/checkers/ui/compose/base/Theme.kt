@@ -9,6 +9,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/**
+ * Material Theme used for the Application. Colors are set to [lightColors] and
+ * some typography elements were overwritten.
+ * @param content content where this material theme takes effect.
+ */
 @Composable
 fun DesktopCheckersTheme(
     content: @Composable () -> Unit

@@ -10,6 +10,12 @@ import checkers.ui.compose.base.BaseIcons
 import checkers.ui.compose.base.BaseImages
 import composables.AlertDialog
 
+/**
+ * Defines the dialog window that appears when an error occurs.
+ * It uses the [AlertDialog] to achieve its functionality.
+ * @param message Subtitle text in the dialog.
+ * @param onDismiss Callback function to be executed when the dismiss button is clicked.
+ */
 @Composable
 fun OnErrorDialog(
     message: String?,

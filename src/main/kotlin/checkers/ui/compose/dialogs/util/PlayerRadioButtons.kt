@@ -13,6 +13,9 @@ import checkers.model.moves.move.Player
 import composables.radiobuttons.RadioButtons
 import composables.radiobuttons.RadioOptions
 
+/**
+ * Horizontal radio buttons for [Player] objects.
+ */
 @Composable
 fun PlayerRadioButtons(): Player {
     Row(
@@ -33,6 +36,9 @@ fun PlayerRadioButtons(): Player {
     return options.get(selectedOption)
 }
 
+/**
+ * Defines the radio options for [Player] objects.
+ */
 private object PlayerRadioOptions: RadioOptions<Player> {
     override fun set(): List<String> {
         var list = emptyList<String>()

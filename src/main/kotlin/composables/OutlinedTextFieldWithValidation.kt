@@ -13,8 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import checkers.ui.compose.base.BaseColors
 
+/**
+ * Composes an outlined text field that includes a placeholder, text validation
+ * and icons that change according to the current text value.
+ * @param inputText The option text placed above the text field.
+ * @param placeholderText The optional placeholder to be displayed when the text field is
+ * in focus and the input text is empty.
+ * @param validateField Function that knows the requirements to validate the text field.
+ */
 @Composable
 fun OutlinedTextFieldWithValidation(
+    inputText: String = "Input",
+    placeholderText: String = "",
     validateField: (text: String) -> Boolean
 ): Pair<String, Boolean> {
     var name by remember { mutableStateOf("") }
@@ -26,7 +36,7 @@ fun OutlinedTextFieldWithValidation(
             invalidField = !validateField(name)
         },
         label = { Text(
-            text = "Input",
+            text = inputText,
             color = Color.Black,
             style = MaterialTheme.typography.subtitle2
         ) },
@@ -34,7 +44,7 @@ fun OutlinedTextFieldWithValidation(
             .fillMaxWidth()
             .padding(horizontal = 15.dp, vertical = 10.dp),
         placeholder = { Text(
-            text = "Enter game id",
+            text = placeholderText,
             style = MaterialTheme.typography.subtitle2
         ) },
         singleLine = true,
@@ -60,6 +70,8 @@ fun OutlinedTextFieldWithValidation(
 private fun TestOutlinedTextFieldWithValidation() {
     fun validateField(text: String): Boolean = text.length > 2
     OutlinedTextFieldWithValidation(
+        inputText = "other input",
+        placeholderText = "This is a placeholder",
         validateField = ::validateField
     )
 }

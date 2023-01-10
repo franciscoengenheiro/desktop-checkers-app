@@ -62,7 +62,7 @@ suspend fun resumeGame(
     localPlayer: Player,
     storage: BoardStorage
 ): Game {
-    // Await for the value of the retrieved board, without blocking the current thread
+    // Check if a board is in the specified storage
     val newBoard = storage.read(id)
     requireNotNull(newBoard) { "Game with id $id does not exist." }
     // If the storage has a previously created board, the game will resume with
@@ -75,7 +75,6 @@ suspend fun resumeGame(
  * @param fromSqr Square to move a checker from.
  * @param toSqr Square to move a checker to.
  * @param storage Storage where the game data is.
- * @param scope A Coroutine Scope context.
  * @return A new board on the respective storage and a copy of the game with the
  * updated board.
  * @throws [IllegalStateException] If the board is not of [BoardRun] type or

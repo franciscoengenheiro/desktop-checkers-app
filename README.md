@@ -2,10 +2,17 @@
 This repo will serve to store and update the software of the Checkers Desktop App project.
 The game data will be stored in the Mongo Documental Database.
 
+## Update v1.24 (10/01/2023):
+- Code refactored. 
+- Comments were revisited.
+- Performed more tests.
+- Reorg packages.
+
 ## Update v1.23 (09/01/2023):
 - Implemented sound and media player objects to define and play sounds respectively.
 - Added ISEL canvas libs to the project for their sound functions.
 - Added option in the game menu to enable/disable sound.
+- Created a media player to handle sounds from the Sound object.
 - Removed the appearance of a dialog error when the user performed an invalid play 
 on the board, so the exceptions thrown regarding this exceptional case are now 
 caught silently in ViewModel.

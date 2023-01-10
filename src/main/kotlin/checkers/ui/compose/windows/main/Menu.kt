@@ -1,4 +1,4 @@
-package checkers.ui.compose
+package checkers.ui.compose.windows.main
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -7,8 +7,15 @@ import androidx.compose.ui.input.key.Key.*
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.*
+import checkers.ui.compose.ViewModel
 import checkers.ui.compose.base.BaseIcons
 
+/**
+ * Defines top menu bar of the Application.
+ * @param viewModel View model that defines the application logic.
+ * @param onExitRequest Callback function to be executed when the user wants to exit through
+ * the menu.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {

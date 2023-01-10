@@ -12,6 +12,8 @@ import checkers.model.moves.move.*
  * @param centerSqr Square to start the search from.
  * @param checker Checker type which is on top of the [centerSqr] and will indicate the
  * type of search.
+ * @throws IllegalArgumentException if the [centerSqr] does not have a checker or if
+ * the checker it has is not [checker].
  */
 fun BoardRun.findOpponentCheckersInAllDiagonals(
     centerSqr: Square,
@@ -52,12 +54,12 @@ private fun BoardRun.isOtherPlayerChecker(sqr: Square): Boolean {
 /**
  * Retrieves only the first opponent checker found in a diagonal list.
  * If turn checker is found first, returns null.
- * @param diagonalList list to search
+ * @param diagonalList list of squares to search.
  */
 private fun BoardRun.retrieveFirstOpponentCheckerOrNull(diagonalList: List<Square>): Square? {
     for (sqr in diagonalList) {
         val checker = moves[sqr]
-        // Find the first checker ocurrence in the list
+        // Find the first checker in the list that belongs to the other player
         if (checker != null) {
             // Check whose player belongs to
             return when(checker.player) {
@@ -71,7 +73,7 @@ private fun BoardRun.retrieveFirstOpponentCheckerOrNull(diagonalList: List<Squar
 }
 
 /**
- * Returns a list of [Square]s where a move can be made to from, starting in [fromSqr].
+ * Returns a list of [Square]s where a move can be made to, starting in [fromSqr].
  * @param fromSqr Square to start the search.
  */
 fun BoardRun.getAvalaibleMoves(fromSqr: Square): List<Square> {
@@ -98,16 +100,18 @@ fun BoardRun.getAvalaibleMoves(fromSqr: Square): List<Square> {
  * Given two squares, one can infer the direction to go next by working with 2D vectors.
  * @param centerSqr Square where the capture started.
  * @param other Square where the opponent's checker is.
- * @return A list of squares where the square to land to can be
+ * @return A list of squares where the square to land to can be.
  * @throws [IllegalArgumentException] If the received squares are equal or
- * [other] is not a diagonal square of [centerSqr].
+ * if [other] is not a diagonal square of [centerSqr].
  */
 fun BoardRun.findDiagonalPathToLandTo(centerSqr: Square, other: Square): List<Square> {
     require(centerSqr !== other)
     { "Squares are equal, no diagonal direction can be calculated" }
     require(other in centerSqr.diagonalsList)
     { "$other square is not in one of $centerSqr diagonals" }
+    // Calculate row index difference
     val rowDiff = centerSqr.row.index - other.row.index
+    // Calculate column index difference
     val colDiff = centerSqr.column.index - other.column.index
     return if (rowDiff > 0 && colDiff > 0) retrieveEmptyDiagonalSquaresInList(other.upperBackSlash)
     else if (rowDiff > 0 && colDiff < 0) retrieveEmptyDiagonalSquaresInList(other.upperSlash)
@@ -130,41 +134,40 @@ fun BoardRun.retrieveValidSquaresToMoveTo(
     val checker = moves[fromSqr]
     // Check if square has a checker
     return if (checker != null) {
+        // if it does:
         when (checker) {
             is Piece -> getValidAdjacentSquaresToMoveTo(fromSqr, turn)
             is King -> getValidDiagonalSquaresToMoveTo(fromSqr)
         }
     } else {
-        // If it doesn't
+        // If it doesn't:
         emptyList()
     }
 }
 
 /**
  * Retrieves a List of all valid adjacent diagonal squares of [fromSqr] where a
- * play can be made from, according to the given [player] to assert which squares
- * to filter.
+ * play can be made from, according to the given [player], in order to assert which
+ * squares to filter.
  * This function should only be called for checker type: [Piece], for checker type
- * [King] see [getValidDiagonalSquaresToMoveTo] function.
+ * [King] see [getValidDiagonalSquaresToMoveTo].
  */
 fun BoardRun.getValidAdjacentSquaresToMoveTo(fromSqr: Square, player: Player) =
     when (player) {
         // Retrieve only the adjacent diagonal squares above current fromSqr
-        // position that do not have a checker on top
+        // position...
         Player.w -> fromSqr.adjacentDiagonalsList
             .filter { it.row.index < fromSqr.row.index }
-            .filter { this[it] == null }
         // Retrieve only the adjacent diagonal squares below current fromSqr
-        // position that do not have a checker on top
+        // position...
         Player.b -> fromSqr.adjacentDiagonalsList
             .filter { it.row.index > fromSqr.row.index }
-            .filter { this[it] == null }
-    }
+    }.filter { this[it] == null } // ...that do not have a checker on top
 
 /**
  * Retrieves a List of all valid diagonal squares of [fromSqr] where a play can be made
- * from. This function should only be called for checker type: [King], for [Piece] see
- * [getValidAdjacentSquaresToMoveTo] function.
+ * from. This function should only be called for checker type: [King]. For [Piece] see
+ * [getValidAdjacentSquaresToMoveTo].
  */
 fun BoardRun.getValidDiagonalSquaresToMoveTo(fromSqr: Square): List<Square> {
     // Limit King range of motion clock-wise in all the possible diagonal directions

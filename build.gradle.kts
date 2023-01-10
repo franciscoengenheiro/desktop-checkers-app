@@ -54,7 +54,7 @@ tasks.jar {
 
 compose.desktop {
     application {
-        // Define the main class of the application
+        // Define the main class of the Application
         mainClass = "checkers.MainKt"
         nativeDistributions {
             // macOS — .dmg (TargetFormat.Dmg), .pkg (TargetFormat.Pkg)

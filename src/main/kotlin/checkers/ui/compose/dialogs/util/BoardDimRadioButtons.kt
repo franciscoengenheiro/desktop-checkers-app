@@ -14,8 +14,11 @@ import checkers.model.board.BoardDim
 import composables.radiobuttons.RadioButtons
 import composables.radiobuttons.RadioOptions
 
+/**
+ * Vertical radio buttons for [BoardDim] objects.
+ */
 @Composable
-fun BoardDimButtons(): BoardDim {
+fun BoardDimRadioButtons(): BoardDim {
     val options = BoardDimRadioOptions
     lateinit var selectedOption: String
     Column(
@@ -37,6 +40,9 @@ fun BoardDimButtons(): BoardDim {
     return options.get(selectedOption)
 }
 
+/**
+ * Defines the radio options for [BoardDim] objects.
+ */
 private object BoardDimRadioOptions: RadioOptions<BoardDim> {
     override fun set(): List<String> {
         var list = emptyList<String>()

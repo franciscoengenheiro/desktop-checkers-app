@@ -17,7 +17,8 @@ import checkers.model.moves.move.Square
  * @param toSqr Square to move a checker to.
  * @return Updated board with the valid move or capture performed by the player.
  * @throws [IllegalStateException] if this function is called on other board type
- * besides [BoardRun] or [IllegalArgumentException] - if the move requested isn't valid
+ * besides [BoardRun].
+ * @throws [IllegalArgumentException] if the move requested isn't valid.
  */
 fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
     is BoardWin, is BoardDraw -> error("Game is over")
@@ -30,39 +31,18 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         val checkerB: Checker? = moves[toSqr]
         // Assert if the toSqr doesn't have a checker
         require(checkerB == null) { "Square $toSqr is occupied" }
-        // Retrieve avalaible captures at the moment for the current player turn
-        val listCaptures = getAvalaibleCaptures(prevCaptureSqr)
-        var validMove = false
-        // Define a Capture instance
-        var foundCapture: Capture? = null
-        // Evaluate if at least a capture was found:
-        if (listCaptures.isNotEmpty()) {
-            // Find a capture that matches the player move
-            foundCapture = listCaptures.find { it.fromSqr == fromSqr && it.toSqr == toSqr }
-            // Even if a capture is found, we have to make sure it matches the user
-            // requested move
-            requireNotNull(foundCapture) {
-                "There is a mandatory capture in ${listCaptures.first().fromSqr}"
-            }
-            validMove = true
-        } else {
-            // Evaluates if the user requested move is valid, by checking if the toSqr is
-            // a valid square to move to, knowing it's not a capture and just a regular move
-            if (toSqr in retrieveValidSquaresToMoveTo(fromSqr))
-                validMove = true
-        }
-        require(validMove) { "Invalid move" }
+        val foundCapture: Capture? = validateMoveOrCapture(fromSqr, toSqr)
         // Increase the number of moves by 1 since the move is valid
-        val n = numberOfMoves + 1
+        val n_moves = numberOfMoves + 1
         // Remove the checker from the previous square
         var mvs = moves - fromSqr
-        var movesWithoutCapture = mvsWithoutCapture
-        if (foundCapture != null) {
+        // Retrieve the number of moves without a capture
+        val movesWithoutCapture = if (foundCapture != null) {
             // Remove captured opponent checker from the board if a capture was found
-            mvs -= foundCapture.rmvSqr
-            movesWithoutCapture = 0 // Reset counter
+            also { mvs -= foundCapture.rmvSqr }
+            0 // Reset counter
         } else {
-            movesWithoutCapture++ // Increase counter by 1
+            mvsWithoutCapture + 1 // Increase counter by 1
         }
         // Evaluate if the move was made to the last row of the board, according
         // to the current player turn. If it was and the checker isn't already a King,
@@ -85,7 +65,7 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
         val hasMoreCaptures = foundCapture != null && !lost_turn &&
                 BoardRun(
                     mvs = mvs,
-                    numberOfMoves = n,
+                    numberOfMoves = n_moves,
                     mvsWithoutCapture = movesWithoutCapture,
                     prevCaptureSqr = foundCapture.toSqr,
                     turn = turn
@@ -95,26 +75,63 @@ fun Board.play(fromSqr: Square, toSqr: Square): Board = when(this) {
             !hasMoreCaptures &&
                     BoardRun(
                         mvs = mvs,
-                        numberOfMoves = n,
+                        numberOfMoves = n_moves,
                         mvsWithoutCapture = movesWithoutCapture,
                         prevCaptureSqr = foundCapture?.toSqr,
                         turn = turn
                     ).checkWin() -> BoardWin(mvs, turn)
             BoardRun(
                 mvs = mvs,
-                numberOfMoves = n,
+                numberOfMoves = n_moves,
                 mvsWithoutCapture = movesWithoutCapture,
                 prevCaptureSqr = foundCapture?.toSqr,
                 turn = turn
             ).checkDraw() -> BoardDraw(mvs)
             else -> {
                 if (hasMoreCaptures)
-                    BoardRun(mvs, n, movesWithoutCapture, foundCapture?.toSqr, turn)
+                    BoardRun(mvs, n_moves, movesWithoutCapture, foundCapture?.toSqr, turn)
                 else
-                    BoardRun(mvs, n, movesWithoutCapture, null, turn.other())
+                    BoardRun(mvs, n_moves, movesWithoutCapture, null, turn.other())
             }
         }
     }
+}
+
+/**
+ * Evaluates if a requested move is valid.
+ * @param fromSqr Square to move a checker from.
+ * @param toSqr Square to move a checker to.
+ * @return A capture instance or null.
+ * @throws IllegalArgumentException If the move request is valid or if it does not
+ * represent a mandatory capture.
+ */
+private fun BoardRun.validateMoveOrCapture(
+    fromSqr: Square,
+    toSqr: Square
+): Capture? {
+    // Retrieve avalaible captures at the moment for the current player turn
+    val listCaptures = getAvalaibleCaptures(prevCaptureSqr)
+    // Flag that indicates if the requested move is valid or not
+    var validMove = false
+    // Define a Capture instance
+    var foundCapture: Capture? = null
+    // Evaluate if at least a capture was found:
+    if (listCaptures.isNotEmpty()) {
+        // Find a capture that matches the player move
+        foundCapture = listCaptures.find { it.fromSqr == fromSqr && it.toSqr == toSqr }
+        // Even if a capture is found, we have to make sure it matches the user
+        // requested move
+        requireNotNull(foundCapture) {
+            "There is a mandatory capture in ${listCaptures.first().fromSqr}"
+        }
+        validMove = true
+    } else {
+        // Evaluates if the user requested move is valid, by checking if the toSqr is
+        // a valid square to move to, knowing it's not a capture and just a regular move
+        if (toSqr in retrieveValidSquaresToMoveTo(fromSqr)) validMove = true
+    }
+    require(validMove) { "Invalid move" }
+    return foundCapture
 }
 
 /**

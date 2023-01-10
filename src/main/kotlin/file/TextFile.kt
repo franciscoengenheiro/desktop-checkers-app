@@ -5,7 +5,7 @@ import java.io.PrintWriter
 
 /**
  * Object that implements read and write operations to a text file stored in
- * the path: src/main/resorces
+ * the project resources.
  */
 object TextFile: FileAccess<String, String> {
     /**

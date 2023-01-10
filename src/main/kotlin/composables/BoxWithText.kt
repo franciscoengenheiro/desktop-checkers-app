@@ -15,6 +15,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Draws a box with a given [text].
+ * @param boxModifier Modifier of the box.
+ * @param text Text to be placed on top of the box.
+ * @param textColor Color of the text.
+ * @param textModifier Modifier of the text.
+ * @param fontSize The font size of the text.
+ */
 @Composable
 fun BoxWithText(
     boxModifier: Modifier,

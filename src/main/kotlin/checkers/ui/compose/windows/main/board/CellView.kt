@@ -1,4 +1,4 @@
-package checkers.ui.compose.board
+package checkers.ui.compose.windows.main.board
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
@@ -50,6 +50,16 @@ private const val REFERENCE_COLUMN_ROW_ID_FONT_SIZE = 15 // In sp (textUnit)
 private val COLUMN_ROW_ID_FONT_SIZE =
     (REFERENCE_COLUMN_ROW_ID_FONT_SIZE + BOARD_DIM_DIFF).sp
 
+/**
+ * Compose implementation of a single cell (square).
+ * @param sqr Represents the cell.
+ * @param checker The checker on top of [sqr] or null if it does not have one.
+ * @param invertRowId Indicates if the row identifiers must be inverted, according
+ * to the player facing the board.
+ * @param selectedCell Indicates if this cell is to be drawned with a selected state.
+ * @param drawTarget Indicates if this cell is to be drawned with a target state.
+ * @param onClick Callback function to be executed when this cell is clicked.
+ */
 @Composable
 fun CellView(
     sqr: Square,
@@ -66,13 +76,14 @@ fun CellView(
                    else BaseImages.BlackKing
         null -> null
     }
-    val colorRGB = if (sqr.black) CheckerColors.black else CheckerColors.white
+    val colorRGB = if (sqr.black) SquareColors.black else SquareColors.white
     val defaultMod = Modifier.requiredSize(CELL_VIEW_SIZE).background(colorRGB)
     // Invert checker colors
-    val colorRGBInverted = if (sqr.black) CheckerColors.white else CheckerColors.black
+    val colorRGBInverted = if (sqr.black) SquareColors.white else SquareColors.black
     val displayRow = sqr.column.index == 0 // Print row
+    // Print Column
     val displayColumn = if (invertRowId) sqr.row.index == 0
-    else sqr.row.index == BOARD_DIM - 1 // Print Column
+                        else sqr.row.index == BOARD_DIM - 1
     Box (
         modifier =
             (if (selectedCell) defaultMod.border(SELECTED_CELL_BORDER_WIDTH, Color.Red)

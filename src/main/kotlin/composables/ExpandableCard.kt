@@ -17,31 +17,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import checkers.ui.compose.base.BaseIcons
 
+/**
+ * Composes a card that is clickable. When clicked this card reveals the text underneath.
+ * To produce that effect this composable uses an animation.
+ * Refer to [animateFloatAsState] for more details.
+ * @param title Card title.
+ * @param description Card hidden text.
+ * @param descriptionMaxLines Max lines the [description] can have. Text above this limit
+ * will be treated as text overflow.
+ * @param painter Painter to draw. Usually an icon.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandableCard(
     title: String,
-    titleFontSize: TextUnit = MaterialTheme.typography.h5.fontSize,
-    titleFontWeight: FontWeight = FontWeight.Bold,
     description: String,
-    descriptionFontSize: TextUnit = MaterialTheme.typography.subtitle2.fontSize,
-    descriptionFontWeight: FontWeight = FontWeight.Normal,
     descriptionMaxLines: Int = 10,
     painter: Painter? = null,
-    padding: Dp = 10.dp
 ) {
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 180f else 0f
+        targetValue = if (expandedState) 180f // Rotate 180º degrees
+                      else 0f
     )
     Card(
         modifier = Modifier
@@ -58,7 +60,7 @@ fun ExpandableCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding)
+                .padding(10.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -75,8 +77,8 @@ fun ExpandableCard(
                     modifier = Modifier
                         .weight(if (painter != null) 4f else 6f),
                     text = title,
-                    fontSize = titleFontSize,
-                    fontWeight = titleFontWeight,
+                    fontSize = MaterialTheme.typography.h5.fontSize,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -96,8 +98,8 @@ fun ExpandableCard(
             if (expandedState) {
                 Text(
                     text = description,
-                    fontSize = descriptionFontSize,
-                    fontWeight = descriptionFontWeight,
+                    fontSize = MaterialTheme.typography.subtitle2.fontSize,
+                    fontWeight = FontWeight.Normal,
                     maxLines = descriptionMaxLines,
                     textAlign = TextAlign.Left,
                     overflow = TextOverflow.Ellipsis
@@ -115,6 +117,6 @@ private fun TestExpandableCard() {
         description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
                 "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when " +
                 "an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        painter = painterResource(BaseIcons.Rule)
+        painter = null
     )
 }
