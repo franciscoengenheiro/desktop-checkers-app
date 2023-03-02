@@ -1,7 +1,7 @@
-# CheckersDesktopApp
+# Checkers Desktop App
 This document will serve to store information about the new software implementations of the Checkers Desktop App project.
 
-## Update v1.25 (27/02/2023):
+## Update v1.25 (02/02/2023):
 - A new enum class representing the prerequisites for a board's first checker
   placement has been added, along with a new function to allow its usage.
 - Created an updates file to store the content present here.
