@@ -8,6 +8,7 @@ This document will serve to store information about the new software implementat
 - A middleware (handleCatch) was created to refactor duplicate code that was present in several ViewModel functions that could cause an error.
 - README.md is now the main report of this project.
 - Refactor some files in the *resources* module.
+- Changed exit shortcut from **Escape** to **Alt+f4**
 
 ## Update v1.24 (10/01/2023):
 - Code refactored.

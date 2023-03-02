@@ -3,7 +3,7 @@
 
 This application serves as a game interface where users are invited to play the classic [Checkers](https://www.britannica.com/topic/checkers) board game in an online environment against other players. 
 
-The game UI is using the [Desktop Compose](https://www.jetbrains.com/lp/compose-desktop/) UI framework and the data is stored in the [Mongo Database](https://www.mongodb.com/).
+The game is using the [Desktop Compose](https://www.jetbrains.com/lp/compose-desktop/) UI framework and the data is stored in the [Mongo Database](https://www.mongodb.com/).
 
 The whole project was a key evaluation point of the Software Development Techniques (TDS) course in the [CSE](https://www.isel.pt/en/curso/bsc-degree/computer-science-and-computer-engineering) undergraduate program of [ISEL](https://www.isel.pt/en).
 
@@ -22,7 +22,7 @@ The whole project was a key evaluation point of the Software Development Techniq
 - [Known Bugs](#known-bugs)
 
 ## Download
-Download the application [here](https://mega.nz/file/VLBlEZJa#peWH9949f1AmICk5t4qwWobBrIU_5d5WwJAJnUxAjMs).
+Download the application [here](https://mega.nz/file/tORxxYQD#X2U45qiYunXCkclDazf8ZrskB1yFfsDSPPXRto2Z_Cg).
 
 ## Features
 - [X] Checker unique images

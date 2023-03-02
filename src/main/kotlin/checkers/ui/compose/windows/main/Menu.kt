@@ -45,7 +45,7 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {
             Item(
                 text = "Exit",
                 icon = painterResource(BaseIcons.Exit),
-                shortcut = KeyShortcut(Key.Escape),
+                shortcut = KeyShortcut(key = Key.F4, alt = true),
                 onClick = onExitRequest
             )
         }
