@@ -26,7 +26,7 @@ object TextFile: FileAccess<String, String> {
      * @param pathSegments a variable amount of strings, each one representing a folder
      * and the last one the file, that make a path to a file.
      */
-    fun createPathToFile(vararg pathSegments: String) =
+    private fun createPathToFile(vararg pathSegments: String) =
         pathSegments.joinToString(separator = File.separator)
     /**
      * Writes given data as a List of Strings to the specified file.

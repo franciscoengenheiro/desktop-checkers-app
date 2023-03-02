@@ -1,18 +1,21 @@
 package checkers.ui.compose.base
 
+// Relative path src/main/resources directory
+private const val relativePath = "images/"
+
 /**
  * Defines Application own image models.
  */
 object BaseImages {
-    const val WhitePiece = "whitePiece.png"
-    const val BlackPiece = "blackPiece.png"
-    const val WhiteKing = "whiteKing.png"
-    const val BlackKing = "blackKing.png"
-    const val BoardWithCheckers = "boardWithCheckers.png"
-    const val VerticalMarble = "verticalMarble.png"
-    const val NoInternet = "noInternet.png"
-    const val AlertTriangle =  "alertTriangle.png"
-    const val Trophy = "trophy.png"
-    const val Contract = "contract.png"
-    const val Skull = "skull.png"
+    const val WhitePiece = "${relativePath}whitePiece.png"
+    const val BlackPiece = "${relativePath}blackPiece.png"
+    const val WhiteKing = "${relativePath}whiteKing.png"
+    const val BlackKing = "${relativePath}blackKing.png"
+    const val BoardWithCheckers = "${relativePath}boardWithCheckers.png"
+    const val VerticalMarble = "${relativePath}verticalMarble.png"
+    const val NoInternet = "${relativePath}noInternet.png"
+    const val AlertTriangle =  "${relativePath}alertTriangle.png"
+    const val Trophy = "${relativePath}trophy.png"
+    const val Contract = "${relativePath}contract.png"
+    const val Skull = "${relativePath}skull.png"
 }

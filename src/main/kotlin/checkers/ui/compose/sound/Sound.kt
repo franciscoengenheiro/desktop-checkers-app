@@ -2,7 +2,7 @@ package checkers.ui.compose.sound
 
 /**
  * Defines a sound used in the Application.
- * @param label name of the file without the (.wav) extension
+ * @param label name of the sound file without the (.wav) extension
  */
 enum class Sound(val label: String) {
     VICTORY("victory"),

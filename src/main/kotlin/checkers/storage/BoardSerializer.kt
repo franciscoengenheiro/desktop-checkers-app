@@ -50,7 +50,7 @@ object BoardSerializer: Serializer<Board, String> {
                         it.value::class.simpleName + sep +
                             it.value.player.name
             }
-            .joinToString(System.lineSeparator())
+            .joinToString(nl)
     }
     override fun parse(stream: String): Board {
         val words = stream.split(System.lineSeparator())

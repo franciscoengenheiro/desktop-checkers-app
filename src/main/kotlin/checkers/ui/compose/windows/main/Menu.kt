@@ -65,7 +65,7 @@ fun FrameWindowScope.Menu(viewModel: ViewModel, onExitRequest: () -> Unit) {
                 checked = viewModel.autoRefreshStatus
             ) { viewModel.autoRefreshToggle() }
             CheckboxItem(
-                text = "Enable sound",
+                text = "Sound",
                 icon = painterResource(BaseIcons.Sound),
                 shortcut = KeyShortcut(Key.S),
                 mnemonic = 'S',

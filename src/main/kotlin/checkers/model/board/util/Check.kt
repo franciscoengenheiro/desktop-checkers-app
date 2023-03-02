@@ -32,4 +32,4 @@ fun BoardRun.checkWin(): Boolean {
 /**
  * Evaluates if a maximum limit of moves without a capture was reached.
  */
-fun BoardRun.checkDraw() = this.mvsWithoutCapture >= MAX_MOVES_WITHOUT_CAPTURE
+fun BoardRun.checkDraw() = mvsWithoutCapture >= MAX_MOVES_WITHOUT_CAPTURE

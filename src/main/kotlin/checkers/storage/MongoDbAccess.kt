@@ -17,7 +17,7 @@ object MongoDbAccess {
     private val collection = "$Dimension"
     const val database = "Checkers"
     val connectionString = decrypt(
-        cipherText = TextFile.read("EncryptedConnString").first(),
+        cipherText = TextFile.read("file/EncryptedConnString").first(),
         key = "3edd5c8a-85ec-11"
     )
     fun createClient(): MongoStorage<Board> {
