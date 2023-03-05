@@ -1,6 +1,10 @@
 # Checkers Desktop App
 This document will serve to store information about the new software implementations of the Checkers Desktop App project.
 
+## Update v1.26 (05/02/2023):
+- A user reported a bug on the dialog window not opening correctly. The issue was identified to be caused by the latest resources refactoring. 
+- Fixed a small image bug that could be seen in the README.md file when in browser dark mode.
+
 ## Update v1.25 (02/02/2023):
 - A new enum class representing the prerequisites for a board's first checker
   placement has been added, along with a new function to allow its usage.

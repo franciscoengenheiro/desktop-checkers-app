@@ -82,7 +82,7 @@ fun RulesDialog(onDismiss: ()->Unit) = Dialog(
 @JvmInline
 value class Rule private constructor(val description: String) {
     companion object {
-        private val rulesFromFile = TextFile.read("Rules")
+        private val rulesFromFile = TextFile.read("file/Rules")
         val list = List(rulesFromFile.size) { idx -> Rule(rulesFromFile[idx]) }
     }
 }

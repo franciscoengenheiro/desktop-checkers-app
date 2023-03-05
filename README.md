@@ -22,7 +22,7 @@ The whole project was a key evaluation point of the Software Development Techniq
 - [Known Bugs](#known-bugs)
 
 ## Download
-Download the application [here](https://mega.nz/file/tORxxYQD#X2U45qiYunXCkclDazf8ZrskB1yFfsDSPPXRto2Z_Cg).
+Download the application [here](https://mega.nz/file/BbIghYDD#97jdxe4eKTYX2n99AADqOsCb5dAEEg5Ks77qInV0MXY).
 
 ## Features
 - [X] Checker unique images
@@ -91,7 +91,7 @@ In the repository root, access <code>src/main/kotlin</code> where you can find t
 ### #1 - Menu option disappears
 <img alt="Menu Option" src="src/main/resources/report/bug-1.png" width="400">
 
-As the above image depicts, when a menu option opens a dialog window with a fixed height, that menu option disappears. The only workaround found was to set an unspecified height in the dialog state of the window, but for this context it could not be used.
+As the above image depicts, when a menu option opens a dialog window with a fixed height, that menu option disappears. The only workaround found was to set an unspecified height in the dialog state of the window or by manually resizing the window, but for this specific context it could not be used.
 A similar [issue](https://github.com/JetBrains/compose-jb/issues/414) was discovered, however as of this writing, there was no solution provided.
 
 ## Authors
