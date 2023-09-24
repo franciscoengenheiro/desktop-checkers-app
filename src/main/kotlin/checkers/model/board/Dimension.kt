@@ -21,7 +21,6 @@ lateinit var Dimension: BoardDim
  * @param dim Dimension to set [Dimension].
  */
 fun setGlobalBoardDimension(dim: BoardDim) { Dimension = dim }
-
 /**
  * Defines the actual dimension for the board elements companion object constructors.
  * @throws UninitializedPropertyAccessException If [Dimension] is not yet initialized.

@@ -3,7 +3,7 @@
 
 This application serves as a game interface where users are invited to play the classic [Checkers](https://www.britannica.com/topic/checkers) board game in an online environment against other players. 
 
-The game is using the [Desktop Compose](https://www.jetbrains.com/lp/compose-desktop/) UI framework and the data is stored in the [Mongo Database](https://www.mongodb.com/).
+The game is using the [Desktop Compose](https://www.jetbrains.com/lp/compose-desktop/) UI framework, and the data is stored in the [Mongo Database](https://www.mongodb.com/).
 
 The whole project was a key evaluation point of the Software Development Techniques (TDS) course in the [CSE](https://www.isel.pt/en/curso/bsc-degree/computer-science-and-computer-engineering) undergraduate program of [ISEL](https://www.isel.pt/en).
 
@@ -22,22 +22,23 @@ The whole project was a key evaluation point of the Software Development Techniq
 - [Known Bugs](#known-bugs)
 
 ## Download
-Download the application [here](https://mega.nz/file/BbIghYDD#97jdxe4eKTYX2n99AADqOsCb5dAEEg5Ks77qInV0MXY).
+
+Download the JAR file [here](https://mega.nz/file/5GpG3LrK#e0I4yjhDDsNj45_AxlLVxpehSy7IwglpS49Y_kI3TPA).
 
 ## Features
 - [X] Checker unique images
 - [X] Sound effects
-- [X] Dialogs
-- [X] Switch between automatic and manual refresh
+- [X] Expressive dialog windows
+- [X] Switch between automatic and manual refresh of the game screen
 
 ## Requirements
-- JRE 1.4.0 or above
-- JSE 17 or above
+- JRE 1.4.0 or above (for running the application)
+- JDK 17 or above (for development purposes)
 
 ## Initial Window
 <img alt="Initial Window" src="./src/main/resources/report/initialWindow.png" width="400">
 
-When the program is launched, this is the initial window that appears which allows you to choose a board dimension from the list of the avalaible options. At the bottom there's a few shortcuts to contact the developer in order to report a bug, ask for future functionalities, or offer suggestions for improvement.
+When the program is launched, this is the initial window that appears which allows you to choose a board dimension from the list of the available options. At the bottom, there are a few shortcuts to contact the developer in order to report a bug, ask for future functionalities, or offer suggestions for improvement.
 
 ## Main Window
 ### Start a game
@@ -74,7 +75,7 @@ If you're playing the game for the first time, it's advised that you read the ru
 ## Internet Connection
 <img alt="No Internet" src="./src/main/resources/report/noInternet.png" width="400">
 
-Because the game was designed to be played solely online, it won't work correctly without a consistent internet connection. If a connection to the database could not be established, a dialog window, as seen in the above picture, will appear alerting for this issue.
+Because the game was designed to be played solely online, it won't work correctly without a consistent internet connection. If a connection to the database could not be established, a dialog window, as seen in the above picture, will appear to alert for this issue.
 
 ## Application Structure
 In the repository root, access <code>src/main/kotlin</code> where you can find the application structure which is divided in 5 major modules:
@@ -92,7 +93,7 @@ In the repository root, access <code>src/main/kotlin</code> where you can find t
 <img alt="Menu Option" src="src/main/resources/report/bug-1.png" width="400">
 
 As the above image depicts, when a menu option opens a dialog window with a fixed height, that menu option disappears. The only workaround found was to set an unspecified height in the dialog state of the window or by manually resizing the window, but for this specific context it could not be used.
-A similar [issue](https://github.com/JetBrains/compose-jb/issues/414) was discovered, however as of this writing, there was no solution provided.
+A similar [issue](https://github.com/JetBrains/compose-jb/issues/414) was discovered; however, as of this writing, there was no solution provided.
 
 ## Authors
 - **Francisco Engenheiro** - 49428

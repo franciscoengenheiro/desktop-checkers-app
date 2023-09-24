@@ -38,14 +38,14 @@ fun AlertDialog(
     title = title,
     state = DialogState(
         position = WindowPosition(Alignment.Center),
-        width = 250.dp,
+        width = Dp.Unspecified,
         height = Dp.Unspecified
     ),
     resizable = false,
     icon = icon
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 10.dp),
+        modifier = Modifier.padding(horizontal = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -76,6 +76,6 @@ fun AlertDialog(
             enable = true,
             onDismiss = onDismiss
         )
-        Spacer(modifier = Modifier.padding(vertical = 5.dp))
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
     }
 }

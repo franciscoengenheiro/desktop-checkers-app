@@ -4,7 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import checkers.model.Game
-import checkers.model.board.*
+import checkers.model.board.Board
+import checkers.model.board.BoardDim
+import checkers.model.board.BoardDraw
+import checkers.model.board.BoardRun
+import checkers.model.board.BoardWin
+import checkers.model.board.Dimension
+import checkers.model.board.setGlobalBoardDimension
 import checkers.model.createGame
 import checkers.model.moves.move.Player
 import checkers.model.moves.move.Square
@@ -21,6 +27,7 @@ import com.mongodb.MongoException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
@@ -34,7 +41,7 @@ private val REFRESH_DELAY = 1.seconds
  * logic. Its principal advantage is that it caches state and persists it
  * through configuration changes. This behavior allows for the UI to only represent state.
  */
-class ViewModel (private val scope: CoroutineScope) {
+class ViewModel(private val scope: CoroutineScope) {
     // Public states
     var window by mutableStateOf<WindowState>(InitialWindow)
         private set
@@ -44,16 +51,20 @@ class ViewModel (private val scope: CoroutineScope) {
         private set
     var game: Game? by mutableStateOf(null)
         private set
+
     // Private states
     private var onRefresh by mutableStateOf(false)
     private var showTargets by mutableStateOf(true)
     private var autoRefresh by mutableStateOf(true)
     private var soundEnabled by mutableStateOf(true)
+
     // Variable that represents the coroutine job of the auto refresh function.
     // By mantaining state of this job one can easily cancel it when necessary
     private var autoRefreshJob by mutableStateOf<Job?>(null)
+
     // Defines the storage where the game data will be stored
     lateinit var storage: BoardStorage // FileStorage("games", BoardSerializer)
+
     // Variables that represent game and option status:
     val refreshStatus: Boolean
         get() {
@@ -89,11 +100,8 @@ class ViewModel (private val scope: CoroutineScope) {
         try {
             block()
         } catch (e: Exception) {
-            when(e) {
+            when (e) {
                 is MongoException -> openNoInternetDialog()
-                // This exception was added to try/catch block in order to not
-                // constantly bother the user with invalid play warnings
-                is IllegalArgumentException -> {}
                 else -> openErrorDialog(e.message)
             }
         }
@@ -155,12 +163,19 @@ class ViewModel (private val scope: CoroutineScope) {
      * @param toSqr Square to move a checker to.
      * @param fromSqr Square to move a checker from.
      */
-    fun play(toSqr: Square, fromSqr: Square) = handleCatch {
-        val g = game ?: return@handleCatch
+    fun play(toSqr: Square, fromSqr: Square) {
+        val g = game ?: return
         if (isLocalPlayerTurn()) {
             scope.launch {
-                game = g.play(toSqr, fromSqr, storage)
-                if (soundEnabled) MediaPlayer.onCheckerMove()
+                try {
+                    game = g.play(toSqr, fromSqr, storage)
+                    if (soundEnabled) MediaPlayer.onCheckerMove()
+                } catch (e: Exception) {
+                    when (e) {
+                        is MongoException -> openNoInternetDialog()
+                        else -> openErrorDialog(e.message)
+                    }
+                }
                 autoRefresh(g)
             }
         }
@@ -200,9 +215,10 @@ class ViewModel (private val scope: CoroutineScope) {
                 try {
                     board = storage.read(g.id)
                     checkNotNull(board)
+                    if (g.board == board) return@launch
                     game = g.copy(board = board)
                 } catch (e: Exception) {
-                    when(e) {
+                    when (e) {
                         is MongoException -> openNoInternetDialog()
                         else -> openErrorDialog(e.message)
                     }
@@ -228,7 +244,7 @@ class ViewModel (private val scope: CoroutineScope) {
      */
     fun evaluateGameState() {
         val g = game ?: return
-        when(g.board) {
+        when (g.board) {
             is BoardRun -> return
             is BoardDraw -> if (soundEnabled) MediaPlayer.onDraw()
             is BoardWin -> if (soundEnabled) {
@@ -238,24 +254,50 @@ class ViewModel (private val scope: CoroutineScope) {
         }
         openEndGameDialog()
     }
+
     // User driven actions - Toggle
-    fun showTargetsToggle() { showTargets = !showTargets }
+    fun showTargetsToggle() {
+        showTargets = !showTargets
+    }
+
     fun autoRefreshToggle() {
         autoRefreshJob?.cancel()
         autoRefresh = !autoRefresh
     }
-    fun soundToggle() { soundEnabled = !soundEnabled }
+
+    fun soundToggle() {
+        soundEnabled = !soundEnabled
+    }
+
     // User driven actions - Dialog
-    fun openNewGameDialog() { dialog = DialogState.NewGame }
-    fun openResumeGameDialog() { dialog = DialogState.ResumeGame }
-    fun openRulesDialog() { dialog = DialogState.Rules }
+    fun openNewGameDialog() {
+        dialog = DialogState.NewGame
+    }
+
+    fun openResumeGameDialog() {
+        dialog = DialogState.ResumeGame
+    }
+
+    fun openRulesDialog() {
+        dialog = DialogState.Rules
+    }
+
     // Internal reactions (not user related)
-    private fun openNoInternetDialog() { dialog = DialogState.NoInternet }
-    private fun openEndGameDialog() { dialog = DialogState.EndGame }
+    private fun openNoInternetDialog() {
+        dialog = DialogState.NoInternet
+    }
+
+    private fun openEndGameDialog() {
+        dialog = DialogState.EndGame
+    }
+
     private fun openErrorDialog(msg: String?) {
         error = msg
         dialog = DialogState.OnError
     }
+
     // Resets dialog state
-    fun closeCurrentDialog() { dialog = DialogState.NoDialogOpen }
+    fun closeCurrentDialog() {
+        dialog = DialogState.NoDialogOpen
+    }
 }

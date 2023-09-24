@@ -23,8 +23,8 @@ fun getPlayerPieces(dim: Int): Int = dim/2 * (dim/2 - 1)
 
 /**
  * Receives a variable amount of strings, each one indicating a play, and plays them
- * on the board. If the strings are not in the expected format or if the squares they
- * represent are not valid then throws [IllegalArgumentException].
+ * on the board. If the strings aren't in the expected format or if the squares they
+ * represent aren't valid then throws [IllegalArgumentException].
  * @return A new board updated with all the plays made.
  */
 fun Board.plays(vararg s: String) =
@@ -52,8 +52,8 @@ fun createPersonalizedBoard(set_turn: Player, vararg s: String): BoardRun {
 
 /**
  * Receives a variable amount of strings, each one indicating a move, and places them
- * on the board. If the strings are not in the expected format or if the squares or checkers
- * they represent are not valid then throws [IllegalArgumentException].
+ * on the board. If the strings aren't in the expected format or if the squares or checkers
+ * they represent aren't valid then throws [IllegalArgumentException].
  * Example: "2a w" corresponds to Pair<Square(2, a), Piece(Player.w)>
  * @return A list of moves with only the moves requested.
  */

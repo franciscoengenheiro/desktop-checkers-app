@@ -2,7 +2,6 @@ package checkers.model.board
 
 import checkers.model.moves.Moves
 import checkers.model.moves.move.*
-import org.litote.kmongo.cond
 
 // Constants
 val BOARD_DIM = setActualBoardDimension()
@@ -18,6 +17,7 @@ sealed class Board(val moves: Moves) {
     // A board is equal to another board if it has the same exact moves
     override fun equals(other: Any?) =
         other is Board && moves == other.moves
+
     override fun hashCode(): Int {
         return moves.hashCode()
     }
@@ -33,12 +33,13 @@ sealed class Board(val moves: Moves) {
  * @param prevCaptureSqr Represents the square where the previous capture landed.
  * @param turn Player who has permission to play in the board.
  */
-class BoardRun(mvs: Moves,
-               val numberOfMoves: Int,
-               val mvsWithoutCapture: Int,
-               val prevCaptureSqr: Square?,
-               val turn: Player
-): Board(mvs)
+class BoardRun(
+    mvs: Moves,
+    val numberOfMoves: Int,
+    val mvsWithoutCapture: Int,
+    val prevCaptureSqr: Square?,
+    val turn: Player,
+) : Board(mvs)
 
 /**
  * Represents an instance of the board where the game is finished, since
@@ -46,13 +47,13 @@ class BoardRun(mvs: Moves,
  * @param mvs Represents all moves currently in the board (where the checkers are).
  * @param winner Player who won the game.
  */
-class BoardWin(mvs: Moves, val winner: Player): Board(mvs)
+class BoardWin(mvs: Moves, val winner: Player) : Board(mvs)
 
 /**
  * Represents an instance of the board where the game finished in a draw.
  * @param mvs Represents all moves currently in the board (where the checkers are).
  */
-class BoardDraw(mvs: Moves): Board(mvs)
+class BoardDraw(mvs: Moves) : Board(mvs)
 
 /**
  * With a given [Square], retrieve information from the board, namely if it has a checker
@@ -72,7 +73,7 @@ fun initialBoard(): BoardRun {
         numberOfMoves = 0,
         mvsWithoutCapture = 0,
         prevCaptureSqr = null,
-        turn = Player.w
+        turn = Player.w,
     )
 }
 
@@ -84,20 +85,23 @@ fun initialBoard(): BoardRun {
  */
 private fun populateBoard(condition: Condition = Condition.DEFAULT): Moves {
     var mvs: Moves = emptyMap()
-    when(condition) {
+    when (condition) {
         Condition.FAST_WIN -> {
-            mvs += Square(0,1) to King(Player.w)
-            mvs += Square(5,6) to King(Player.b)
+            mvs += Square(0, 1) to King(Player.w)
+            mvs += Square(5, 6) to King(Player.b)
         }
+
         Condition.FAST_WIN_BY_BLOCKING -> {
-            mvs += Square(3,2) to Piece(Player.b)
-            mvs += Square(3,0) to Piece(Player.b)
-            mvs += Square(6,1) to Piece(Player.w)
+            mvs += Square(3, 2) to Piece(Player.b)
+            mvs += Square(3, 0) to Piece(Player.b)
+            mvs += Square(6, 1) to Piece(Player.w)
         }
+
         Condition.FAST_DRAW -> {
-            mvs += Square(6,0) to King(Player.w)
-            mvs += Square(5,6) to King(Player.b)
+            mvs += Square(6, 0) to King(Player.w)
+            mvs += Square(5, 6) to King(Player.b)
         }
+
         Condition.DEFAULT -> Square.values.forEach { sqr ->
             // Check if the current square is black, and it's not in the middle lines
             // of the board.
@@ -105,10 +109,11 @@ private fun populateBoard(condition: Condition = Condition.DEFAULT): Moves {
                 // Add to the already existing moves the correct piece.
                 // With this implementation, white checkers will be at bottom of the board
                 // while black checkers will be at the top.
-                mvs += if (sqr.row.index > BOARD_DIM / 2)
+                mvs += if (sqr.row.index > BOARD_DIM / 2) {
                     sqr to Piece(Player.w)
-                else
+                } else {
                     sqr to Piece(Player.b)
+                }
             }
         }
     }
@@ -123,5 +128,5 @@ enum class Condition {
     DEFAULT,
     FAST_WIN,
     FAST_WIN_BY_BLOCKING,
-    FAST_DRAW
+    FAST_DRAW,
 }

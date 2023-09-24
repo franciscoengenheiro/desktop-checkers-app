@@ -1,26 +1,41 @@
 # Checkers Desktop App
-This document will serve to store information about the new software implementations of the Checkers Desktop App project.
+
+This document will serve to store information about the new software implementations of the Checkers Desktop App
+project.
+
+## Update v1.27 (24/09/2023):
+
+- Added a link for the JAR file download.
+- A user reported a specific invalid move that would crash the application instantly. Now, the user is presented with an
+  error dialog and the game is resumed to the previous state. The error had to do with the last handleCatch middleware
+  implementation not working correclty within a coroutine scope.
 
 ## Update v1.26 (05/02/2023):
-- A user reported a bug on the dialog window not opening correctly. The issue was identified to be caused by the latest resources refactoring. 
+
+- A user reported a bug on the rules' dialog window not opening correctly. The issue was identified to be caused by the
+  latest resources refactoring.
 - Fixed a small image bug that could be seen in the README.md file when in browser dark mode.
 
 ## Update v1.25 (02/02/2023):
+
 - A new enum class representing the prerequisites for a board's first checker
   placement has been added, along with a new function to allow its usage.
 - Created an updates file to store the content present here.
-- A middleware (handleCatch) was created to refactor duplicate code that was present in several ViewModel functions that could cause an error.
+- Middleware (handleCatch) was created to refactor duplicate code that was present in several ViewModel functions that
+  could cause an error.
 - README.md is now the main report of this project.
 - Refactor some files in the *resources* module.
-- Changed exit shortcut from **Escape** to **Alt+f4**
+- Changed exit shortcut from **Escape** to **Alt+f4**.
 
 ## Update v1.24 (10/01/2023):
+
 - Code refactored.
 - Comments were revisited.
 - Performed more tests.
 - Reorg packages.
 
 ## Update v1.23 (09/01/2023):
+
 - Implemented sound and media player objects to define and play sounds respectively.
 - Added ISEL canvas libs to the project for their sound functions.
 - Added option in the game menu to enable/disable sound.
@@ -33,6 +48,7 @@ This document will serve to store information about the new software implementat
 - Reorg packages.
 
 ## Update v1.22 (04/01/2023):
+
 - Fixed inverted board bug which was caused by a bad auto refresh implementation in ViewModel.
 - Fixed an issue when a play was made without internet would cause an uncaught exception.
 - Created 3 new dialogs (which are built using the same dialog util function) to
@@ -40,6 +56,7 @@ This document will serve to store information about the new software implementat
 - Changed all image and icon assets to sharper vector images.
 
 ## Update v1.21 (31/12/2022):
+
 - Changed connection string options for the server timeout to be more quick in order to not let
   the user wait 30 seconds (default) for a timeout and the no internet dialog to appear after.
 - Removed suboptimal function to check for internet connection for every user action.
@@ -54,12 +71,14 @@ This document will serve to store information about the new software implementat
   the new error dialog on ViewModel.kt
 
 ## Update v1.20 (28/12/2022):
+
 - Changed TextFile implementation to read files from project resources only and with that
   incorporate project files inside the executable.
 - Updated related test modules.
 - Added encryption package to access decrypt function.
 
 ## Update v1.19 (28/12/2022):
+
 - Created another window to introduce the game and let the user choose a board dimension
   before starting.
 - A dialog now appears when the application does not have internet access and the user
@@ -70,6 +89,7 @@ This document will serve to store information about the new software implementat
   problem is semi-solved, since the key is still in the code.
 
 ## Update v1.18 (22/12/2022):
+
 - In the current version, a global variable (Dimension) must be initialized before
   building the board.
 - Added an option to select board dimension from a set of avalaible dimensions,
@@ -85,6 +105,7 @@ This document will serve to store information about the new software implementat
 - Added more previews to composables.
 
 ## Update v1.17 (18/12/2022):
+
 - An inverted board is now avalaible for the player assigned with the black checkers to
   increase gameplay realism.
 - Solved CellView refresh bug. This Composable was being recomposed without necessaty when
@@ -98,6 +119,7 @@ This document will serve to store information about the new software implementat
 - Reorganized more packages.
 
 ## Update v1.16 (16/12/2022):
+
 - Organized model package.
 - Fixed another bug regarding Kings being able to capture above own color checkers in
   some situations. Added more board tests to verify the new implementation.
@@ -105,6 +127,7 @@ This document will serve to store information about the new software implementat
 - Changed rules dialog alignment.
 
 ## Update v1.15 (15/12/2022):
+
 - Added Resume game option in the menu. This option opens a dialog window for the user to
   write the game id and to choose the player to be assigned with.
 - Added a new image for each checker type along with more board modifiers to present a
@@ -118,6 +141,7 @@ This document will serve to store information about the new software implementat
   Pieces types and not all checkers when evaluating the other player remaining moves.
 
 ## Update v1.14 (13/12/2022):
+
 - Fixed a bug in a Board.kt function 'getValidAdjacentSquaresToMoveTo' where some squares with
   a checker were being used as a valid play end point.
 - The above-mentioned bug did not create a problem in the first CMD UI implementation
@@ -135,6 +159,7 @@ This document will serve to store information about the new software implementat
 - Created BaseImages object to store App's own images (resource paths).
 
 ## Update v1.13 (13/12/2022):
+
 - Merged CheckersDesktopApp with CheckersCMD.
 - Organized and refactored code and project files.
 - Added support for Async File access and Async MongoDb access.
@@ -147,6 +172,7 @@ This document will serve to store information about the new software implementat
 - Updated PlantUML file.
 
 ## Update v1.12 (11/12/2022):
+
 - Created a StatusBar at the bottom of the App to show it's current state to the user.
 - A new dialog window to help the user learn all the game's concepts is now avalaible.
 - More features were added to menus, like icons and key shortcuts.
@@ -160,6 +186,7 @@ This document will serve to store information about the new software implementat
 - All App's Windows, including Dialogs, are now set to not let the user resize them.
 
 ## Update v1.11 (09/12/2022):
+
 - Started CheckersDesktopApp project development.
 - The project previous UI in command line (CMD) was restructured to Compose framework
   aimed for the JVM.
@@ -178,6 +205,7 @@ This document will serve to store information about the new software implementat
 - Added images for all checkers in the game.
 
 ## Update v1.10 (09/11/2022):
+
 - A new board print is now avalaible.
 - A new tag (CheckersCMD) was created to mark the end of the CheckersCMD development.
 - After more testing today, it was determined that the prior problem wasn't resolved
@@ -190,6 +218,7 @@ This document will serve to store information about the new software implementat
 - PlantUML was also updated to reflect this changes.
 
 ## Update v1.09 (07/11/2022):
+
 - Minor changes to BoardRun.getAvalaibleCaptures() function.
 - Project plant UML sketch was designed. Current implementation might not be final.
 - Added companion objects to plant UML design.
@@ -201,10 +230,12 @@ This document will serve to store information about the new software implementat
   associated with checker.
 
 ## Update v1.08 (06/11/2022):
+
 - More comments were added to newly created functions and others were revisited.
 - TestChecker.kt was created to verify equals() and hashcode() new implementations.
 
 ## Update v1.07 (05/11/2022):
+
 - Checkwin extension function was condensed in a smaller logic.
 - More properties were added to Square.kt and more tests were made to verify them.
 - Function to retrieve avalaible captures was redefined along with several auxiliary
@@ -212,26 +243,32 @@ This document will serve to store information about the new software implementat
 - More tests were added to TestBoard.kt and some were updated.
 
 ## Update v1.06 (04/11/2022):
+
 - Finished Refresh and Continue commands.
 - Changed BoardSerializer.kt player retrieval, might not be the final implementation.
 - Further tests are required, also with the MongoDB.
 
 ## Update v1.05 (03/11/2022):
+
 - Finished BoardSerializer.kt, and both MongoStorage.kt and FileStorage.kt tests.
 
 ## Update v1.04 (02/11/2022):
+
 - Finished first implementation of Board.kt.
 - Several tests were made to verify this implementation and can be found in TestBoard.kt.
 
 ## Update v1.03 (16/10/2022):
+
 - Finished implementation of Square.kt.
 - All given associated tests have approved this implementation.
 
 ## Update v1.02 (15/10/2022):
+
 - Finished implementation of Row.kt.
 - All given associated tests have approved this implementation.
 
 ## Update v1.01 (15/10/2022):
+
 - Started CheckersCMD project development.
 - Finished implementation of Column.kt.
 - All given associated tests have approved this implementation.
