@@ -11,6 +11,7 @@ The whole project was a key evaluation point of the Software Development Techniq
 - [Download](#download)
 - [Features](#features)
 - [Requirements](#requirements)
+- [Application Structure](#application-structure)
 - [Initial Window](#initial-window)
 - [Main Window](#main-window)
   - [Start a game](#start-a-game)
@@ -18,7 +19,6 @@ The whole project was a key evaluation point of the Software Development Techniq
   - [Options](#options)
   - [Help](#help)
 - [Internet Connection](#internet-connection)
-- [Application Structure](#application-structure)
 - [Known Bugs](#known-bugs)
 
 ## Download
@@ -34,6 +34,18 @@ Download the JAR file [here](https://mega.nz/file/5GpG3LrK#e0I4yjhDDsNj45_AxlLVx
 ## Requirements
 - JRE 1.4.0 or above (for running the application)
 - JDK 17 or above (for development purposes)
+
+## Application Structure
+In the repository root, access <code>src/main/kotlin</code> where you can find the application structure which is divided in 5 major modules:
+- [checkers](./src/main/kotlin/checkers) - includes modules that are mainly exclusive to the *Checkers* game context.
+  - [model](./src/main/kotlin/checkers/model) - includes all types used to construct the game logic.
+  - [storage](./src/main/kotlin/checkers/storage) - includes a serializer specific of this game implementation along with the *MongoDB* access.
+  - [ui](./src/main/kotlin/checkers/ui) - includes both *console* (cmd) and *compose* UI implementations.
+  - [Main.kt](./src/main/kotlin/checkers/Main.kt) and [MainCMD.kt](./src/main/kotlin/checkers/MainCmd.kt) - are both entry points of the application, for the composable and cmd interfaces, respectively.
+- [composables](./src/main/kotlin/composables) - includes all major generic composables used in the application.
+- [encryption](./src/main/kotlin/encryption) - includes the decrypt function but not the encrypt function as its content was not considered relevant.
+- [file](./src/main/kotlin/file) - composes of all interfaces and classes that provide access to file operations such as read and write.
+- [storage](./src/main/kotlin/storage) - includes all the interfaces and classes that allow the usage of different types of storage.
 
 ## Initial Window
 <img alt="Initial Window" src="./src/main/resources/report/initialWindow.png" width="400">
@@ -77,17 +89,6 @@ If you're playing the game for the first time, it's advised that you read the ru
 
 Because the game was designed to be played solely online, it won't work correctly without a consistent internet connection. If a connection to the database could not be established, a dialog window, as seen in the above picture, will appear to alert for this issue.
 
-## Application Structure
-In the repository root, access <code>src/main/kotlin</code> where you can find the application structure which is divided in 5 major modules:
-- **Checkers** - includes modules that are mainly exclusive to the *Checkers* game context. 
-  - **model** - includes all types used to construct the game logic.
-  - **storage** - includes a serializer specific of this game implementation along with the *MongoDB* access.
-  - **ui** - includes both *console* (cmd) and *compose* UI implementations.
-- **Composables** - includes all major generic composables used in the application.
-- **Encryption** - includes the decrypt function but not the encrypt function as it's content was not considered relevant. 
-- **File** - composes of all interfaces and classes that provides access to file operations such as read and write.
-- **Storage** - includes all the interfaces and classes that allow the usage of different types of storage.
-
 ## Known bugs
 ### #1 - Menu option disappears
 <img alt="Menu Option" src="src/main/resources/report/bug-1.png" width="400">
@@ -95,11 +96,9 @@ In the repository root, access <code>src/main/kotlin</code> where you can find t
 As the above image depicts, when a menu option opens a dialog window with a fixed height, that menu option disappears. The only workaround found was to set an unspecified height in the dialog state of the window or by manually resizing the window, but for this specific context it could not be used.
 A similar [issue](https://github.com/JetBrains/compose-jb/issues/414) was discovered; however, as of this writing, there was no solution provided.
 
-## Authors
-- **Francisco Engenheiro** - 49428
-
 ---
 
 Instituto Superior de Engenharia de Lisboa<br>
+BSc in Computer Science and Engineering<br>
 Software Development Techniques<Br>
 Winter Semester of 2022/2023
